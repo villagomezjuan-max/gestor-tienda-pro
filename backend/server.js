@@ -5935,7 +5935,25 @@ if (!db) {
 // ============================================
 // MIDDLEWARE: Asignar BD según negocio
 // ============================================
+// Rutas que NO requieren validación de negocio
+const PUBLIC_ROUTES = new Set([
+  '/api/csrf-token',
+  '/api/tiempo',
+  '/api/public/negocios',
+  '/api/auth/login',
+  '/api/auth/refresh',
+  '/api/auth/logout',
+  '/health',
+  '/favicon.ico',
+]);
+
 app.use((req, res, next) => {
+  // Saltar validación de negocio para rutas públicas
+  const path = req.path.split('?')[0]; // Quitar query params
+  if (PUBLIC_ROUTES.has(path) || path.startsWith('/api/public/')) {
+    return next();
+  }
+
   let negocioId = null;
   let negocioSource = 'none';
 
