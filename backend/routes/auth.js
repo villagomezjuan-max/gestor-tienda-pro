@@ -12,7 +12,11 @@ const { loginLimiter, passwordChangeLimiter } = require('../middleware/rate-limi
 const { getUserNegocios, getUserNegocioPrincipal } = require('../utils/negocios');
 const { hashPassword, comparePassword, validatePasswordStrength } = require('../utils/password');
 const { normalizeRole, ROLE_SUPER_ADMIN } = require('../utils/roles');
-const { resolveSuperAdminUsername } = require('../utils/super-admin');
+const {
+  resolveSuperAdminUsername,
+  SUPER_ADMIN_USERNAME_ALIASES,
+  matchesSuperAdminUsername,
+} = require('../utils/super-admin');
 const { generateAccessToken, generateRefreshToken, verifyRefreshToken } = require('../utils/token');
 
 let authColumnsEnsured = false;
@@ -216,19 +220,32 @@ module.exports = function createAuthRoutes({ getMasterDB, getTenantDB }) {
 
       const { username, password, negocioId } = req.body;
       const rawUsername = typeof username === 'string' ? username.trim() : '';
-      const lookupUsername = resolveSuperAdminUsername(rawUsername);
 
       try {
         const masterDb = resolveMasterDB();
         ensureAuthColumns(masterDb);
 
-        const user = masterDb
-          .prepare('SELECT * FROM usuarios WHERE username = ? AND activo = 1')
-          .get(lookupUsername);
+        let user = null;
+
+        // Si es un alias de super admin, buscar por cualquiera de los alias
+        if (matchesSuperAdminUsername(rawUsername)) {
+          const aliasValues = SUPER_ADMIN_USERNAME_ALIASES.map((a) => a.toLowerCase());
+          const placeholders = aliasValues.map(() => '?').join(',');
+          user = masterDb
+            .prepare(
+              `SELECT * FROM usuarios WHERE LOWER(username) IN (${placeholders}) AND activo = 1 LIMIT 1`
+            )
+            .get(...aliasValues);
+        } else {
+          // Buscar por username exacto
+          user = masterDb
+            .prepare('SELECT * FROM usuarios WHERE username = ? AND activo = 1')
+            .get(rawUsername);
+        }
 
         if (!user) {
           console.warn(
-            `⚠️ Intento de login fallido - usuario no encontrado: ${rawUsername || lookupUsername}`
+            `⚠️ Intento de login fallido - usuario no encontrado: ${rawUsername}`
           );
           return res.status(401).json({
             success: false,
@@ -254,7 +271,7 @@ module.exports = function createAuthRoutes({ getMasterDB, getTenantDB }) {
         if (!passwordMatch) {
           // BLOQUEO DE CUENTA DESHABILITADO - Solo registrar intento fallido sin bloquear
           console.warn(
-            `⚠️ Intento de login fallido - contraseña incorrecta: ${rawUsername || lookupUsername}`
+            `⚠️ Intento de login fallido - contraseña incorrecta: ${rawUsername}`
           );
 
           return res.status(401).json({
