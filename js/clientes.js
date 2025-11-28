@@ -185,7 +185,9 @@ window.Clientes = {
     if (window.API_BASE_URL) {
       return window.API_BASE_URL;
     }
-    return 'http://localhost:3001/api';
+    return (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') 
+      ? `${window.location.protocol}//${window.location.hostname}/api` 
+      : 'http://localhost:3001/api';
   },
 
   async requestBackend(endpoint, options = {}) {

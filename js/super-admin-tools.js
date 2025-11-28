@@ -4,7 +4,9 @@
 // ============================================
 
 // Constantes
-const API_URL = window.API_URL || 'http://localhost:3001';
+const API_URL = window.API_URL || ((typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') 
+    ? `${window.location.protocol}//${window.location.hostname}` 
+    : 'http://localhost:3001');
 
 // Helper function para obtener token de autorización
 function getAuthToken() {

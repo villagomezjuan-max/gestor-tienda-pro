@@ -243,7 +243,9 @@
     const fallbackOrigin =
       typeof window !== 'undefined' && window.location
         ? `${window.location.protocol}//${window.location.host}`
-        : 'http://localhost:3001';
+        : ((typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') 
+            ? `${window.location.protocol}//${window.location.hostname}` 
+            : 'http://localhost:3001');
 
     if (!usable) {
       return `${fallbackOrigin.replace(/\/+$/, '')}/health`;

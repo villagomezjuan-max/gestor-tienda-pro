@@ -4,8 +4,15 @@
    Gestor Tienda Pro v2.0
    ======================================== */
 
+function getDefaultApiUrl() {
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+    return `${window.location.protocol}//${window.location.hostname}/api`;
+  }
+  return 'http://localhost:3001/api';
+}
+
 function sanitizeBaseUrl(rawUrl) {
-  const fallback = 'http://localhost:3001/api';
+  const fallback = getDefaultApiUrl();
   if (!rawUrl || typeof rawUrl !== 'string') {
     return fallback;
   }
@@ -47,7 +54,7 @@ function sanitizeBaseUrl(rawUrl) {
 }
 
 function detectApiBaseUrl() {
-  const fallback = 'http://localhost:3001/api';
+  const fallback = getDefaultApiUrl();
 
   if (typeof window === 'undefined') {
     return fallback;

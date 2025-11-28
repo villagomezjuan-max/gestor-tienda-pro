@@ -377,7 +377,7 @@ const Auth = {
       // Si aún no hay CSRF token, obtenerlo ahora
       if (!this._csrfToken) {
         try {
-          const csrfResponse = await fetch('http://localhost:3001/api/csrf-token', {
+          const csrfResponse = await fetch(getApiBaseUrl() + '/csrf-token', {
             credentials: 'include',
           });
           if (csrfResponse.ok) {
