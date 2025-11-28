@@ -101,13 +101,14 @@ module.exports = function createAuthRoutes({ getMasterDB, getTenantDB }) {
 
     if (normalizedRole === ROLE_SUPER_ADMIN) {
       try {
-        const superNegocioId = 'super_admin';
+        // Obtener todos los negocios activos de la base de datos
         const negociosActivos = masterDb
           .prepare(`SELECT id, nombre, tipo, estado FROM negocios WHERE estado = 'activo'`)
           .all();
 
         const existentes = new Set(negociosAsignados.map((negocio) => negocio.id));
 
+        // Agregar todos los negocios activos al super admin
         negociosActivos.forEach((negocio) => {
           if (!negocio?.id) {
             return;
@@ -117,35 +118,14 @@ module.exports = function createAuthRoutes({ getMasterDB, getTenantDB }) {
             negociosAsignados.push({
               ...negocio,
               rol_en_negocio: ROLE_SUPER_ADMIN,
-              es_negocio_principal: negocio.id === superNegocioId ? 1 : 0,
+              es_negocio_principal: 0,
             });
             existentes.add(negocio.id);
           }
         });
 
-        if (!existentes.has(superNegocioId)) {
-          const superNegocio = masterDb
-            .prepare(`SELECT id, nombre, tipo, estado FROM negocios WHERE id = ?`)
-            .get(superNegocioId) || {
-            id: superNegocioId,
-            nombre: 'Super Admin',
-            tipo: 'central',
-            estado: 'activo',
-          };
-
-          negociosAsignados.push({
-            ...superNegocio,
-            rol_en_negocio: ROLE_SUPER_ADMIN,
-            es_negocio_principal: 1,
-          });
-          existentes.add(superNegocioId);
-        }
-
+        // Obtener IDs de negocios activos reales (solo los que existen en la BD)
         const activosIds = negociosActivos.map((negocio) => negocio.id).filter(Boolean);
-
-        if (!activosIds.includes(superNegocioId)) {
-          activosIds.unshift(superNegocioId);
-        }
 
         negociosIds = Array.from(new Set([...negociosIds, ...activosIds]));
 
@@ -159,7 +139,8 @@ module.exports = function createAuthRoutes({ getMasterDB, getTenantDB }) {
           user.negocio_principal && negociosIds.includes(user.negocio_principal)
             ? user.negocio_principal
             : null;
-        const fallback = negociosIds.includes(superNegocioId) ? superNegocioId : negociosIds[0];
+        // Usar el primer negocio activo como fallback
+        const fallback = negociosIds[0] || 'tienda_principal';
 
         negocioPrincipal = preferida || principalValido || almacenado || fallback;
       } catch (error) {
@@ -171,7 +152,7 @@ module.exports = function createAuthRoutes({ getMasterDB, getTenantDB }) {
     }
 
     if (!negocioPrincipal) {
-      negocioPrincipal = 'super_admin';
+      negocioPrincipal = 'tienda_principal';
     }
 
     if (!negociosIds.length) {
@@ -182,7 +163,7 @@ module.exports = function createAuthRoutes({ getMasterDB, getTenantDB }) {
 
     // CAMBIO: Ya no validamos el requestedNegocioId, siempre usamos el negocio principal del usuario
     // Esto permite login automático sin selector de tienda
-    const negocioSeleccionado = negocioPrincipal || negociosIds[0] || 'super_admin';
+    const negocioSeleccionado = negocioPrincipal || negociosIds[0] || 'tienda_principal';
 
     const negocioValido = masterDb
       .prepare('SELECT id, estado FROM negocios WHERE id = ?')

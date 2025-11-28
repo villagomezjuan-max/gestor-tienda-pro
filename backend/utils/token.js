@@ -34,7 +34,7 @@ function generateAccessToken(userId, username, rol, negocioId, negocios = null) 
     userId,
     username,
     rol,
-    negocioId: negocioId || 'mecanica',
+    negocioId: negocioId || 'tienda_principal',
     type: 'access',
   };
 
@@ -43,7 +43,7 @@ function generateAccessToken(userId, username, rol, negocioId, negocios = null) 
     payload.negocios = negocios;
   } else {
     // Fallback: solo el negocio principal
-    payload.negocios = [negocioId || 'mecanica'];
+    payload.negocios = [negocioId || 'tienda_principal'];
   }
 
   return jwt.sign(payload, JWT_SECRET, {
