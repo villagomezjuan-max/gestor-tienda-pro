@@ -6002,6 +6002,7 @@ const PUBLIC_ROUTES = new Set([
   '/api/auth/refresh',
   '/api/auth/logout',
   '/api/setup-admin',
+  '/api/db-status',
   '/health',
   '/favicon.ico',
 ]);
