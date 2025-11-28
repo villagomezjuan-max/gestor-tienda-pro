@@ -55,8 +55,22 @@ if (typeof window !== 'undefined') {
   window.RoleUtils = RoleUtils;
 }
 
+// Detectar URL base automáticamente
+function getApiBaseUrl() {
+  if (typeof window !== 'undefined' && window.location) {
+    const { protocol, hostname, port } = window.location;
+    // Si estamos en producción (Render, etc.)
+    if (hostname !== 'localhost' && hostname !== '127.0.0.1') {
+      return `${protocol}//${hostname}/api`;
+    }
+    // Desarrollo local
+    return 'http://localhost:3001/api';
+  }
+  return 'http://localhost:3001/api';
+}
+
 const Auth = {
-  API_URL: 'http://localhost:3001/api/auth',
+  API_URL: getApiBaseUrl() + '/auth',
   _accessToken: null,
   _refreshToken: null,
   _user: null,
@@ -83,7 +97,7 @@ const Auth = {
 
       // Obtener CSRF token del servidor
       try {
-        const response = await fetch('http://localhost:3001/api/csrf-token', {
+        const response = await fetch(getApiBaseUrl() + '/csrf-token', {
           credentials: 'include',
         });
         if (response.ok) {
