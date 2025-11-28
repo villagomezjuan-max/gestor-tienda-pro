@@ -38,10 +38,9 @@ const TiempoServidor = {
         // Construir URL absoluta si es relativa (backend local)
         let url = servidor.url;
         if (url.startsWith('/')) {
-          // Usar el mismo origen que la página
-          const baseUrl = window.Auth?.API_URL?.replace('/auth', '') || 
-                         (window.location.origin + (window.location.port === '' ? ':3001' : ''));
-          url = baseUrl.replace(/\/+$/, '') + servidor.url;
+          // Usar el mismo origen que la página, sin duplicar /api
+          const origin = window.location.origin;
+          url = origin + servidor.url;
         }
         
         const response = await fetch(url, { 

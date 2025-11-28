@@ -6098,9 +6098,26 @@ app.use((req, res, next) => {
       negocioSource = 'default';
     }
 
-    const negocioExists = negocioId
+    // Verificar si el negocio existe en configNegocios O en la base de datos maestra
+    let negocioExists = negocioId
       ? configNegocios.negocios.some((n) => n.id === negocioId)
       : false;
+
+    // Si no existe en configNegocios, verificar en la base de datos maestra como fallback
+    if (!negocioExists && negocioId) {
+      try {
+        const master = getMasterDB();
+        const negocioInDb = master.prepare('SELECT id FROM negocios WHERE id = ? AND estado = ?').get(negocioId, 'activo');
+        if (negocioInDb) {
+          negocioExists = true;
+          // Sincronizar configNegocios con la base de datos
+          syncConfigNegociosWithMaster();
+          console.log(`✅ Negocio ${negocioId} encontrado en BD maestra, configuración sincronizada`);
+        }
+      } catch (dbError) {
+        console.warn('⚠️ Error verificando negocio en BD maestra:', dbError.message);
+      }
+    }
 
     if (!negocioExists) {
       console.warn(
