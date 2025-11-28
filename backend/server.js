@@ -7809,43 +7809,87 @@ app.get('/api/setup-admin', async (req, res) => {
   try {
     const bcrypt = require('bcrypt');
     const master = getMasterDB();
+    const results = { steps: [] };
     
-    // Verificar si existe el usuario admin
-    const existingAdmin = master.prepare('SELECT id FROM usuarios WHERE username = ?').get('admin');
+    // Paso 1: Verificar/crear tabla negocios
+    try {
+      const negocioCount = master.prepare('SELECT COUNT(*) as count FROM negocios').get();
+      results.steps.push({ step: 'check_negocios', count: negocioCount.count });
+      
+      if (negocioCount.count === 0) {
+        // Crear negocio por defecto
+        master.prepare(`
+          INSERT INTO negocios (id, nombre, tipo, estado, plan, icono, created_at, updated_at)
+          VALUES ('tienda_principal', 'Tienda Principal', 'general', 'activo', 'premium', 'fas fa-store', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        `).run();
+        results.steps.push({ step: 'create_negocio', success: true });
+      }
+    } catch (e) {
+      results.steps.push({ step: 'negocios_error', error: e.message });
+    }
     
+    // Paso 2: Crear/actualizar usuario admin
     const defaultPassword = 'admin123';
     const passwordHash = await bcrypt.hash(defaultPassword, 10);
     
+    const existingAdmin = master.prepare('SELECT id FROM usuarios WHERE username = ?').get('admin');
+    
+    let adminId;
     if (existingAdmin) {
-      // Actualizar contraseña del admin existente
+      adminId = existingAdmin.id;
       master.prepare(`
         UPDATE usuarios 
-        SET password = ?, activo = 1, intentos_fallidos = 0, bloqueado_hasta = NULL, updated_at = CURRENT_TIMESTAMP
+        SET password = ?, rol = 'super_admin', activo = 1, intentos_fallidos = 0, bloqueado_hasta = NULL, updated_at = CURRENT_TIMESTAMP
         WHERE username = 'admin'
       `).run(passwordHash);
-      
-      res.json({ 
-        success: true, 
-        message: 'Usuario admin actualizado', 
-        credentials: { username: 'admin', password: 'admin123' }
-      });
+      results.steps.push({ step: 'update_admin', success: true });
     } else {
-      // Crear nuevo admin
-      const adminId = 'usr_admin_' + Date.now();
+      adminId = 'usr_admin_' + Date.now();
       master.prepare(`
         INSERT INTO usuarios (id, username, password, nombre, rol, activo, created_at, updated_at)
         VALUES (?, 'admin', ?, 'Super Administrador', 'super_admin', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `).run(adminId, passwordHash);
-      
-      res.json({ 
-        success: true, 
-        message: 'Usuario admin creado', 
-        credentials: { username: 'admin', password: 'admin123' }
-      });
+      results.steps.push({ step: 'create_admin', id: adminId, success: true });
     }
+    
+    // Paso 3: Asignar admin a negocio (verificar tabla usuarios_negocios)
+    try {
+      const asignacionExistente = master.prepare(`
+        SELECT * FROM usuarios_negocios WHERE usuario_id = ? AND negocio_id = 'tienda_principal'
+      `).get(adminId);
+      
+      if (!asignacionExistente) {
+        master.prepare(`
+          INSERT OR IGNORE INTO usuarios_negocios (usuario_id, negocio_id, rol_en_negocio, es_negocio_principal, created_at)
+          VALUES (?, 'tienda_principal', 'super_admin', 1, CURRENT_TIMESTAMP)
+        `).run(adminId);
+        results.steps.push({ step: 'assign_negocio', success: true });
+      } else {
+        results.steps.push({ step: 'assign_negocio', already_exists: true });
+      }
+    } catch (e) {
+      results.steps.push({ step: 'assign_error', error: e.message });
+    }
+    
+    // Paso 4: Actualizar negocio_principal del usuario
+    try {
+      master.prepare(`
+        UPDATE usuarios SET negocio_principal = 'tienda_principal' WHERE id = ?
+      `).run(adminId);
+      results.steps.push({ step: 'set_principal', success: true });
+    } catch (e) {
+      results.steps.push({ step: 'set_principal_error', error: e.message });
+    }
+    
+    res.json({ 
+      success: true, 
+      message: 'Setup completado', 
+      credentials: { username: 'admin', password: 'admin123' },
+      details: results
+    });
   } catch (error) {
     console.error('Error en setup-admin:', error);
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: error.message, stack: error.stack });
   }
 });
 
