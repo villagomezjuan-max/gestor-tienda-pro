@@ -6001,6 +6001,7 @@ const PUBLIC_ROUTES = new Set([
   '/api/auth/login',
   '/api/auth/refresh',
   '/api/auth/logout',
+  '/api/setup-admin',
   '/health',
   '/favicon.ico',
 ]);
@@ -7801,6 +7802,51 @@ app.delete('/api/facturas-cli/:filename', authenticate, validateTenantAccess, as
 
 app.get('/favicon.ico', (req, res) => {
   res.status(204).end();
+});
+
+// 🔧 ENDPOINT TEMPORAL: Crear/resetear usuario admin (ELIMINAR EN PRODUCCIÓN REAL)
+app.get('/api/setup-admin', async (req, res) => {
+  try {
+    const bcrypt = require('bcrypt');
+    const master = getMasterDB();
+    
+    // Verificar si existe el usuario admin
+    const existingAdmin = master.prepare('SELECT id FROM usuarios WHERE username = ?').get('admin');
+    
+    const defaultPassword = 'admin123';
+    const passwordHash = await bcrypt.hash(defaultPassword, 10);
+    
+    if (existingAdmin) {
+      // Actualizar contraseña del admin existente
+      master.prepare(`
+        UPDATE usuarios 
+        SET password = ?, activo = 1, intentos_fallidos = 0, bloqueado_hasta = NULL, updated_at = CURRENT_TIMESTAMP
+        WHERE username = 'admin'
+      `).run(passwordHash);
+      
+      res.json({ 
+        success: true, 
+        message: 'Usuario admin actualizado', 
+        credentials: { username: 'admin', password: 'admin123' }
+      });
+    } else {
+      // Crear nuevo admin
+      const adminId = 'usr_admin_' + Date.now();
+      master.prepare(`
+        INSERT INTO usuarios (id, username, password, nombre, rol, activo, created_at, updated_at)
+        VALUES (?, 'admin', ?, 'Super Administrador', 'super_admin', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      `).run(adminId, passwordHash);
+      
+      res.json({ 
+        success: true, 
+        message: 'Usuario admin creado', 
+        credentials: { username: 'admin', password: 'admin123' }
+      });
+    }
+  } catch (error) {
+    console.error('Error en setup-admin:', error);
+    res.status(500).json({ success: false, message: error.message });
+  }
 });
 
 // Health check - Información mínima para no exponer versión/entorno
