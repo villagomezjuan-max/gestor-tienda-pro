@@ -7981,6 +7981,14 @@ app.get('/api/setup-admin', async (req, res) => {
       results.steps.push({ step: 'set_principal_error', error: e.message });
     }
     
+    // Paso 5: Sincronizar configNegocios en memoria con la base de datos
+    try {
+      syncConfigNegociosWithMaster();
+      results.steps.push({ step: 'sync_config', success: true });
+    } catch (e) {
+      results.steps.push({ step: 'sync_config_error', error: e.message });
+    }
+    
     res.json({ 
       success: true, 
       message: 'Setup completado', 
