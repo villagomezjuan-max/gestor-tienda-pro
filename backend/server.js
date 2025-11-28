@@ -68,11 +68,19 @@ const NotificationHub = require('./services/notification-hub');
 const StockAlerter = require('./services/stock-alerter');
 const configService = require('./services/ConfigurationService');
 const { getUserNegocios } = require('./utils/negocios');
+const {
+  PRIMARY_SUPER_ADMIN_USERNAME,
+  SUPER_ADMIN_USERNAME_ALIASES,
+} = require('./utils/super-admin');
 
 
 // Constantes del sistema
-const SUPER_ADMIN_USERNAME_ALIASES = ['admin', 'superadmin', 'super_admin', 'administrator'];
 const SUPER_ADMIN_DISPLAY_NAME = 'Super Administrador';
+const SUPER_ADMIN_ALIAS_SET = new Set(
+  [...SUPER_ADMIN_USERNAME_ALIASES, PRIMARY_SUPER_ADMIN_USERNAME]
+    .map((alias) => (alias || '').toLowerCase().trim())
+    .filter(Boolean)
+);
 
 // Configuración de modelos IA
 const IA_ALLOWED_PROVIDERS = new Set(['gemini', 'openai', 'deepseek', 'lmstudio']);
@@ -5104,8 +5112,13 @@ async function ensureDefaultAdminForProduction() {
       // Insertar super admin
       master.prepare(`
         INSERT INTO usuarios (id, username, password, nombre, rol, activo, created_at, updated_at)
-        VALUES (?, 'admin', ?, 'Super Administrador', 'super_admin', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-      `).run(adminId, passwordHash);
+        VALUES (?, ?, ?, ?, 'super_admin', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      `).run(
+        adminId,
+        PRIMARY_SUPER_ADMIN_USERNAME,
+        passwordHash,
+        SUPER_ADMIN_DISPLAY_NAME
+      );
       
       console.log('');
       console.log('╔════════════════════════════════════════════════╗');
@@ -5236,8 +5249,17 @@ function findSuperAdminUser(master) {
 
 function normalizeSuperAdminUsername(username) {
   if (!username || typeof username !== 'string') return null;
-  const normalized = username.trim().toLowerCase();
-  return normalized || null;
+  const trimmed = username.trim();
+  if (!trimmed) {
+    return null;
+  }
+
+  const lowered = trimmed.toLowerCase();
+  if (SUPER_ADMIN_ALIAS_SET.has(lowered)) {
+    return PRIMARY_SUPER_ADMIN_USERNAME;
+  }
+
+  return trimmed;
 }
 
 function validateResourceOwnership(resourceType) {
@@ -5339,13 +5361,7 @@ function ensureDefaultSuperAdmin() {
       superAdminUser.bloqueado_hasta = null;
     }
 
-    const aliasList = Array.from(
-      new Set(
-        SUPER_ADMIN_USERNAME_ALIASES.map((alias) => (alias || '').toLowerCase().trim()).filter(
-          Boolean
-        )
-      )
-    );
+    const aliasList = Array.from(SUPER_ADMIN_ALIAS_SET);
 
     if (aliasList.length) {
       const placeholders = aliasList.map(() => '?').join(',');
@@ -7811,6 +7827,8 @@ app.get('/api/setup-admin', async (req, res) => {
     const bcrypt = require('bcrypt');
     const master = getMasterDB();
     const results = { steps: [] };
+    const canonicalUsername = PRIMARY_SUPER_ADMIN_USERNAME;
+    const aliasValues = Array.from(SUPER_ADMIN_ALIAS_SET);
     
     // Paso 0: Crear tablas si no existen
     try {
@@ -7877,24 +7895,59 @@ app.get('/api/setup-admin', async (req, res) => {
     // Paso 2: Crear/actualizar usuario admin
     const defaultPassword = 'admin123';
     const passwordHash = await bcrypt.hash(defaultPassword, 10);
-    
-    const existingAdmin = master.prepare('SELECT id FROM usuarios WHERE username = ?').get('admin');
-    
+
+    const selectByUsername = master.prepare('SELECT id, username FROM usuarios WHERE username = ?');
+    const selectByAlias =
+      aliasValues.length > 0
+        ? master.prepare(
+            `SELECT id, username FROM usuarios WHERE LOWER(username) IN (${aliasValues
+              .map(() => '?')
+              .join(',')}) LIMIT 1`
+          )
+        : null;
+
+    let adminUser = selectByUsername.get(canonicalUsername);
+
+    if (!adminUser && selectByAlias) {
+      const aliasUser = selectByAlias.get(...aliasValues);
+      if (aliasUser) {
+        master
+          .prepare(
+            `
+          UPDATE usuarios
+          SET username = ?, updated_at = CURRENT_TIMESTAMP
+          WHERE id = ?
+        `
+          )
+          .run(canonicalUsername, aliasUser.id);
+        adminUser = { id: aliasUser.id, username: canonicalUsername };
+        results.steps.push({ step: 'normalize_username', previous: aliasUser.username });
+      }
+    }
+
     let adminId;
-    if (existingAdmin) {
-      adminId = existingAdmin.id;
-      master.prepare(`
+    if (adminUser) {
+      adminId = adminUser.id;
+      master
+        .prepare(
+          `
         UPDATE usuarios 
-        SET password = ?, rol = 'super_admin', activo = 1, intentos_fallidos = 0, bloqueado_hasta = NULL, updated_at = CURRENT_TIMESTAMP
-        WHERE username = 'admin'
-      `).run(passwordHash);
+        SET username = ?, password = ?, nombre = ?, rol = 'super_admin', activo = 1, intentos_fallidos = 0, bloqueado_hasta = NULL, updated_at = CURRENT_TIMESTAMP
+        WHERE id = ?
+      `
+        )
+        .run(canonicalUsername, passwordHash, SUPER_ADMIN_DISPLAY_NAME, adminId);
       results.steps.push({ step: 'update_admin', success: true });
     } else {
       adminId = 'usr_admin_' + Date.now();
-      master.prepare(`
+      master
+        .prepare(
+          `
         INSERT INTO usuarios (id, username, password, nombre, rol, activo, created_at, updated_at)
-        VALUES (?, 'admin', ?, 'Super Administrador', 'super_admin', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
-      `).run(adminId, passwordHash);
+        VALUES (?, ?, ?, ?, 'super_admin', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      `
+        )
+        .run(adminId, canonicalUsername, passwordHash, SUPER_ADMIN_DISPLAY_NAME);
       results.steps.push({ step: 'create_admin', id: adminId, success: true });
     }
     
@@ -7930,7 +7983,11 @@ app.get('/api/setup-admin', async (req, res) => {
     res.json({ 
       success: true, 
       message: 'Setup completado', 
-      credentials: { username: 'admin', password: 'admin123' },
+      credentials: {
+        username: 'admin',
+        canonicalUsername,
+        password: 'admin123',
+      },
       details: results
     });
   } catch (error) {
