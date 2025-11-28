@@ -1,0 +1,954 @@
+/* ========================================
+   ESTILOS AGENTE IA PARA AGENDA
+   ======================================== */
+
+:root {
+  --ia-selector-surface: var(--bg-primary, #ffffff);
+  --ia-selector-border: rgba(148, 163, 184, 0.22);
+  --ia-selector-shadow: 0 25px 60px rgba(15, 23, 42, 0.25);
+  --ia-card-bg: var(--bg-secondary, #f8fafc);
+  --ia-card-border: rgba(148, 163, 184, 0.22);
+  --ia-card-arrow: rgba(15, 23, 42, 0.35);
+}
+
+html[data-theme='dark'] {
+  --ia-selector-surface: var(--bg-secondary, #1f2937);
+  --ia-selector-border: rgba(148, 163, 184, 0.35);
+  --ia-selector-shadow: 0 25px 60px rgba(0, 0, 0, 0.55);
+  --ia-card-bg: var(--bg-tertiary, #374151);
+  --ia-card-border: rgba(148, 163, 184, 0.35);
+  --ia-card-arrow: rgba(226, 232, 240, 0.6);
+}
+
+/* Botón flotante IA (WhatsApp + asistentes) */
+.whatsapp-ia-button {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #4f46e5 0%, #8b5cf6 100%);
+  box-shadow: 0 18px 35px rgba(99, 102, 241, 0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: grab;
+  transition: box-shadow 0.25s ease;
+  z-index: 10100;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.whatsapp-ia-button .pulse-ring {
+  position: absolute;
+  inset: -18px;
+  border-radius: 50%;
+  border: 2px solid rgba(99, 102, 241, 0.35);
+  box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.25);
+  animation: none;
+  pointer-events: none;
+}
+
+.whatsapp-ia-button .assistant-icon {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 26px;
+  box-shadow: inset 0 2px 6px rgba(255, 255, 255, 0.12);
+}
+
+.whatsapp-ia-button:hover {
+  transform: none;
+  box-shadow: 0 24px 40px rgba(99, 102, 241, 0.38);
+}
+
+.whatsapp-ia-button.dragging {
+  cursor: grabbing;
+  transform: none;
+  box-shadow: 0 12px 24px rgba(30, 64, 175, 0.35);
+}
+
+@keyframes iaPulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.65;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.15;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+/* Selector emergente de agentes IA */
+.whatsapp-agent-selector {
+  position: fixed;
+  bottom: 120px;
+  right: 30px;
+  width: min(340px, calc(100vw - 48px));
+  background: var(--ia-selector-surface);
+  border-radius: 20px;
+  box-shadow: var(--ia-selector-shadow);
+  border: 1px solid var(--ia-selector-border);
+  padding: 18px 20px 20px;
+  z-index: 10090;
+  opacity: 0;
+  transform: translateY(14px) scale(0.96);
+  transition:
+    opacity 0.18s ease,
+    transform 0.22s ease;
+  pointer-events: none;
+  backdrop-filter: blur(8px);
+  overflow: visible;
+  color: var(--text-primary, #111827);
+}
+
+.whatsapp-agent-selector.show {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+}
+
+.whatsapp-agent-selector::before {
+  content: '';
+  position: absolute;
+  bottom: -12px;
+  right: 28px;
+  width: 20px;
+  height: 20px;
+  background: inherit;
+  border-left: 1px solid var(--ia-selector-border);
+  border-bottom: 1px solid var(--ia-selector-border);
+  transform: rotate(45deg);
+  border-radius: 4px;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.agent-selector-header {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: 1px solid var(--ia-card-border);
+}
+
+.agent-selector-header h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary, #111827);
+  margin: 0;
+}
+
+.agent-selector-header p {
+  font-size: 0.875rem;
+  color: var(--text-secondary, #475569);
+  margin: 0;
+}
+
+.agents-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.agent-card {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: var(--ia-card-bg);
+  border-radius: 16px;
+  border: 1px solid var(--ia-card-border);
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.agent-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.08), transparent);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+
+.agent-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 30px rgba(15, 23, 42, 0.15);
+  border-color: rgba(99, 102, 241, 0.35);
+}
+
+.agent-card:hover::after {
+  opacity: 1;
+}
+
+.agent-card .agent-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--agent-color, #6366f1), rgba(99, 102, 241, 0.2));
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  box-shadow: 0 12px 24px rgba(99, 102, 241, 0.25);
+}
+
+.agent-card .agent-info h5 {
+  font-size: 0.95rem;
+  margin: 0;
+  font-weight: 700;
+  color: var(--text-primary, #0f172a);
+}
+
+.agent-card .agent-info p {
+  margin: 2px 0 0;
+  font-size: 0.8rem;
+  color: var(--text-secondary, #475569);
+}
+
+.agent-card .agent-arrow {
+  color: var(--ia-card-arrow);
+  font-size: 0.875rem;
+  transition:
+    transform 0.2s ease,
+    color 0.2s ease;
+}
+
+.agent-card:hover .agent-arrow {
+  transform: translateX(4px);
+  color: var(--agent-color, #6366f1);
+}
+
+@media (max-width: 768px) {
+  .whatsapp-ia-button {
+    bottom: 22px;
+    right: 22px;
+    width: 62px;
+    height: 62px;
+  }
+
+  .whatsapp-ia-button .assistant-icon {
+    width: 44px;
+    height: 44px;
+    font-size: 24px;
+  }
+
+  .whatsapp-agent-selector {
+    right: 18px;
+    left: 18px;
+    width: auto;
+  }
+
+  .agent-card {
+    padding: 12px 14px;
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .whatsapp-agent-selector {
+    bottom: 110px;
+    right: 12px;
+    left: 12px;
+    padding: 16px;
+  }
+
+  .agent-card {
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+  }
+
+  .agent-card .agent-arrow {
+    display: none;
+  }
+}
+
+/* Header del Chat */
+.agenda-ia-chat-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.chat-header-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.chat-avatar {
+  width: 45px;
+  height: 45px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.chat-header-text h4 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.chat-status {
+  margin: 0;
+  font-size: 12px;
+  opacity: 0.9;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  background: #2ecc71;
+  border-radius: 50%;
+  animation: blink 2s infinite;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.chat-header-actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* ========================================
+   OVERLAYS DE AGENDA DEL TALLER
+   ======================================== */
+.agenda-overlay .modal-container {
+  width: 100%;
+  max-width: 960px;
+}
+
+.agenda-modal-body {
+  background: var(--bg-primary, #ffffff);
+}
+
+.agenda-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md, 16px);
+}
+
+.agenda-form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--spacing-md, 16px);
+}
+
+.agenda-form .form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.agenda-form .form-group label {
+  font-weight: 600;
+  color: var(--text-secondary, #444444);
+}
+
+.agenda-form .form-control,
+.agenda-form textarea,
+.agenda-form select,
+.agenda-form input {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .agenda-overlay .modal-container {
+    max-width: 95vw;
+  }
+
+  .agenda-form-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* btn-icon heredado de styles.css - personalización para agenda-ia */
+.agenda-ia-header .btn-icon {
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: var(--text-inverse);
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+}
+
+.agenda-ia-header .btn-icon:hover {
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(1.1);
+}
+
+html[data-theme='dark'] .agenda-ia-header .btn-icon {
+  color: var(--text-inverse);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+html[data-theme='dark'] .agenda-ia-header .btn-icon:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+/* Body del Chat - Modo Oscuro */
+.agenda-ia-chat-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 15px;
+  background: #2d2d2d;
+  background-image: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 35px,
+    rgba(0, 0, 0, 0.05) 35px,
+    rgba(0, 0, 0, 0.05) 70px
+  );
+}
+
+.chat-welcome {
+  text-align: center;
+  padding: 30px 15px;
+  background: rgba(58, 58, 58, 0.8);
+  border-radius: 15px;
+  margin: 10px;
+  color: #e0e0e0;
+}
+
+.welcome-icon {
+  width: 70px;
+  height: 70px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 15px;
+  font-size: 35px;
+  color: white;
+}
+
+.chat-welcome h3 {
+  margin: 0 0 8px;
+  color: #ffffff;
+  font-size: 18px;
+}
+
+.chat-welcome p {
+  color: #b0b0b0;
+  margin: 3px 0;
+  font-size: 13px;
+}
+
+.example-queries {
+  margin-top: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.example-query {
+  background: #3a3a3a;
+  padding: 10px 12px;
+  border-radius: 10px;
+  text-align: left;
+  font-size: 12px;
+  color: #e0e0e0;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.example-query:hover {
+  border-color: #667eea;
+  transform: translateX(5px);
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+/* Mensajes - Estilo Moderno */
+.chat-message {
+  margin-bottom: 8px;
+  display: flex;
+  gap: 8px;
+  animation: fadeIn 0.3s ease;
+  align-items: flex-end;
+}
+
+.chat-message.user {
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+}
+
+.chat-message.bot {
+  justify-content: flex-start;
+}
+
+.message-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.message-avatar.bot {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.message-avatar.user {
+  background: #25d366;
+  color: white;
+}
+
+.message-content {
+  max-width: 75%;
+  min-width: 80px;
+  display: flex;
+  flex-direction: column;
+}
+
+.message-bubble {
+  padding: 8px 12px;
+  border-radius: 8px;
+  word-wrap: break-word;
+  position: relative;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.chat-message.bot .message-bubble {
+  background: #3a3a3a;
+  color: #e0e0e0;
+  border-radius: 0 8px 8px 8px;
+}
+
+.chat-message.user .message-bubble {
+  background: #667eea;
+  color: #ffffff;
+  border-radius: 8px 0 8px 8px;
+}
+
+.message-time {
+  font-size: 10px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-top: 2px;
+  text-align: right;
+  padding: 0 4px;
+}
+
+.chat-message.user .message-time {
+  text-align: left;
+}
+
+/* Confirmación de Cita - Modo Oscuro */
+.cita-preview {
+  background: #3a3a3a;
+  border: 1px solid #4a4a4a;
+  border-radius: 10px;
+  padding: 12px;
+  margin-top: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.cita-preview-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  color: #667eea;
+  font-weight: 600;
+  font-size: 14px;
+  border-bottom: 1px solid #4a4a4a;
+  padding-bottom: 8px;
+}
+
+.cita-preview-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 0;
+  gap: 10px;
+}
+
+.cita-preview-item:not(:last-child) {
+  border-bottom: 1px dashed #4a4a4a;
+}
+
+.cita-preview-label {
+  color: #888;
+  font-size: 12px;
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.cita-preview-value {
+  color: #e0e0e0;
+  font-weight: 600;
+  font-size: 12px;
+  text-align: right;
+}
+
+.cita-preview-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid #4a4a4a;
+}
+
+.btn-confirm {
+  flex: 1;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 13px;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+
+.btn-confirm.primary {
+  background: #10b981;
+  color: white;
+}
+
+.btn-confirm.primary:hover {
+  background: #059669;
+  transform: scale(1.02);
+}
+
+.btn-confirm.secondary {
+  background: #f3f4f6;
+  color: #6b7280;
+  border: 1px solid #d1d5db;
+}
+
+.btn-confirm.secondary:hover {
+  background: #e5e7eb;
+}
+
+/* Footer del Chat - Modo Oscuro */
+.agenda-ia-chat-footer {
+  background: #1e1e1e;
+  border-top: 1px solid #3a3a3a;
+  padding: 16px;
+}
+
+.chat-input-container {
+  display: flex;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.btn-attach {
+  background: transparent;
+  border: none;
+  color: #666;
+  cursor: pointer;
+  font-size: 20px;
+  padding: 10px;
+  transition: all 0.2s;
+}
+
+.btn-attach:hover {
+  color: #667eea;
+}
+
+.chat-input {
+  flex: 1;
+  border: 2px solid #3a3a3a;
+  background: #2d2d2d;
+  color: #e0e0e0;
+  border-radius: 12px;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: none;
+  max-height: 120px;
+  transition: all 0.2s;
+}
+
+.chat-input:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+.btn-send {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+  color: white;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.btn-send:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-send:disabled {
+  background: #cbd5e0;
+  cursor: not-allowed;
+}
+
+/* Typing Indicator */
+.typing-indicator {
+  display: flex;
+  gap: 4px;
+  padding: 12px 16px;
+  background: white;
+  border-radius: 16px;
+  width: fit-content;
+}
+
+.typing-dot {
+  width: 8px;
+  height: 8px;
+  background: #a0aec0;
+  border-radius: 50%;
+  animation: typing 1.4s infinite;
+}
+
+.typing-dot:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typing {
+  0%,
+  60%,
+  100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Sugerencias */
+.chat-suggestions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.suggestion-chip {
+  background: #edf2f7;
+  color: #4a5568;
+  padding: 6px 12px;
+  border-radius: 16px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+
+.suggestion-chip:hover {
+  background: #667eea;
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Selector de Agentes IA */
+.ia-agents-container {
+  position: fixed;
+  bottom: 90px;
+  right: 20px;
+  background: white;
+  border-radius: 15px;
+  box-shadow:
+    0 10px 40px rgba(0, 0, 0, 0.2),
+    0 0 0 1px rgba(0, 0, 0, 0.05);
+  padding: 10px;
+  z-index: 9999;
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 220px;
+  animation: slideUpFadeIn 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transform-origin: bottom right;
+}
+
+.ia-agents-container::before {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  right: 30px;
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 8px solid white;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+@keyframes slideUpFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.agent-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 15px;
+  background: var(--agent-color, #667eea);
+  color: white;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  font-weight: 600;
+  font-size: 14px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.agent-option::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.agent-option:hover::before {
+  left: 100%;
+}
+
+.agent-option:hover {
+  transform: translateX(-5px) scale(1.03);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+}
+
+.agent-option:active {
+  transform: translateX(-5px) scale(0.98);
+  transition-duration: 0.1s;
+}
+
+.agent-option i {
+  font-size: 20px;
+  z-index: 1;
+  filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.2));
+}
+
+.agent-option span {
+  z-index: 1;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* Animación de entrada de cada opción */
+.agent-option:nth-child(1) {
+  animation: agentSlideIn 0.3s ease 0.1s both;
+}
+
+.agent-option:nth-child(2) {
+  animation: agentSlideIn 0.3s ease 0.15s both;
+}
+
+.agent-option:nth-child(3) {
+  animation: agentSlideIn 0.3s ease 0.2s both;
+}
+
+@keyframes agentSlideIn {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .agenda-ia-chat-container {
+    width: 100%;
+    height: 100%;
+    max-height: 100vh;
+    bottom: 0;
+    right: 0;
+    border-radius: 0;
+  }
+
+  .ia-agents-container {
+    right: 10px;
+    bottom: 80px;
+    min-width: 200px;
+  }
+
+  .agent-option {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+
+  .agent-option i {
+    font-size: 18px;
+  }
+}

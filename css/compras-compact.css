@@ -1,0 +1,365 @@
+/* =====================================================
+   COMPRAS MODULE - VISTA COMPACTA
+   Optimiza el espacio visual del módulo de compras
+   ===================================================== */
+
+/* === Header Principal - Más Compacto === */
+.compras-module .compras-header {
+  padding: 0.75rem 1rem !important;
+  gap: 0.5rem !important;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.compras-module .compras-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.compras-module .compras-title h2 {
+  font-size: 1.1rem !important;
+  margin: 0 !important;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.compras-module .compras-title h2 i {
+  font-size: 1rem;
+}
+
+.compras-module .compras-subtitle {
+  font-size: 0.75rem !important;
+  opacity: 0.7;
+  display: none; /* Ocultar en modo compacto */
+}
+
+/* === Toolbar de Botones - Más Compacto === */
+.compras-module .compras-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem !important;
+  align-items: center;
+}
+
+.compras-module .compras-toolbar .btn {
+  padding: 0.4rem 0.75rem !important;
+  font-size: 0.78rem !important;
+  border-radius: 6px !important;
+  gap: 0.35rem;
+  white-space: nowrap;
+}
+
+.compras-module .compras-toolbar .btn i {
+  font-size: 0.85rem;
+}
+
+/* === Panel Principal - Menos Padding === */
+.compras-module .compras-panel {
+  padding: 0.75rem !important;
+  gap: 0.65rem !important;
+}
+
+.compras-module .compras-panel--list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem !important;
+}
+
+/* === Summary (Indicadores) - Inline y Compacto === */
+.compras-module .compras-summary {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 1rem !important;
+  padding: 0.5rem 0.75rem !important;
+  border-radius: 8px !important;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.compras-module .compras-summary > div {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
+}
+
+.compras-module .compras-summary small {
+  font-size: 0.72rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  opacity: 0.75;
+  margin: 0 !important;
+}
+
+.compras-module .compras-summary strong {
+  font-size: 0.95rem !important;
+  margin: 0 !important;
+}
+
+/* === Filtros - Layout Horizontal Compacto === */
+.compras-module .compras-list-filters {
+  display: grid !important;
+  grid-template-columns: 1.5fr 1fr 1fr 1fr !important;
+  gap: 0.5rem !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  align-items: end;
+}
+
+.compras-module .compras-filter {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.compras-module .compras-filter label {
+  font-size: 0.68rem !important;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-tertiary, #9ca3af);
+  font-weight: 500;
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+}
+
+.compras-module .compras-filter input,
+.compras-module .compras-filter select {
+  padding: 0.4rem 0.6rem !important;
+  font-size: 0.82rem !important;
+  border-radius: 6px !important;
+  height: auto !important;
+  min-height: unset !important;
+}
+
+.compras-module .compras-filter input[type='search'] {
+  padding-left: 0.6rem !important;
+}
+
+.compras-module .compras-filter input[type='date'] {
+  padding: 0.35rem 0.5rem !important;
+}
+
+/* === Tabla - Más Densa === */
+.compras-module .compras-table-wrapper {
+  margin-top: 0.35rem !important;
+  border-radius: 8px !important;
+}
+
+.compras-module .compras-table th {
+  padding: 0.45rem 0.6rem !important;
+  font-size: 0.7rem !important;
+}
+
+.compras-module .compras-table td {
+  padding: 0.4rem 0.6rem !important;
+  font-size: 0.82rem !important;
+}
+
+.compras-module .compras-table .badge-estado {
+  padding: 0.2rem 0.5rem !important;
+  font-size: 0.68rem !important;
+}
+
+/* === Acciones en Tabla === */
+.compras-module .compras-acciones {
+  gap: 0.25rem !important;
+}
+
+.compras-module .btn-icon-mini {
+  padding: 0.25rem !important;
+  font-size: 0.82rem !important;
+}
+
+/* === Historial Section - Compacto === */
+.compras-module .compras-historial-container {
+  margin-top: 0.5rem !important;
+}
+
+.compras-module .compras-panel--historial {
+  padding: 0.75rem !important;
+  gap: 0.5rem !important;
+  display: flex;
+  flex-direction: column;
+}
+
+.compras-module .compras-historial-header {
+  padding: 0 !important;
+  gap: 0.5rem !important;
+  align-items: center !important;
+}
+
+.compras-module .compras-historial-header h3 {
+  font-size: 1rem !important;
+  margin: 0 !important;
+}
+
+.compras-module .compras-historial-header p {
+  font-size: 0.72rem !important;
+  margin: 0 !important;
+  display: none; /* Ocultar descripción */
+}
+
+.compras-module .compras-historial-actions .btn {
+  padding: 0.35rem 0.65rem !important;
+  font-size: 0.75rem !important;
+}
+
+/* === Cards de Resumen Historial - Inline === */
+.compras-module .compras-historial-summary {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.75rem !important;
+  grid-template-columns: unset !important;
+}
+
+.compras-module .compras-historial-card {
+  padding: 0.5rem 0.75rem !important;
+  border-radius: 8px !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 0.5rem !important;
+  min-width: 120px;
+}
+
+.compras-module .compras-historial-card span {
+  font-size: 0.68rem !important;
+}
+
+.compras-module .compras-historial-card strong {
+  font-size: 1rem !important;
+}
+
+/* === Filtros Historial - Compactos === */
+.compras-module .compras-historial-filters {
+  display: flex !important;
+  flex-wrap: wrap !important;
+  gap: 0.5rem !important;
+  grid-template-columns: unset !important;
+  align-items: end;
+}
+
+.compras-module .compras-historial-filters label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem !important;
+  min-width: 130px;
+  flex: 1;
+  max-width: 200px;
+}
+
+.compras-module .compras-historial-filters label span {
+  font-size: 0.65rem !important;
+}
+
+.compras-module .compras-historial-filters input,
+.compras-module .compras-historial-filters select {
+  padding: 0.35rem 0.5rem !important;
+  font-size: 0.8rem !important;
+}
+
+/* === Tabla Historial - Densa === */
+.compras-module .compras-historial-table th,
+.compras-module .compras-historial-table td {
+  padding: 0.4rem 0.6rem !important;
+  font-size: 0.8rem !important;
+}
+
+/* === AI Insights - Más Compacto === */
+.compras-module .historial-ai {
+  margin-top: 0.35rem !important;
+  gap: 0.5rem !important;
+}
+
+.compras-module .historial-ai-card {
+  padding: 0.6rem 0.75rem !important;
+}
+
+.compras-module .historial-ai-placeholder {
+  padding: 0.65rem !important;
+  font-size: 0.78rem !important;
+}
+
+/* === Paginación - Compacta === */
+.compras-module .historial-pagination {
+  margin-top: 0.5rem !important;
+  gap: 0.5rem !important;
+  padding: 0.35rem 0 !important;
+}
+
+.compras-module .historial-pagination-info {
+  font-size: 0.75rem !important;
+}
+
+.compras-module .historial-pagination-controls {
+  gap: 0.3rem !important;
+}
+
+.compras-module .historial-pagination select,
+.compras-module .historial-pagination .btn {
+  padding: 0.3rem 0.5rem !important;
+  font-size: 0.78rem !important;
+}
+
+/* === Responsive Ajustes === */
+@media (max-width: 900px) {
+  .compras-module .compras-list-filters {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .compras-module .compras-historial-filters label {
+    min-width: 100px;
+    max-width: unset;
+  }
+}
+
+@media (max-width: 640px) {
+  .compras-module .compras-header {
+    flex-direction: column !important;
+    align-items: stretch !important;
+  }
+
+  .compras-module .compras-toolbar {
+    justify-content: flex-start;
+  }
+
+  .compras-module .compras-list-filters {
+    grid-template-columns: 1fr !important;
+  }
+
+  .compras-module .compras-summary {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 0.35rem !important;
+  }
+
+  .compras-module .compras-historial-summary {
+    flex-direction: column !important;
+  }
+
+  .compras-module .compras-historial-card {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+/* === Modo Oscuro === */
+@media (prefers-color-scheme: dark) {
+  .compras-module .compras-filter label,
+  .compras-module .compras-historial-filters label span {
+    color: var(--text-secondary, #a0aec0);
+  }
+}
+
+html[data-theme='dark'] .compras-module .compras-filter label,
+html[data-theme='dark'] .compras-module .compras-historial-filters label span {
+  color: var(--text-secondary, #a0aec0);
+}

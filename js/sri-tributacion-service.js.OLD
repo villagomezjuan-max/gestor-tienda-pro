@@ -1,0 +1,520 @@
+(function () {
+  const MONTH_NAMES = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+  const STORAGE_KEY_ATS = 'sriPanel:historialATS';
+
+  function safeCollection(name) {
+    try {
+      if (typeof Database === 'undefined' || typeof Database.getCollection !== 'function') {
+        return [];
+      }
+      const data = Database.getCollection(name);
+      return Array.isArray(data) ? data : [];
+    } catch (error) {
+      console.warn('No se pudo leer la colección', name, error);
+      return [];
+    }
+  }
+
+  function safeNumber(value, decimals = 2) {
+    const num = Number(value) || 0;
+    return decimals === null ? num : Number(num.toFixed(decimals));
+  }
+
+  function parseDate(value) {
+    if (!value) return null;
+    const date = value instanceof Date ? value : new Date(value);
+    return Number.isNaN(date.getTime()) ? null : date;
+  }
+
+  function isSamePeriod(dateString, year, month) {
+    const date = parseDate(dateString);
+    if (!date) return false;
+    return date.getFullYear() === year && (date.getMonth() + 1) === month;
+  }
+
+  function periodLabel(year, month) {
+    return `${month.toString().padStart(2, '0')}/${year}`;
+  }
+
+  function monthName(month) {
+    return MONTH_NAMES[month - 1] || 'Mes';
+  }
+
+  function normalizeCode(code) {
+    if (!code) return '000';
+    return String(code).padStart(3, '0');
+  }
+
+  function escapeXml(value) {
+    return String(value || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+  }
+
+  function formatDateForATS(dateString) {
+    const date = parseDate(dateString);
+    if (!date) return '';
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    return `${day}/${month}/${date.getFullYear()}`;
+  }
+
+  function groupById(items, idKey) {
+    return items.reduce((acc, item) => {
+      if (!item[idKey]) return acc;
+      acc[item[idKey]] = acc[item[idKey]] || [];
+      acc[item[idKey]].push(item);
+      return acc;
+    }, {});
+  }
+
+  function calculoLineasPorTarifa(lineItems, fallback, ivaActual) {
+    const result = {
+      tarifa0: 0,
+      tarifa12: 0,
+      tarifa15: 0,
+      iva12: 0,
+      iva15: 0,
+      precision: true
+    };
+
+    if (Array.isArray(lineItems) && lineItems.length) {
+      lineItems.forEach((item) => {
+        const base = safeNumber(item.precioTotal || item.precio_total || item.subtotal || 0);
+        const porcentaje = Number(item.ivaAplicado ?? item.iva_aplicado ?? item.ivaPorcentaje ?? ivaActual ?? 12) || 0;
+
+        if (porcentaje >= 14) {
+          result.tarifa15 += base;
+          result.iva15 += base * (porcentaje / 100);
+        } else if (porcentaje > 0) {
+          result.tarifa12 += base;
+          result.iva12 += base * (porcentaje / 100);
+        } else {
+          result.tarifa0 += base;
+        }
+      });
+      return result;
+    }
+
+    result.precision = false;
+    if (fallback) {
+      const subtotalGravado = safeNumber(fallback.subtotal12 || fallback.baseImpGrav || 0);
+      const subtotal0 = safeNumber(fallback.subtotal0 || fallback.baseNoGraIva || 0);
+      const iva = safeNumber(fallback.iva || fallback.montoIva || 0);
+
+      if (ivaActual >= 14) {
+        result.tarifa15 += subtotalGravado;
+        result.iva15 += iva;
+      } else {
+        result.tarifa12 += subtotalGravado;
+        result.iva12 += iva;
+      }
+      result.tarifa0 += subtotal0;
+    }
+
+    return result;
+  }
+
+  function buildCsv(headers, rows) {
+    const escapeCsv = (value) => {
+      if (value === null || value === undefined) return '';
+      const stringValue = String(value).replace(/"/g, '""');
+      return /[",\n;]/.test(stringValue) ? `"${stringValue}"` : stringValue;
+    };
+
+    const data = [headers, ...rows].map((row) => row.map(escapeCsv).join(';')).join('\n');
+    return data;
+  }
+
+  const SRITributacionService = {
+    getEmpresa() {
+      const configTienda = (typeof Database !== 'undefined' && typeof Database.get === 'function') ? (Database.get('configTienda') || {}) : {};
+      const configAvanzada = (typeof Database !== 'undefined' && typeof Database.get === 'function') ? (Database.get('configuracionAvanzada') || {}) : {};
+      const sri = configAvanzada.sri || {};
+      return {
+        ruc: sri.ruc || configTienda.ruc || '',
+        razonSocial: sri.razonSocial || configTienda.razonSocial || configTienda.nombre || 'Mi Negocio',
+        nombreComercial: sri.nombreComercial || configTienda.nombre || '',
+        direccion: sri.direccionMatriz || configTienda.direccion || '',
+        telefono: sri.telefono || configTienda.telefono || '',
+        email: sri.emailNotificaciones || configTienda.email || '',
+        obligadoContabilidad: sri.obligadoContabilidad || 'NO',
+        establecimiento: sri.establecimiento || '001',
+        puntoEmision: sri.puntoEmision || '001'
+      };
+    },
+
+    getIvaVigente() {
+      if (typeof Database === 'undefined' || typeof Database.get !== 'function') return 15;
+      const config = Database.get('configuracion') || {};
+      return Number(config.iva) || 15;
+    },
+
+    getPeriodoDefault(tipo = 'mes-actual') {
+      const now = new Date();
+      let month = now.getMonth() + 1;
+      let year = now.getFullYear();
+
+      if (tipo === 'mes-anterior') {
+        month -= 1;
+        if (month === 0) {
+          month = 12;
+          year -= 1;
+        }
+      }
+
+      return { year, month, label: `${monthName(month)} ${year}` };
+    },
+
+    parsePeriodoInput(input) {
+      if (!input) {
+        return this.getPeriodoDefault();
+      }
+
+      if (input.includes('-')) {
+        const [yearStr, monthStr] = input.split('-');
+        return {
+          year: Number(yearStr),
+          month: Number(monthStr),
+          label: `${monthName(Number(monthStr))} ${yearStr}`
+        };
+      }
+
+      if (input.length === 6) {
+        const year = Number(input.substring(0, 4));
+        const month = Number(input.substring(4));
+        return { year, month, label: `${monthName(month)} ${year}` };
+      }
+
+      return this.getPeriodoDefault();
+    },
+
+    obtenerRetencionesPorPeriodo(year, month) {
+      const retenciones = safeCollection('retenciones');
+      const retencionItems = safeCollection('retencionItems');
+      const itemsByRetencion = groupById(retencionItems, 'retencionId');
+
+      return retenciones
+        .filter((retencion) => isSamePeriod(retencion.fecha || retencion.createdAt, year, month))
+        .map((retencion) => ({
+          ...retencion,
+          items: itemsByRetencion[retencion.id] || []
+        }));
+    },
+
+    obtenerFacturasPorPeriodo(year, month) {
+      const facturas = safeCollection('facturas');
+      const facturaItems = safeCollection('facturaItems');
+      const itemsByFactura = groupById(facturaItems, 'facturaId');
+
+      return facturas
+        .filter((factura) => isSamePeriod(factura.fecha || factura.createdAt, year, month))
+        .map((factura) => ({
+          ...factura,
+          items: itemsByFactura[factura.id] || []
+        }));
+    },
+
+    obtenerComprasPorPeriodo(year, month) {
+      const compras = safeCollection('compras');
+      return compras
+        .filter((compra) => isSamePeriod(compra.fecha || compra.fechaEmision || compra.fechaRegistro, year, month))
+        .map((compra) => ({
+          ...compra,
+          items: Array.isArray(compra.items) ? compra.items : (compra.detalle || compra.detalles || [])
+        }));
+    },
+
+    async generarDatosFormulario103({ year, month }) {
+      const retenciones = this.obtenerRetencionesPorPeriodo(year, month);
+      const agrupadas = {};
+      let totalRetenido = 0;
+      let totalBase = 0;
+
+      retenciones.forEach((retencion) => {
+        (retencion.items || []).forEach((item) => {
+          const codigo = normalizeCode(item.codigo || item.codigoRetencion);
+          if (!agrupadas[codigo]) {
+            agrupadas[codigo] = {
+              codigo,
+              descripcion: item.concepto || 'Retención',
+              porcentaje: safeNumber(item.porcentaje, null) || 0,
+              baseImponible: 0,
+              valorRetenido: 0,
+              cantidad: 0
+            };
+          }
+
+          const base = safeNumber(item.base, null);
+          const valor = safeNumber(item.valor, null);
+
+          agrupadas[codigo].baseImponible += base;
+          agrupadas[codigo].valorRetenido += valor;
+          agrupadas[codigo].cantidad += 1;
+          totalBase += base;
+          totalRetenido += valor;
+        });
+      });
+
+      const detallePorCodigo = Object.values(agrupadas)
+        .map((detalle) => ({
+          ...detalle,
+          baseImponible: safeNumber(detalle.baseImponible),
+          valorRetenido: safeNumber(detalle.valorRetenido)
+        }))
+        .sort((a, b) => a.codigo.localeCompare(b.codigo));
+
+      return {
+        periodo: periodLabel(year, month),
+        totalRetenciones: retenciones.length,
+        totalRetenido: safeNumber(totalRetenido),
+        totalBase: safeNumber(totalBase),
+        detallePorCodigo,
+        resumen: {
+          casilla302: safeNumber(totalRetenido),
+          baseGravada: safeNumber(totalBase)
+        },
+        metadata: {
+          proveedores: Array.from(new Set(retenciones.map((ret) => ret.proveedorIdentificacion || ret.proveedorNombre))).filter(Boolean).length,
+          precision: detallePorCodigo.length > 0
+        }
+      };
+    },
+
+    async generarDatosFormulario104({ year, month }) {
+      const ventas = this.obtenerFacturasPorPeriodo(year, month);
+      const compras = this.obtenerComprasPorPeriodo(year, month);
+      const ivaVigente = this.getIvaVigente();
+
+      const ventasResumen = ventas.reduce((acc, factura) => {
+        const detalle = calculoLineasPorTarifa(factura.items, factura, ivaVigente);
+        acc.tarifa0 += detalle.tarifa0;
+        acc.tarifa12 += detalle.tarifa12;
+        acc.tarifa15 += detalle.tarifa15;
+        acc.iva12 += detalle.iva12;
+        acc.iva15 += detalle.iva15;
+        acc.precision = acc.precision && detalle.precision;
+        return acc;
+      }, { tarifa0: 0, tarifa12: 0, tarifa15: 0, iva12: 0, iva15: 0, precision: true });
+
+      const comprasResumen = compras.reduce((acc, compra) => {
+        const detalle = calculoLineasPorTarifa(compra.items, compra, ivaVigente);
+        acc.tarifa0 += detalle.tarifa0;
+        acc.tarifa12 += detalle.tarifa12;
+        acc.tarifa15 += detalle.tarifa15;
+        acc.iva12 += detalle.iva12;
+        acc.iva15 += detalle.iva15;
+        acc.precision = acc.precision && detalle.precision;
+        return acc;
+      }, { tarifa0: 0, tarifa12: 0, tarifa15: 0, iva12: 0, iva15: 0, precision: true });
+
+      const creditoTributario = safeNumber(comprasResumen.iva12 + comprasResumen.iva15);
+      const ivaCobrado = safeNumber(ventasResumen.iva12 + ventasResumen.iva15);
+      const ivaCausado = ivaCobrado - creditoTributario;
+
+      return {
+        periodo: periodLabel(year, month),
+        ventas: {
+          tarifa0: safeNumber(ventasResumen.tarifa0),
+          tarifa12: safeNumber(ventasResumen.tarifa12),
+          tarifa15: safeNumber(ventasResumen.tarifa15),
+          iva12: safeNumber(ventasResumen.iva12),
+          iva15: safeNumber(ventasResumen.iva15),
+          total: safeNumber(ventasResumen.tarifa0 + ventasResumen.tarifa12 + ventasResumen.tarifa15),
+          precision: ventasResumen.precision,
+          registros: ventas
+        },
+        compras: {
+          tarifa0: safeNumber(comprasResumen.tarifa0),
+          tarifa12: safeNumber(comprasResumen.tarifa12),
+          tarifa15: safeNumber(comprasResumen.tarifa15),
+          iva12: safeNumber(comprasResumen.iva12),
+          iva15: safeNumber(comprasResumen.iva15),
+          total: safeNumber(comprasResumen.tarifa0 + comprasResumen.tarifa12 + comprasResumen.tarifa15),
+          precision: comprasResumen.precision,
+          registros: compras
+        },
+        resumen: {
+          creditoTributario,
+          ivaCobrado,
+          ivaCausado: safeNumber(ivaCausado),
+          ivaAPagar: safeNumber(Math.max(0, ivaCausado)),
+          saldoAFavor: ivaCausado < 0 ? safeNumber(Math.abs(ivaCausado)) : 0,
+          estado: ivaCausado < 0 ? 'saldo-favor' : (ivaCausado === 0 ? 'sin-variacion' : 'pagar')
+        },
+        casillas: {
+          401: safeNumber(ventasResumen.tarifa0),
+          411: safeNumber(ventasResumen.tarifa12),
+          421: safeNumber(ventasResumen.tarifa15),
+          413: safeNumber(ventasResumen.iva12),
+          423: safeNumber(ventasResumen.iva15),
+          499: safeNumber(ventasResumen.tarifa0 + ventasResumen.tarifa12 + ventasResumen.tarifa15),
+          501: safeNumber(comprasResumen.tarifa0),
+          511: safeNumber(comprasResumen.tarifa12),
+          521: safeNumber(comprasResumen.tarifa15),
+          513: safeNumber(comprasResumen.iva12),
+          523: safeNumber(comprasResumen.iva15),
+          609: creditoTributario,
+          699: safeNumber(ivaCausado),
+          799: safeNumber(Math.max(0, ivaCausado))
+        }
+      };
+    },
+
+    generarLibroVentasCSV({ year, month }) {
+      const facturas = this.obtenerFacturasPorPeriodo(year, month);
+      const rows = facturas.map((factura) => [
+        (factura.fecha || '').split('T')[0],
+        factura.numero,
+        factura.clienteNombre || 'Consumidor Final',
+        safeNumber(factura.subtotal0 || 0),
+        safeNumber(factura.subtotal12 || factura.subtotal || 0),
+        safeNumber(factura.iva || 0),
+        safeNumber(factura.total || 0)
+      ]);
+
+      const csv = buildCsv(['Fecha', 'Número', 'Cliente', 'Base 0%', 'Base IVA', 'IVA', 'Total'], rows);
+      return {
+        csv,
+        nombreArchivo: `Libro_Ventas_${year}${month.toString().padStart(2, '0')}.csv`
+      };
+    },
+
+    generarLibroComprasCSV({ year, month }) {
+      const compras = this.obtenerComprasPorPeriodo(year, month);
+      const rows = compras.map((compra) => [
+        (compra.fecha || compra.fechaEmision || '').split('T')[0],
+        compra.numero,
+        compra.proveedorNombre || 'Proveedor',
+        safeNumber(compra.subtotal0 || 0),
+        safeNumber(compra.subtotal || compra.subtotal12 || 0),
+        safeNumber(compra.iva || 0),
+        safeNumber(compra.total || 0)
+      ]);
+
+      const csv = buildCsv(['Fecha', 'Número', 'Proveedor', 'Base 0%', 'Base IVA', 'IVA', 'Total'], rows);
+      return {
+        csv,
+        nombreArchivo: `Libro_Compras_${year}${month.toString().padStart(2, '0')}.csv`
+      };
+    },
+
+    async generarATS({ year, month }) {
+      const empresa = this.getEmpresa();
+      const ventas = this.obtenerFacturasPorPeriodo(year, month);
+      const compras = this.obtenerComprasPorPeriodo(year, month);
+
+      const ventasXml = ventas.map((factura) => ({
+        tipoId: factura.clienteIdentificacion && factura.clienteIdentificacion.length === 13 ? '04' : (factura.clienteIdentificacion && factura.clienteIdentificacion.length === 10 ? '05' : '07'),
+        identificacion: factura.clienteIdentificacion || '9999999999999',
+        comprobantes: 1,
+        base0: safeNumber(factura.subtotal0 || 0),
+        baseGravada: safeNumber(factura.subtotal12 || factura.subtotal || 0),
+        iva: safeNumber(factura.iva || 0)
+      }));
+
+      const comprasXml = compras.map((compra) => ({
+        identificacion: compra.proveedorIdentificacion || '9999999999999',
+        tipoId: compra.proveedorIdentificacion && compra.proveedorIdentificacion.length === 13 ? '04' : '05',
+        establecimiento: (compra.establecimiento || empresa.establecimiento || '001').toString().padStart(3, '0'),
+        puntoEmision: (compra.puntoEmision || empresa.puntoEmision || '001').toString().padStart(3, '0'),
+        secuencial: (compra.numero && compra.numero.split('-')[2]) || compra.numero || '000000001',
+        fecha: formatDateForATS(compra.fecha || compra.fechaEmision),
+        base0: safeNumber(compra.subtotal0 || 0),
+        baseGravada: safeNumber(compra.subtotal || compra.subtotal12 || 0),
+        iva: safeNumber(compra.iva || 0)
+      }));
+
+      const xmlParts = [];
+      xmlParts.push('<?xml version="1.0" encoding="UTF-8"?>');
+      xmlParts.push('<iva xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sri.gob.ec/DocumentXML/ats/ats.xsd">');
+      xmlParts.push(`  <TipoIDInformante>${empresa.ruc.endsWith('001') ? 'R' : 'C'}</TipoIDInformante>`);
+      xmlParts.push(`  <IdInformante>${escapeXml(empresa.ruc || '0000000000000')}</IdInformante>`);
+      xmlParts.push(`  <razonSocial>${escapeXml(empresa.razonSocial)}</razonSocial>`);
+      xmlParts.push(`  <Anio>${year}</Anio>`);
+      xmlParts.push(`  <Mes>${month.toString().padStart(2, '0')}</Mes>`);
+      xmlParts.push(`  <numEstabRuc>1</numEstabRuc>`);
+      xmlParts.push(`  <totalVentas>${safeNumber(ventas.reduce((sum, factura) => sum + safeNumber(factura.total || 0), 0))}</totalVentas>`);
+
+      if (comprasXml.length) {
+        xmlParts.push('  <compras>');
+        comprasXml.forEach((compra) => {
+          xmlParts.push('    <detalleCompras>');
+          xmlParts.push(`      <tpIdProv>${compra.tipoId}</tpIdProv>`);
+          xmlParts.push(`      <idProv>${escapeXml(compra.identificacion)}</idProv>`);
+          xmlParts.push('      <tipoComprobante>01</tipoComprobante>');
+          xmlParts.push(`      <fechaEmision>${compra.fecha}</fechaEmision>`);
+          xmlParts.push(`      <establecimiento>${compra.establecimiento}</establecimiento>`);
+          xmlParts.push(`      <puntoEmision>${compra.puntoEmision}</puntoEmision>`);
+          xmlParts.push(`      <secuencial>${compra.secuencial}</secuencial>`);
+          xmlParts.push('      <autorizacion>0</autorizacion>');
+          xmlParts.push(`      <baseNoGraIva>${compra.base0.toFixed(2)}</baseNoGraIva>`);
+          xmlParts.push('      <baseImponible>0.00</baseImponible>');
+          xmlParts.push(`      <baseImpGrav>${compra.baseGravada.toFixed(2)}</baseImpGrav>`);
+          xmlParts.push('      <baseImpExe>0.00</baseImpExe>');
+          xmlParts.push('      <montoIce>0.00</montoIce>');
+          xmlParts.push(`      <montoIva>${compra.iva.toFixed(2)}</montoIva>`);
+          xmlParts.push('    </detalleCompras>');
+        });
+        xmlParts.push('  </compras>');
+      }
+
+      if (ventasXml.length) {
+        xmlParts.push('  <ventas>');
+        ventasXml.forEach((venta) => {
+          xmlParts.push('    <detalleVentas>');
+          xmlParts.push(`      <tpIdCliente>${venta.tipoId}</tpIdCliente>`);
+          xmlParts.push(`      <idCliente>${escapeXml(venta.identificacion)}</idCliente>`);
+          xmlParts.push('      <parteRelVtas>NO</parteRelVtas>');
+          xmlParts.push('      <tipoComprobante>01</tipoComprobante>');
+          xmlParts.push('      <tipoEmision>E</tipoEmision>');
+          xmlParts.push(`      <numeroComprobantes>${venta.comprobantes}</numeroComprobantes>`);
+          xmlParts.push(`      <baseNoGraIva>${venta.base0.toFixed(2)}</baseNoGraIva>`);
+          xmlParts.push('      <baseImponible>0.00</baseImponible>');
+          xmlParts.push(`      <baseImpGrav>${venta.baseGravada.toFixed(2)}</baseImpGrav>`);
+          xmlParts.push(`      <montoIva>${venta.iva.toFixed(2)}</montoIva>`);
+          xmlParts.push('      <montoIce>0.00</montoIce>');
+          xmlParts.push('      <valorRetIva>0.00</valorRetIva>');
+          xmlParts.push('      <valorRetRenta>0.00</valorRetRenta>');
+          xmlParts.push('    </detalleVentas>');
+        });
+        xmlParts.push('  </ventas>');
+      }
+
+      xmlParts.push('</iva>');
+
+      const xml = xmlParts.join('\n');
+      const nombreArchivo = `${empresa.ruc || '0000000000000'}AT${year}${month.toString().padStart(2, '0')}.xml`;
+      const resumen = {
+        totalCompras: compras.length,
+        totalVentas: ventas.length,
+        ivaCompras: safeNumber(compras.reduce((sum, compra) => sum + safeNumber(compra.iva || 0), 0)),
+        ivaVentas: safeNumber(ventas.reduce((sum, factura) => sum + safeNumber(factura.iva || 0), 0))
+      };
+
+      this.registrarHistorialATS({ year, month, nombreArchivo, resumen });
+
+      return { xml, nombreArchivo, resumen, periodo: periodLabel(year, month) };
+    },
+
+    registrarHistorialATS(entry) {
+      try {
+        const historial = JSON.parse(localStorage.getItem(STORAGE_KEY_ATS) || '[]');
+        historial.unshift({ ...entry, timestamp: new Date().toISOString() });
+        if (historial.length > 20) historial.pop();
+        localStorage.setItem(STORAGE_KEY_ATS, JSON.stringify(historial));
+      } catch (error) {
+        console.warn('No se pudo registrar historial ATS', error);
+      }
+    },
+
+    obtenerHistorialATS() {
+      try {
+        return JSON.parse(localStorage.getItem(STORAGE_KEY_ATS) || '[]');
+      } catch (error) {
+        console.warn('No se pudo leer historial ATS', error);
+        return [];
+      }
+    }
+  };
+
+  window.SRITributacionService = SRITributacionService;
+})();

@@ -1,0 +1,1546 @@
+/* ============================================
+   TABLAS ESTILO EXCEL - GLOBAL
+   Interfaz minimalista con líneas finas
+   Aplicable a todos los módulos
+   ============================================ */
+
+/* === VARIABLES GLOBALES PARA TABLAS EXCEL === */
+:root {
+  --excel-bg: #0a0f1a;
+  --excel-table-bg: #0d1320;
+  --excel-border: rgba(99, 102, 241, 0.12);
+  --excel-border-light: rgba(148, 163, 184, 0.08);
+  --excel-header-bg: #111827;
+  --excel-row-hover: rgba(99, 102, 241, 0.06);
+  --excel-row-alt: rgba(15, 23, 42, 0.4);
+  --excel-row-selected: rgba(99, 102, 241, 0.15);
+  --excel-text: #e2e8f0;
+  --excel-text-muted: #64748b;
+  --excel-text-secondary: #94a3b8;
+  --excel-accent: #8b5cf6;
+  --excel-accent-light: rgba(139, 92, 246, 0.15);
+  --excel-success: #22c55e;
+  --excel-success-light: rgba(34, 197, 94, 0.12);
+  --excel-warning: #eab308;
+  --excel-warning-light: rgba(234, 179, 8, 0.12);
+  --excel-danger: #ef4444;
+  --excel-danger-light: rgba(239, 68, 68, 0.12);
+  --excel-info: #3b82f6;
+  --excel-info-light: rgba(59, 130, 246, 0.12);
+}
+
+/* === SHELL PRINCIPAL - CONTENEDOR === */
+.excel-shell {
+  background: var(--excel-bg);
+  border-radius: 12px;
+  overflow: hidden;
+  color: var(--excel-text);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+}
+
+/* === HEADER DEL MÓDULO === */
+.excel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: var(--excel-header-bg);
+  border-bottom: 1px solid var(--excel-border);
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.excel-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.excel-title h2 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--excel-text);
+}
+
+.excel-title i {
+  color: var(--excel-accent);
+  font-size: 1rem;
+}
+
+.excel-subtitle {
+  font-size: 0.75rem;
+  color: var(--excel-text-muted);
+  margin-left: 0.5rem;
+}
+
+.excel-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* === TOOLBAR CON ACCIONES === */
+.excel-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: rgba(15, 23, 42, 0.5);
+  border-bottom: 1px solid var(--excel-border-light);
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.excel-toolbar-left,
+.excel-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* === BARRA DE FILTROS/CHIPS === */
+.excel-filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 1rem;
+  background: rgba(15, 23, 42, 0.5);
+  border-bottom: 1px solid var(--excel-border-light);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.excel-filter-bar::-webkit-scrollbar {
+  height: 4px;
+}
+
+.excel-filter-bar::-webkit-scrollbar-thumb {
+  background: var(--excel-border);
+  border-radius: 2px;
+}
+
+.excel-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.72rem;
+  font-weight: 500;
+  border-radius: 4px;
+  background: transparent;
+  border: 1px solid var(--excel-border);
+  color: var(--excel-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.excel-chip:hover {
+  border-color: var(--excel-accent);
+  color: var(--excel-text);
+}
+
+.excel-chip.active {
+  background: var(--excel-accent);
+  border-color: var(--excel-accent);
+  color: #fff;
+}
+
+.excel-chip .chip-count {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 0.1rem 0.4rem;
+  border-radius: 3px;
+  font-size: 0.65rem;
+  min-width: 18px;
+  text-align: center;
+}
+
+.excel-chip.active .chip-count {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* === BÚSQUEDA === */
+.excel-search-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.excel-search-wrapper i {
+  position: absolute;
+  left: 0.7rem;
+  color: var(--excel-text-muted);
+  font-size: 0.8rem;
+  pointer-events: none;
+}
+
+.excel-search-input {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--excel-border);
+  border-radius: 6px;
+  padding: 0.4rem 0.7rem 0.4rem 2rem;
+  color: var(--excel-text);
+  font-size: 0.8rem;
+  min-width: 200px;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+}
+
+.excel-search-input:focus {
+  outline: none;
+  border-color: var(--excel-accent);
+  box-shadow: 0 0 0 2px var(--excel-accent-light);
+}
+
+.excel-search-input::placeholder {
+  color: var(--excel-text-muted);
+}
+
+/* === CONTENEDOR DE TABLA === */
+.excel-table-wrapper {
+  overflow-x: auto;
+  max-height: calc(100vh - 320px);
+  min-height: 300px;
+}
+
+/* === TABLA PRINCIPAL === */
+.excel-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  min-width: 600px;
+}
+
+/* === ENCABEZADO DE TABLA === */
+.excel-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--excel-header-bg);
+}
+
+.excel-table thead tr {
+  border-bottom: 1px solid var(--excel-border);
+}
+
+.excel-table th {
+  padding: 0.65rem 0.8rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--excel-text-muted);
+  background: var(--excel-header-bg);
+  border-right: 1px solid var(--excel-border-light);
+  white-space: nowrap;
+  cursor: default;
+  user-select: none;
+  transition: background 0.15s;
+}
+
+.excel-table th:last-child {
+  border-right: none;
+}
+
+.excel-table th.sortable {
+  cursor: pointer;
+}
+
+.excel-table th.sortable:hover {
+  background: rgba(99, 102, 241, 0.08);
+  color: var(--excel-text);
+}
+
+.excel-table th .sort-icon {
+  margin-left: 0.4rem;
+  font-size: 0.6rem;
+  opacity: 0.4;
+  transition: opacity 0.15s;
+}
+
+.excel-table th.sorted .sort-icon {
+  opacity: 1;
+  color: var(--excel-accent);
+}
+
+/* === CUERPO DE TABLA === */
+.excel-table tbody tr {
+  border-bottom: 1px solid var(--excel-border-light);
+  transition: background 0.1s ease;
+}
+
+.excel-table tbody tr:nth-child(even) {
+  background: var(--excel-row-alt);
+}
+
+.excel-table tbody tr:hover {
+  background: var(--excel-row-hover);
+}
+
+.excel-table tbody tr.selected {
+  background: var(--excel-row-selected);
+  border-left: 3px solid var(--excel-accent);
+}
+
+.excel-table tbody tr.clickable {
+  cursor: pointer;
+}
+
+.excel-table td {
+  padding: 0.55rem 0.8rem;
+  color: var(--excel-text);
+  border-right: 1px solid var(--excel-border-light);
+  vertical-align: middle;
+  line-height: 1.4;
+}
+
+.excel-table td:last-child {
+  border-right: none;
+}
+
+/* === CELDAS ESPECIALES === */
+.excel-table td.text-right,
+.excel-table th.text-right {
+  text-align: right;
+}
+
+.excel-table td.text-center,
+.excel-table th.text-center {
+  text-align: center;
+}
+
+.excel-table td.text-muted {
+  color: var(--excel-text-muted);
+}
+
+.excel-table td.text-nowrap {
+  white-space: nowrap;
+}
+
+.excel-table td.font-mono {
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 0.78rem;
+}
+
+/* === BADGES/ETIQUETAS === */
+.excel-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.excel-badge-success {
+  background: var(--excel-success-light);
+  color: var(--excel-success);
+}
+
+.excel-badge-warning {
+  background: var(--excel-warning-light);
+  color: var(--excel-warning);
+}
+
+.excel-badge-danger {
+  background: var(--excel-danger-light);
+  color: var(--excel-danger);
+}
+
+.excel-badge-info {
+  background: var(--excel-info-light);
+  color: var(--excel-info);
+}
+
+.excel-badge-accent {
+  background: var(--excel-accent-light);
+  color: var(--excel-accent);
+}
+
+.excel-badge-muted {
+  background: rgba(100, 116, 139, 0.15);
+  color: var(--excel-text-muted);
+}
+
+/* === BOTONES DE ACCIÓN EN TABLA === */
+.excel-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+}
+
+.excel-btn-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--excel-border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--excel-text-muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.excel-btn-action:hover {
+  background: var(--excel-accent-light);
+  border-color: var(--excel-accent);
+  color: var(--excel-accent);
+}
+
+.excel-btn-action.btn-view:hover {
+  background: var(--excel-info-light);
+  border-color: var(--excel-info);
+  color: var(--excel-info);
+}
+
+.excel-btn-action.btn-edit:hover {
+  background: var(--excel-warning-light);
+  border-color: var(--excel-warning);
+  color: var(--excel-warning);
+}
+
+.excel-btn-action.btn-delete:hover {
+  background: var(--excel-danger-light);
+  border-color: var(--excel-danger);
+  color: var(--excel-danger);
+}
+
+.excel-btn-action.btn-success:hover {
+  background: var(--excel-success-light);
+  border-color: var(--excel-success);
+  color: var(--excel-success);
+}
+
+/* === BOTONES PRIMARIOS === */
+.excel-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  border-radius: 5px;
+  border: 1px solid var(--excel-border);
+  background: transparent;
+  color: var(--excel-text);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.excel-btn:hover {
+  background: var(--excel-row-hover);
+  border-color: var(--excel-accent);
+}
+
+.excel-btn-primary {
+  background: var(--excel-accent);
+  border-color: var(--excel-accent);
+  color: #fff;
+}
+
+.excel-btn-primary:hover {
+  background: #7c3aed;
+  border-color: #7c3aed;
+}
+
+.excel-btn-success {
+  background: var(--excel-success);
+  border-color: var(--excel-success);
+  color: #fff;
+}
+
+.excel-btn-success:hover {
+  background: #16a34a;
+  border-color: #16a34a;
+}
+
+.excel-btn-danger {
+  background: var(--excel-danger);
+  border-color: var(--excel-danger);
+  color: #fff;
+}
+
+.excel-btn-danger:hover {
+  background: #dc2626;
+  border-color: #dc2626;
+}
+
+/* === ESTADÍSTICAS/RESUMEN === */
+.excel-stats-bar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: rgba(15, 23, 42, 0.4);
+  border-bottom: 1px solid var(--excel-border-light);
+}
+
+.excel-stat-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.6rem 0.8rem;
+  background: rgba(17, 24, 39, 0.6);
+  border: 1px solid var(--excel-border-light);
+  border-radius: 6px;
+}
+
+.excel-stat-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--excel-text-muted);
+}
+
+.excel-stat-value {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--excel-text);
+}
+
+.excel-stat-value.success {
+  color: var(--excel-success);
+}
+.excel-stat-value.warning {
+  color: var(--excel-warning);
+}
+.excel-stat-value.danger {
+  color: var(--excel-danger);
+}
+.excel-stat-value.info {
+  color: var(--excel-info);
+}
+.excel-stat-value.accent {
+  color: var(--excel-accent);
+}
+
+/* === ESTADO VACÍO === */
+.excel-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  text-align: center;
+  color: var(--excel-text-muted);
+}
+
+.excel-empty-state i {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  opacity: 0.4;
+}
+
+.excel-empty-state h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 1rem;
+  color: var(--excel-text);
+  font-weight: 500;
+}
+
+.excel-empty-state p {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+/* === PAGINACIÓN === */
+.excel-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: var(--excel-header-bg);
+  border-top: 1px solid var(--excel-border);
+  font-size: 0.75rem;
+}
+
+.excel-pagination-info {
+  color: var(--excel-text-muted);
+}
+
+.excel-pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.excel-page-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 0.4rem;
+  border: 1px solid var(--excel-border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--excel-text-muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.excel-page-btn:hover:not(:disabled) {
+  background: var(--excel-row-hover);
+  border-color: var(--excel-accent);
+  color: var(--excel-text);
+}
+
+.excel-page-btn.active {
+  background: var(--excel-accent);
+  border-color: var(--excel-accent);
+  color: #fff;
+}
+
+.excel-page-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* === FOOTER === */
+.excel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  background: var(--excel-header-bg);
+  border-top: 1px solid var(--excel-border);
+  font-size: 0.72rem;
+  color: var(--excel-text-muted);
+}
+
+.excel-footer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.2rem 0.5rem;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 3px;
+  color: var(--excel-success);
+  font-weight: 500;
+}
+
+/* === INDICADORES DE ESTADO EN FILAS === */
+.excel-table tbody tr.row-success {
+  border-left: 3px solid var(--excel-success);
+}
+
+.excel-table tbody tr.row-warning {
+  border-left: 3px solid var(--excel-warning);
+}
+
+.excel-table tbody tr.row-danger {
+  border-left: 3px solid var(--excel-danger);
+}
+
+.excel-table tbody tr.row-info {
+  border-left: 3px solid var(--excel-info);
+}
+
+/* === CHECKBOX EN TABLA === */
+.excel-checkbox {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--excel-accent);
+  cursor: pointer;
+}
+
+/* === AVATAR/ICONOS EN TABLA === */
+.excel-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--excel-accent-light);
+  color: var(--excel-accent);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.excel-avatar img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* === LOADING STATE === */
+.excel-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: var(--excel-text-muted);
+}
+
+.excel-loading-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--excel-border);
+  border-top-color: var(--excel-accent);
+  border-radius: 50%;
+  animation: excel-spin 0.8s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes excel-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 768px) {
+  .excel-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .excel-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .excel-toolbar-left,
+  .excel-toolbar-right {
+    flex-wrap: wrap;
+  }
+
+  .excel-search-input {
+    min-width: 100%;
+  }
+
+  .excel-stats-bar {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .excel-table-wrapper {
+    max-height: calc(100vh - 400px);
+  }
+
+  .excel-pagination {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+}
+
+/* === MODO CLARO (OPCIONAL) === */
+@media (prefers-color-scheme: light) {
+  .excel-shell.light-mode,
+  .excel-shell[data-theme='light'] {
+    --excel-bg: #f8fafc;
+    --excel-table-bg: #ffffff;
+    --excel-border: rgba(148, 163, 184, 0.25);
+    --excel-border-light: rgba(148, 163, 184, 0.12);
+    --excel-header-bg: #f1f5f9;
+    --excel-row-hover: rgba(99, 102, 241, 0.05);
+    --excel-row-alt: rgba(241, 245, 249, 0.6);
+    --excel-text: #1e293b;
+    --excel-text-muted: #64748b;
+  }
+}
+
+/* === INTEGRACIÓN CON MÓDULOS EXISTENTES === */
+
+/* Productos */
+.productos-table.excel-table tbody tr:hover {
+  background: var(--excel-row-hover);
+}
+
+/* Clientes */
+.clientes-table.excel-table .cliente-nombre {
+  font-weight: 600;
+  color: var(--excel-text);
+}
+
+/* Compras */
+.compras-table.excel-table .total-cell {
+  font-weight: 700;
+}
+
+/* Proveedores */
+.proveedores-table.excel-table .calificacion-cell {
+  color: var(--excel-warning);
+}
+
+/* Órdenes de Trabajo */
+.ordenes-table.excel-table .estado-badge {
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  font-size: 0.7rem;
+}
+
+/* === ANIMACIONES SUTILES === */
+.excel-table tbody tr {
+  animation: excel-fade-in 0.2s ease;
+}
+
+@keyframes excel-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* === SELECCIÓN MÚLTIPLE === */
+.excel-table tbody tr.multi-selected {
+  background: var(--excel-accent-light);
+  border-left: 3px solid var(--excel-accent);
+}
+
+.excel-table tbody tr.multi-selected td:first-child {
+  padding-left: calc(0.8rem - 3px);
+}
+
+/* === COLUMNA DE ACCIONES STICKY === */
+.excel-table th.sticky-action,
+.excel-table td.sticky-action {
+  position: sticky;
+  right: 0;
+  background: inherit;
+  box-shadow: -2px 0 4px rgba(0, 0, 0, 0.1);
+}
+
+.excel-table thead th.sticky-action {
+  background: var(--excel-header-bg);
+}
+
+/* === TOOLTIP PERSONALIZADO === */
+.excel-tooltip {
+  position: relative;
+}
+
+.excel-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.35rem 0.6rem;
+  background: #1e293b;
+  color: #fff;
+  font-size: 0.7rem;
+  border-radius: 4px;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.2s,
+    visibility 0.2s;
+  z-index: 100;
+}
+
+.excel-tooltip:hover::after {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* === INDICADOR DE ORDENAMIENTO === */
+.excel-sort-indicator {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 1px;
+  margin-left: 0.3rem;
+  vertical-align: middle;
+}
+
+.excel-sort-indicator i {
+  font-size: 0.5rem;
+  opacity: 0.3;
+  line-height: 0.5;
+}
+
+.excel-sort-indicator i.active {
+  opacity: 1;
+  color: var(--excel-accent);
+}
+/* ============================================
+   ESTILOS AUTOMÁTICOS PARA TABLAS EXISTENTES
+   Aplica look Excel a clases genéricas
+   ============================================ */
+
+/* === Aplicar estilos a tablas comunes === */
+.table,
+.data-table,
+.responsive-table,
+.table-productos-night,
+.compras-table,
+.compras-historial-table,
+.historial-table,
+.items-table,
+.table-detalle {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  background: var(--excel-table-bg);
+  color: var(--excel-text);
+}
+
+.table thead,
+.data-table thead,
+.responsive-table thead,
+.table-productos-night thead,
+.compras-table thead,
+.compras-historial-table thead,
+.historial-table thead,
+.items-table thead,
+.table-detalle thead {
+  background: var(--excel-header-bg);
+  border-bottom: 2px solid var(--excel-border);
+}
+
+.table thead th,
+.data-table thead th,
+.responsive-table thead th,
+.table-productos-night thead th,
+.compras-table thead th,
+.compras-historial-table thead th,
+.historial-table thead th,
+.items-table thead th,
+.table-detalle thead th {
+  padding: 0.65rem 0.8rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  color: var(--excel-text-secondary);
+  border-bottom: 1px solid var(--excel-border);
+  white-space: nowrap;
+}
+
+.table tbody td,
+.data-table tbody td,
+.responsive-table tbody td,
+.table-productos-night tbody td,
+.compras-table tbody td,
+.compras-historial-table tbody td,
+.historial-table tbody td,
+.items-table tbody td,
+.table-detalle tbody td {
+  padding: 0.55rem 0.8rem;
+  vertical-align: middle;
+  border-bottom: 1px solid var(--excel-border-light);
+}
+
+.table tbody tr,
+.data-table tbody tr,
+.responsive-table tbody tr,
+.table-productos-night tbody tr,
+.compras-table tbody tr,
+.compras-historial-table tbody tr,
+.historial-table tbody tr,
+.items-table tbody tr,
+.table-detalle tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.table tbody tr:hover,
+.data-table tbody tr:hover,
+.responsive-table tbody tr:hover,
+.table-productos-night tbody tr:hover,
+.compras-table tbody tr:hover,
+.compras-historial-table tbody tr:hover,
+.historial-table tbody tr:hover,
+.items-table tbody tr:hover,
+.table-detalle tbody tr:hover {
+  background: var(--excel-row-hover);
+}
+
+.table tbody tr:nth-child(even),
+.data-table tbody tr:nth-child(even),
+.responsive-table tbody tr:nth-child(even),
+.table-productos-night tbody tr:nth-child(even),
+.compras-table tbody tr:nth-child(even),
+.compras-historial-table tbody tr:nth-child(even) {
+  background: var(--excel-row-alt);
+}
+
+.table tbody tr:nth-child(even):hover,
+.data-table tbody tr:nth-child(even):hover,
+.responsive-table tbody tr:nth-child(even):hover,
+.table-productos-night tbody tr:nth-child(even):hover,
+.compras-table tbody tr:nth-child(even):hover,
+.compras-historial-table tbody tr:nth-child(even):hover {
+  background: var(--excel-row-hover);
+}
+
+/* === Badges genéricos con estilo Excel === */
+.badge,
+.badge-stock,
+.badge-margen,
+.badge-count,
+.producto-categoria-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.2rem 0.5rem;
+  font-size: 0.68rem;
+  font-weight: 500;
+  border-radius: 4px;
+  white-space: nowrap;
+  background: var(--excel-accent-light);
+  color: var(--excel-accent);
+  border: 1px solid rgba(139, 92, 246, 0.2);
+}
+
+.badge-success,
+.badge-stock.success {
+  background: var(--excel-success-light);
+  color: var(--excel-success);
+  border-color: rgba(34, 197, 94, 0.2);
+}
+
+.badge-warning,
+.badge-stock.warning {
+  background: var(--excel-warning-light);
+  color: var(--excel-warning);
+  border-color: rgba(234, 179, 8, 0.2);
+}
+
+.badge-danger,
+.badge-stock.danger {
+  background: var(--excel-danger-light);
+  color: var(--excel-danger);
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.badge-info,
+.badge-primary {
+  background: var(--excel-info-light);
+  color: var(--excel-info);
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.badge-secondary,
+.badge-muted {
+  background: rgba(100, 116, 139, 0.15);
+  color: var(--excel-text-muted);
+  border-color: rgba(100, 116, 139, 0.2);
+}
+
+/* === Botones de acción en tablas === */
+.action-buttons,
+.producto-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.action-buttons .btn,
+.producto-actions button,
+.btn-night.btn-night-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  font-size: 0.75rem;
+  border-radius: 5px;
+  border: 1px solid var(--excel-border);
+  background: transparent;
+  color: var(--excel-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.action-buttons .btn:hover,
+.producto-actions button:hover,
+.btn-night.btn-night-icon:hover {
+  background: var(--excel-accent-light);
+  color: var(--excel-accent);
+  border-color: var(--excel-accent);
+}
+
+.action-buttons .btn-danger,
+.btn-night.btn-night-danger {
+  color: var(--excel-danger);
+}
+
+.action-buttons .btn-danger:hover,
+.btn-night.btn-night-danger:hover {
+  background: var(--excel-danger-light);
+  border-color: var(--excel-danger);
+}
+
+/* === Contenedores de tablas === */
+.compras-table-wrapper,
+.compras-historial-table-wrapper,
+.productos-table-container,
+.historial-table-wrapper {
+  overflow-x: auto;
+  background: var(--excel-table-bg);
+  border-radius: 8px;
+  border: 1px solid var(--excel-border);
+}
+
+/* === Headers de módulos con estilo Excel === */
+.compras-header,
+.proveedores-header,
+.page-title-section,
+.productos-toolbar {
+  background: var(--excel-header-bg);
+  border-bottom: 1px solid var(--excel-border);
+}
+
+/* === Inputs y selects con estilo Excel === */
+.form-control,
+.select-minimal-night,
+.compras-filter input,
+.compras-filter select,
+.filtros-adicionales input,
+.filtros-adicionales select {
+  background: rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--excel-border);
+  border-radius: 6px;
+  color: var(--excel-text);
+  font-size: 0.82rem;
+  padding: 0.5rem 0.75rem;
+  transition: all 0.15s ease;
+}
+
+.form-control:focus,
+.select-minimal-night:focus,
+.compras-filter input:focus,
+.compras-filter select:focus,
+.filtros-adicionales input:focus,
+.filtros-adicionales select:focus {
+  outline: none;
+  border-color: var(--excel-accent);
+  box-shadow: 0 0 0 2px var(--excel-accent-light);
+}
+
+/* === Paneles y cards con estilo Excel === */
+.compras-panel,
+.proveedores-content,
+.productos-night-shell,
+.historial-table-card {
+  background: var(--excel-bg);
+  color: var(--excel-text);
+}
+
+/* === Estadísticas y resúmenes === */
+.compras-summary,
+.compras-historial-summary,
+.productos-stats-grid,
+.proveedores-stats {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.compras-summary > div,
+.compras-historial-card,
+.productos-stat-card,
+.stat-item {
+  background: rgba(15, 23, 42, 0.5);
+  border: 1px solid var(--excel-border);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+}
+
+/* === Tabs y filtros === */
+.productos-filter-tab,
+.compras-filter,
+.especialidad-chip {
+  background: transparent;
+  border: 1px solid var(--excel-border);
+  border-radius: 6px;
+  padding: 0.5rem 1rem;
+  color: var(--excel-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.productos-filter-tab.active,
+.especialidad-chip.all-selected,
+.productos-filter-tab:hover,
+.especialidad-chip:hover {
+  background: var(--excel-accent-light);
+  color: var(--excel-accent);
+  border-color: var(--excel-accent);
+}
+
+/* === Empty states con estilo Excel === */
+.empty-state,
+.productos-empty-state,
+.compras-historial-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: var(--excel-text-muted);
+  text-align: center;
+}
+
+.empty-state i,
+.productos-empty-state i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.4;
+}
+
+/* === Cards de productos con estilo Excel === */
+.producto-card,
+.proveedor-card {
+  background: var(--excel-table-bg);
+  border: 1px solid var(--excel-border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: all 0.2s ease;
+}
+
+.producto-card:hover,
+.proveedor-card:hover {
+  border-color: var(--excel-accent);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.producto-card.sin-stock {
+  border-color: var(--excel-danger);
+  background: var(--excel-danger-light);
+}
+
+.producto-card.stock-bajo {
+  border-color: var(--excel-warning);
+  background: var(--excel-warning-light);
+}
+
+/* === Scrollbar personalizada estilo Excel === */
+.compras-table-wrapper::-webkit-scrollbar,
+.productos-table-container::-webkit-scrollbar,
+.excel-table-wrapper::-webkit-scrollbar,
+.historial-table-wrapper::-webkit-scrollbar {
+  height: 6px;
+  width: 6px;
+}
+
+.compras-table-wrapper::-webkit-scrollbar-track,
+.productos-table-container::-webkit-scrollbar-track,
+.excel-table-wrapper::-webkit-scrollbar-track,
+.historial-table-wrapper::-webkit-scrollbar-track {
+  background: rgba(15, 23, 42, 0.3);
+}
+
+.compras-table-wrapper::-webkit-scrollbar-thumb,
+.productos-table-container::-webkit-scrollbar-thumb,
+.excel-table-wrapper::-webkit-scrollbar-thumb,
+.historial-table-wrapper::-webkit-scrollbar-thumb {
+  background: var(--excel-border);
+  border-radius: 3px;
+}
+
+.compras-table-wrapper::-webkit-scrollbar-thumb:hover,
+.productos-table-container::-webkit-scrollbar-thumb:hover,
+.excel-table-wrapper::-webkit-scrollbar-thumb:hover,
+.historial-table-wrapper::-webkit-scrollbar-thumb:hover {
+  background: var(--excel-accent);
+}
+
+/* === Modales y overlays con estilo Excel === */
+.compras-editor-overlay,
+.modal-overlay {
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+}
+
+.compras-editor-container,
+.modal-content {
+  background: var(--excel-bg);
+  border: 1px solid var(--excel-border);
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.compras-editor-header,
+.modal-header {
+  background: var(--excel-header-bg);
+  border-bottom: 1px solid var(--excel-border);
+  padding: 1rem 1.25rem;
+}
+
+/* === Vista de toggle cards/table === */
+.view-toggle {
+  display: flex;
+  border: 1px solid var(--excel-border);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.view-toggle-btn {
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--excel-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.view-toggle-btn.active {
+  background: var(--excel-accent);
+  color: #fff;
+}
+
+.view-toggle-btn:hover:not(.active) {
+  background: var(--excel-accent-light);
+  color: var(--excel-accent);
+}
+
+/* === Paginación con estilo Excel === */
+.pagination,
+.excel-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  padding: 0.75rem;
+}
+
+.pagination button,
+.excel-pagination button {
+  min-width: 32px;
+  height: 32px;
+  padding: 0 0.5rem;
+  border: 1px solid var(--excel-border);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--excel-text-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.pagination button:hover,
+.excel-pagination button:hover {
+  background: var(--excel-accent-light);
+  color: var(--excel-accent);
+  border-color: var(--excel-accent);
+}
+
+.pagination button.active,
+.excel-pagination button.active {
+  background: var(--excel-accent);
+  color: #fff;
+  border-color: var(--excel-accent);
+}
+
+.pagination button:disabled,
+.excel-pagination button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* === Estilos específicos para órdenes de trabajo === */
+.ordenes-toolbar,
+.ordenes-header {
+  background: var(--excel-header-bg);
+  border-bottom: 1px solid var(--excel-border);
+}
+
+.orden-card {
+  background: var(--excel-table-bg);
+  border: 1px solid var(--excel-border);
+  border-radius: 10px;
+  transition: all 0.2s ease;
+}
+
+.orden-card:hover {
+  border-color: var(--excel-accent);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* === Ajustes de texto === */
+.text-right {
+  text-align: right !important;
+}
+
+.text-center {
+  text-align: center !important;
+}
+
+.text-muted {
+  color: var(--excel-text-muted) !important;
+}
+
+.font-mono {
+  font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+  font-size: 0.85em;
+}
+
+/* ============================================
+   ESTILOS ADICIONALES PARA PROVEEDOR CARDS
+   ============================================ */
+
+.proveedor-actions.compact {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+.proveedor-actions.compact .excel-btn-action {
+  width: 32px;
+  height: 32px;
+}
+
+/* === Estado vacío global === */
+.excel-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem 2rem;
+  text-align: center;
+  color: var(--excel-text-muted);
+}
+
+.excel-empty-state i {
+  font-size: 3rem;
+  opacity: 0.4;
+  margin-bottom: 1rem;
+}
+
+.excel-empty-state h4 {
+  margin: 0 0 0.5rem 0;
+  color: var(--excel-text);
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.excel-empty-state p {
+  margin: 0;
+  font-size: 0.85rem;
+  color: var(--excel-text-muted);
+}
+
+/* === Filas con alertas === */
+.excel-table tbody tr.row-warning {
+  background: var(--excel-warning-light);
+}
+
+.excel-table tbody tr.row-danger {
+  background: var(--excel-danger-light);
+}
+
+.excel-table tbody tr.row-success {
+  background: var(--excel-success-light);
+}
+
+/* === Mejoras para móvil === */
+@media (max-width: 768px) {
+  .excel-actions {
+    flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .excel-btn-action {
+    width: 32px;
+    height: 32px;
+  }
+
+  .excel-table {
+    font-size: 0.78rem;
+  }
+
+  .excel-table th,
+  .excel-table td {
+    padding: 0.4rem 0.5rem;
+  }
+
+  .excel-badge {
+    font-size: 0.65rem;
+    padding: 0.15rem 0.4rem;
+  }
+
+  .excel-shell {
+    border-radius: 8px;
+  }
+}
+
+/* === Botón de acción disabled === */
+.excel-btn-action:disabled,
+.excel-btn-action[disabled] {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* === Tooltips para botones === */
+.excel-btn-action[title] {
+  position: relative;
+}
+
+/* === Selected row highlight === */
+.excel-table tbody tr.selected {
+  background: var(--excel-row-selected) !important;
+  border-left: 3px solid var(--excel-accent);
+}
+
+/* === Dropdown menus en tablas === */
+.excel-actions .dropdown {
+  position: relative;
+}
+
+.excel-actions .dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  z-index: 100;
+  min-width: 150px;
+  background: var(--excel-header-bg);
+  border: 1px solid var(--excel-border);
+  border-radius: 6px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  padding: 0.25rem 0;
+  display: none;
+}
+
+.excel-actions .dropdown-menu.show {
+  display: block;
+}
+
+.excel-actions .dropdown-menu a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  color: var(--excel-text);
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: background 0.15s ease;
+}
+
+.excel-actions .dropdown-menu a:hover {
+  background: var(--excel-row-hover);
+}
+
+.excel-actions .dropdown-menu a i {
+  width: 16px;
+  color: var(--excel-text-muted);
+}

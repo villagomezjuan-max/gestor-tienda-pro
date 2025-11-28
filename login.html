@@ -1,0 +1,579 @@
+﻿<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src 'self' http://localhost:3001 https://api.deepseek.com https://generativelanguage.googleapis.com https://api.openai.com https://api.telegram.org https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.googleapis.com https://www.gstatic.com; style-src-elem 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com https://r2cdn.perplexity.ai; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; script-src-elem 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.googleapis.com; script-src-attr 'unsafe-inline'; base-uri 'self';"
+    />
+    <meta name="theme-color" content="#6366f1" />
+    <meta name="description" content="Sistema de Gestión Integral de Tienda - Login" />
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+    <title>Gestor Tienda Pro - Login</title>
+
+    <!-- Manifest para PWA -->
+    <link rel="manifest" href="manifest.json" />
+
+    <!-- Iconos -->
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192x192.png" />
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png" />
+
+    <!-- Font Awesome para iconos -->
+    <script src="js/theme-bootstrap.js?v=1.0"></script>
+    <!-- Sistema de manejo de errores - NO silenciar errores -->
+    <script src="js/error-handler.js?v=1.0"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/auth.css" />
+    <link rel="stylesheet" href="css/modal-fixes.css?v=1.0" />
+    <link rel="stylesheet" href="css/toast-notifications.css" />
+    <link rel="stylesheet" href="css/responsive.css" />
+    <link rel="stylesheet" href="css/animations.css" />
+    <script src="js/tenant-storage.js?v=1.0"></script>
+    <script src="js/theme-manager.js?v=1.1"></script>
+    <style>
+      .theme-toggle-floating {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: var(--bg-tertiary);
+        border: 1px solid var(--border-color);
+        color: var(--icon-primary);
+        font-size: 1.25rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        z-index: 1000;
+        box-shadow: var(--shadow-md);
+      }
+
+      .theme-toggle-floating:hover {
+        transform: scale(1.1);
+        background-color: var(--bg-secondary);
+        border-color: var(--primary-color);
+      }
+    </style>
+  </head>
+  <body class="auth-page">
+    <!-- Botón de modo oscuro flotante -->
+    <button class="theme-toggle-floating" id="themeToggle" title="Cambiar tema">
+      <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- Contenedor principal de login -->
+    <div class="auth-container">
+      <div class="auth-card">
+        <!-- Logo y título -->
+        <div class="auth-header">
+          <div class="auth-logo">
+            <i class="fas fa-store"></i>
+          </div>
+          <h1>Gestor Tienda Pro</h1>
+          <p>Sistema de Gestión Integral</p>
+        </div>
+
+        <!-- Formulario de login -->
+        <form id="loginForm" class="auth-form">
+          <div class="form-group">
+            <label for="username"> <i class="fas fa-user"></i> Usuario </label>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Ingresa tu usuario"
+              autocomplete="username"
+              required
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="password"> <i class="fas fa-lock"></i> Contraseña </label>
+            <div class="password-input-group">
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Ingresa tu contraseña"
+                autocomplete="current-password"
+                required
+              />
+              <button
+                type="button"
+                class="toggle-password"
+                id="togglePassword"
+                aria-label="Mostrar u ocultar contraseña"
+              >
+                <i class="fas fa-eye"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Selector de negocio oculto - se detecta automáticamente -->
+          <div class="form-group" id="businessGroup" hidden>
+            <label for="businessSelect"> <i class="fas fa-store"></i> Negocio </label>
+            <select id="businessSelect" name="negocioId" class="form-control">
+              <option value="">Cargando negocios...</option>
+            </select>
+            <small class="input-hint">Selecciona la tienda o unidad a la que perteneces.</small>
+          </div>
+
+          <div class="form-group checkbox-group">
+            <label class="checkbox-label">
+              <input type="checkbox" id="rememberMe" name="rememberMe" />
+              <span>Recordar mi sesión</span>
+            </label>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block" id="loginBtn">
+            <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+          </button>
+
+          <div class="auth-footer">
+            <p class="forgot-password">
+              <a href="#" id="forgotPasswordLink">¿Olvidaste tu contraseña?</a>
+            </p>
+          </div>
+        </form>
+      </div>
+
+      <!-- Versión y footer -->
+      <div class="auth-version">
+        <p>Versión 1.0.0 | <i class="fas fa-mobile-alt"></i> Instalable como App</p>
+      </div>
+    </div>
+
+    <!-- Modal de recuperación de contraseña -->
+    <div id="recoverPasswordModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3><i class="fas fa-key"></i> Recuperar Contraseña</h3>
+          <button class="modal-close" id="closeRecoverModal" aria-label="Cerrar recuperación">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>
+            Contacta al administrador del sistema para iniciar el proceso de recuperación de
+            contraseña.
+          </p>
+          <p>Por seguridad, las credenciales predeterminadas han sido deshabilitadas.</p>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" id="closeRecoverBtn">Cerrar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de primer inicio: cambio de contraseña obligatorio -->
+    <div id="firstLoginModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3><i class="fas fa-unlock-alt"></i> Actualiza tu contraseña</h3>
+          <button
+            class="modal-close"
+            id="closeFirstLoginModal"
+            aria-label="Cerrar actualización de contraseña"
+          >
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="firstLoginForm">
+          <div class="modal-body">
+            <p>Por seguridad debes establecer una contraseña nueva antes de continuar.</p>
+            <div class="form-group">
+              <label for="newPassword"> <i class="fas fa-lock"></i> Nueva contraseña </label>
+              <input
+                type="password"
+                id="newPassword"
+                name="newPassword"
+                required
+                autocomplete="new-password"
+                placeholder="Ingresa tu nueva contraseña"
+              />
+            </div>
+            <div class="form-group">
+              <label for="confirmNewPassword">
+                <i class="fas fa-lock"></i> Confirmar contraseña
+              </label>
+              <input
+                type="password"
+                id="confirmNewPassword"
+                name="confirmNewPassword"
+                required
+                autocomplete="new-password"
+                placeholder="Vuelve a escribir la contraseña"
+              />
+            </div>
+            <p class="password-hint">
+              La contraseña debe tener al menos 8 caracteres, incluir mayúsculas, minúsculas y
+              números.
+            </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" id="cancelFirstLoginBtn">
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-primary" id="confirmFirstLoginBtn">
+              <i class="fas fa-save"></i> Guardar y continuar
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Toast para notificaciones -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Scripts - IMPORTANTE: Mantener este orden de carga -->
+    <script src="js/utils.js"></script>
+    <!-- Utilidades y notificaciones -->
+    <script src="js/auth.js"></script>
+    <!-- Gestión de autenticación -->
+
+    <script>
+      // Inicializar login
+      document.addEventListener('DOMContentLoaded', async () => {
+        // Esperar a que Auth.init() termine
+        await new Promise((resolve) => {
+          if (Auth._refreshToken !== undefined) {
+            resolve();
+          } else {
+            const checkInterval = setInterval(() => {
+              if (Auth._refreshToken !== undefined) {
+                clearInterval(checkInterval);
+                resolve();
+              }
+            }, 50);
+            // Timeout después de 2 segundos
+            setTimeout(() => {
+              clearInterval(checkInterval);
+              resolve();
+            }, 2000);
+          }
+        });
+
+        // Si el usuario ya está logueado, redirigir al dashboard
+        if (Auth.isAuthenticated()) {
+          window.location.href = 'dashboard.html';
+          return; // Detener la ejecución para no mostrar el login
+        }
+
+        // Verificar si hay parámetros en la URL para mostrar mensajes
+        const urlParams = new URLSearchParams(window.location.search);
+        const expiredParam = urlParams.get('expired');
+        const reasonParam = urlParams.get('reason');
+        const errorParam = urlParams.get('error');
+
+        // Mostrar mensaje si la sesión expiró
+        if (expiredParam === 'true' || reasonParam === 'session_expired') {
+          Utils.showToast(
+            'Tu sesión ha expirado. Por favor inicia sesión nuevamente.',
+            'warning',
+            5000
+          );
+        } else if (reasonParam === 'not_authenticated') {
+          Utils.showToast('Debes iniciar sesión para acceder a esta página.', 'info', 4000);
+        } else if (errorParam === 'auth_failed') {
+          Utils.showToast(
+            'Error de autenticación. Por favor inicia sesión nuevamente.',
+            'error',
+            4000
+          );
+        } else if (errorParam === 'auth_not_loaded') {
+          Utils.showToast(
+            'Error cargando el sistema de autenticación. Recarga la página.',
+            'error',
+            5000
+          );
+        }
+
+        // Limpiar parámetros de la URL sin recargar
+        if (expiredParam || reasonParam || errorParam) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+
+        // Toggle mostrar/ocultar contraseña
+        const togglePassword = document.getElementById('togglePassword');
+        const passwordInput = document.getElementById('password');
+        const rememberMeCheckbox = document.getElementById('rememberMe');
+
+        if (rememberMeCheckbox) {
+          rememberMeCheckbox.checked = localStorage.getItem('remember_me') === '1';
+        }
+
+        togglePassword.addEventListener('click', () => {
+          const type = passwordInput.type === 'password' ? 'text' : 'password';
+          passwordInput.type = type;
+          togglePassword.innerHTML =
+            type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
+        });
+
+        // Manejar formulario de login
+        const loginForm = document.getElementById('loginForm');
+        const loginBtn = document.getElementById('loginBtn');
+
+        // Ya no se necesita selector de negocio - se detecta automáticamente
+
+        const firstLoginModal = document.getElementById('firstLoginModal');
+        const closeFirstLoginBtn = document.getElementById('closeFirstLoginModal');
+        const cancelFirstLoginBtn = document.getElementById('cancelFirstLoginBtn');
+        const firstLoginForm = document.getElementById('firstLoginForm');
+        const newPasswordInput = document.getElementById('newPassword');
+        const confirmNewPasswordInput = document.getElementById('confirmNewPassword');
+        const confirmFirstLoginBtn = document.getElementById('confirmFirstLoginBtn');
+        let pendingFirstLogin = null;
+
+        const openFirstLoginModal = () => {
+          if (!firstLoginModal) {
+            return;
+          }
+          firstLoginModal.classList.add('show');
+          if (newPasswordInput && confirmNewPasswordInput) {
+            newPasswordInput.value = '';
+            confirmNewPasswordInput.value = '';
+            setTimeout(() => newPasswordInput.focus(), 0);
+          }
+        };
+
+        const hideFirstLoginModal = (options = {}) => {
+          if (!firstLoginModal) {
+            return;
+          }
+          firstLoginModal.classList.remove('show');
+          if (options.resetPending !== false) {
+            pendingFirstLogin = null;
+          }
+        };
+
+        loginForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+
+          const username = document.getElementById('username').value.trim();
+          const password = document.getElementById('password').value;
+
+          // Validar campos vacíos
+          if (!username || !password) {
+            Utils.showToast('Por favor completa todos los campos', 'warning');
+            return;
+          }
+
+          loginBtn.disabled = true;
+          loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Iniciando sesión...';
+          let shouldResetButton = true;
+
+          try {
+            // Login automático sin negocioId - el backend lo detecta
+            const result = await Auth.login(username, password);
+
+            if (result.success) {
+              // Guardar el negocio que retornó el servidor
+              const negocioId = result.user?.negocioId || 'mecanica';
+              localStorage.setItem('negocio_actual', negocioId);
+
+              if (rememberMeCheckbox) {
+                rememberMeCheckbox.checked
+                  ? localStorage.setItem('remember_me', '1')
+                  : localStorage.removeItem('remember_me');
+              }
+
+              Utils.showToast('¡Bienvenido! Iniciando sesión...', 'success');
+              shouldResetButton = false;
+              setTimeout(() => {
+                window.location.href = 'dashboard.html';
+              }, 400);
+              return;
+            }
+
+            if (result.requirePasswordChange) {
+              const negocioId = result.user?.negocioId || 'mecanica';
+              pendingFirstLogin = {
+                userId: result.userId,
+                username,
+                currentPassword: password,
+                negocioId,
+                remember: rememberMeCheckbox ? rememberMeCheckbox.checked : false,
+              };
+
+              Utils.showToast(
+                result.message || 'Debes cambiar tu contraseña antes de continuar.',
+                'warning'
+              );
+              openFirstLoginModal();
+              return;
+            }
+
+            let errorMessage = result.message || 'Credenciales incorrectas.';
+            if (typeof result.intentosRestantes === 'number') {
+              errorMessage += ` Intentos restantes: ${result.intentosRestantes}`;
+            }
+
+            Utils.showToast(errorMessage, 'error');
+          } catch (error) {
+            console.error('Error en login:', error);
+            Utils.showToast('Error al iniciar sesión. Intenta nuevamente.', 'error');
+          } finally {
+            if (shouldResetButton) {
+              loginBtn.disabled = false;
+              loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+            }
+          }
+        });
+
+        // Modal de recuperación de contraseña
+        const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+        const recoverPasswordModal = document.getElementById('recoverPasswordModal');
+        const closeRecoverModal = document.getElementById('closeRecoverModal');
+        const closeRecoverBtn = document.getElementById('closeRecoverBtn');
+
+        forgotPasswordLink.addEventListener('click', (e) => {
+          e.preventDefault();
+          recoverPasswordModal.classList.add('show');
+        });
+
+        closeRecoverModal.addEventListener('click', () => {
+          recoverPasswordModal.classList.remove('show');
+        });
+
+        closeRecoverBtn.addEventListener('click', () => {
+          recoverPasswordModal.classList.remove('show');
+        });
+
+        // Cerrar modal al hacer clic fuera
+        recoverPasswordModal.addEventListener('click', (e) => {
+          if (e.target === recoverPasswordModal) {
+            recoverPasswordModal.classList.remove('show');
+          }
+        });
+
+        // Manejar modal de cambio obligatorio de contraseña
+        if (
+          firstLoginModal &&
+          firstLoginForm &&
+          confirmFirstLoginBtn &&
+          newPasswordInput &&
+          confirmNewPasswordInput
+        ) {
+          const resetFirstLoginBtn = () => {
+            confirmFirstLoginBtn.disabled = false;
+            confirmFirstLoginBtn.innerHTML = '<i class="fas fa-save"></i> Guardar y continuar';
+          };
+
+          const closeFirstLoginModal = () => {
+            hideFirstLoginModal();
+          };
+
+          if (closeFirstLoginBtn) {
+            closeFirstLoginBtn.addEventListener('click', closeFirstLoginModal);
+          }
+
+          if (cancelFirstLoginBtn) {
+            cancelFirstLoginBtn.addEventListener('click', (event) => {
+              event.preventDefault();
+              hideFirstLoginModal();
+            });
+          }
+
+          firstLoginModal.addEventListener('click', (event) => {
+            if (event.target === firstLoginModal) {
+              hideFirstLoginModal();
+            }
+          });
+
+          firstLoginForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            if (!pendingFirstLogin) {
+              hideFirstLoginModal();
+              return;
+            }
+
+            const newPassword = newPasswordInput.value.trim();
+            const confirmPassword = confirmNewPasswordInput.value.trim();
+
+            if (newPassword.length < 8) {
+              Utils.showToast('La nueva contraseña debe tener al menos 8 caracteres.', 'warning');
+              return;
+            }
+
+            if (newPassword !== confirmPassword) {
+              Utils.showToast('Las contraseñas no coinciden.', 'warning');
+              return;
+            }
+
+            confirmFirstLoginBtn.disabled = true;
+            confirmFirstLoginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
+
+            try {
+              const pending = { ...pendingFirstLogin };
+              const changeResult = await Auth.firstLoginChangePassword(
+                pending.userId,
+                pending.currentPassword,
+                newPassword,
+                pending.negocioId
+              );
+
+              if (!changeResult.success) {
+                Utils.showToast(
+                  changeResult.message || 'No se pudo actualizar la contraseña.',
+                  'error'
+                );
+                resetFirstLoginBtn();
+                return;
+              }
+
+              Utils.showToast(
+                changeResult.message || 'Contraseña actualizada. Iniciando sesión...',
+                'success'
+              );
+              hideFirstLoginModal({ resetPending: false });
+
+              const loginResult = await Auth.login(
+                pending.username,
+                newPassword,
+                pending.negocioId
+              );
+
+              if (loginResult.success) {
+                const negocioId = loginResult.user?.negocioId || pending.negocioId || 'mecanica';
+                localStorage.setItem('negocio_actual', negocioId);
+
+                if (rememberMeCheckbox) {
+                  pending.remember
+                    ? localStorage.setItem('remember_me', '1')
+                    : localStorage.removeItem('remember_me');
+                }
+                pendingFirstLogin = null;
+                setTimeout(() => {
+                  window.location.href = 'dashboard.html';
+                }, 400);
+                return;
+              }
+
+              pendingFirstLogin = null;
+              Utils.showToast(
+                'Contraseña actualizada. Inicia sesión con tu nueva contraseña.',
+                'info'
+              );
+            } catch (error) {
+              console.error('Error en cambio de contraseña inicial:', error);
+              Utils.showToast('No se pudo actualizar la contraseña. Intenta nuevamente.', 'error');
+            } finally {
+              resetFirstLoginBtn();
+            }
+          });
+        }
+      });
+    </script>
+  </body>
+</html>

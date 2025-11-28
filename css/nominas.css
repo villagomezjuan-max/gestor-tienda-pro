@@ -1,0 +1,740 @@
+/* ============================================
+   MÓDULO NÓMINAS Y PERSONAL - ESTILOS
+   Sistema profesional de RRHH
+   ============================================ */
+
+.nominas-module {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Tabs principales */
+.nominas-tabs {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.nominas-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.nominas-tabs .tab-btn {
+  padding: 0.6rem 1rem;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.nominas-tabs .tab-btn span {
+  display: inline;
+}
+
+/* Dashboard */
+.nominas-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.25rem;
+}
+
+/* Stat Cards */
+.stat-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--bg-primary);
+  border-radius: 0.75rem;
+  border: 1px solid var(--border-light);
+  transition: all 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.stat-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+
+/* Lista de Asistencia Dashboard */
+.asistencia-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.asistencia-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background: var(--bg-secondary);
+  transition: background 0.2s;
+}
+
+.asistencia-item:hover {
+  background: var(--bg-tertiary);
+}
+
+.empleado-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.empleado-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.empleado-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.empleado-info .nombre {
+  display: block;
+  font-weight: 500;
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.empleado-info .cargo {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.asistencia-estado {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2rem;
+}
+
+.asistencia-estado small {
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+}
+
+/* Lista de Permisos Dashboard */
+.permisos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.permiso-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  background: var(--bg-secondary);
+}
+
+.permiso-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.permiso-info .nombre {
+  display: block;
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.permiso-info .tipo {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.permiso-fechas {
+  text-align: right;
+}
+
+.permiso-fechas small {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+}
+
+.permiso-fechas .dias {
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--primary-color);
+}
+
+.permiso-acciones {
+  display: flex;
+  gap: 0.25rem;
+}
+
+/* Acciones Rápidas */
+.acciones-rapidas {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.75rem;
+}
+
+.accion-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1rem;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-light);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.accion-btn:hover {
+  background: var(--primary-light);
+  border-color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+.accion-btn i {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+}
+
+.accion-btn span {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-primary);
+  text-align: center;
+}
+
+/* Sección Header */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.filtros-empleados,
+.filtros-asistencia,
+.filtros-permisos,
+.filtros-nominas,
+.filtros-anticipos {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filtros-empleados input,
+.filtros-empleados select,
+.filtros-asistencia input,
+.filtros-permisos select,
+.filtros-nominas select {
+  min-width: 150px;
+  max-width: 200px;
+}
+
+/* Grid de Empleados */
+.empleados-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+
+.empleado-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.empleado-card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+.empleado-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 1rem;
+  background: var(--bg-secondary);
+}
+
+.empleado-avatar-lg {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  overflow: hidden;
+}
+
+.empleado-avatar-lg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.empleado-card-body {
+  padding: 1rem;
+}
+
+.empleado-card-body h4 {
+  margin: 0 0 0.25rem 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.empleado-card-body .cargo {
+  color: var(--primary-color);
+  font-weight: 500;
+  font-size: 0.85rem;
+  margin-bottom: 0.5rem;
+}
+
+.empleado-card-body .departamento,
+.empleado-card-body .cedula {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0.25rem 0;
+}
+
+.empleado-card-body .departamento i,
+.empleado-card-body .cedula i {
+  width: 16px;
+  margin-right: 0.25rem;
+}
+
+.empleado-card-footer {
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--border-light);
+  background: var(--bg-secondary);
+}
+
+.stats-mini {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  margin-bottom: 0.5rem;
+}
+
+.especialidades-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.especialidades-tags .tag {
+  padding: 0.15rem 0.4rem;
+  background: var(--primary-light);
+  color: var(--primary-color);
+  border-radius: 0.25rem;
+  font-size: 0.65rem;
+  font-weight: 500;
+}
+
+/* Asistencia Resumen */
+.asistencia-resumen {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.resumen-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--bg-primary);
+  border-radius: 0.5rem;
+  border: 1px solid var(--border-light);
+  min-width: 120px;
+}
+
+.resumen-item i {
+  font-size: 1.25rem;
+}
+
+.resumen-item .numero {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.resumen-item .label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.resumen-item.presentes i {
+  color: var(--success-color);
+}
+.resumen-item.ausentes i {
+  color: var(--danger-color);
+}
+.resumen-item.tardanzas i {
+  color: var(--warning-color);
+}
+
+/* Tabla de Asistencia */
+.table-asistencia .empleado-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.avatar-sm {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--primary-light);
+  color: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  flex-shrink: 0;
+}
+
+/* Permisos Grid */
+.permisos-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1rem;
+}
+
+.permiso-card {
+  background: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.permiso-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: var(--bg-secondary);
+}
+
+.empleado-mini {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.empleado-mini i {
+  color: var(--primary-color);
+}
+
+.empleado-mini span {
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.permiso-card-body {
+  padding: 1rem;
+}
+
+.permiso-tipo {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.permiso-tipo i {
+  color: var(--primary-color);
+  font-size: 1.1rem;
+}
+
+.permiso-tipo span {
+  font-weight: 500;
+  color: var(--text-primary);
+}
+
+.permiso-fechas {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.permiso-fechas .fecha {
+  display: flex;
+  flex-direction: column;
+}
+
+.permiso-fechas .label {
+  font-size: 0.7rem;
+  color: var(--text-tertiary);
+  text-transform: uppercase;
+}
+
+.permiso-fechas .valor {
+  font-weight: 500;
+  font-size: 0.85rem;
+  color: var(--text-primary);
+}
+
+.permiso-card-body .motivo {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  margin: 0;
+  padding: 0.5rem;
+  background: var(--bg-secondary);
+  border-radius: 0.25rem;
+}
+
+.permiso-card-footer {
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  border-top: 1px solid var(--border-light);
+}
+
+.permiso-card-footer .btn {
+  flex: 1;
+}
+
+/* Tabs Mini (para modales) */
+.form-tabs-mini {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 0.5rem;
+}
+
+.tab-mini {
+  padding: 0.4rem 0.75rem;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  cursor: pointer;
+  border-radius: 0.25rem;
+  transition: all 0.2s;
+}
+
+.tab-mini:hover {
+  background: var(--bg-secondary);
+}
+
+.tab-mini.active {
+  background: var(--primary-color);
+  color: white;
+}
+
+.tab-content-mini {
+  display: none;
+}
+
+.tab-content-mini.active {
+  display: block;
+}
+
+/* Checkbox Grid */
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: 0.5rem;
+}
+
+.checkbox-grid label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.checkbox-grid input[type='checkbox'] {
+  width: auto;
+  min-height: auto;
+}
+
+/* Botones pequeños */
+.btn-xs {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.btn-group {
+  display: flex;
+  gap: 0.25rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nominas-tabs .tab-btn span {
+    display: none;
+  }
+
+  .nominas-tabs .tab-btn {
+    padding: 0.6rem 0.75rem;
+  }
+
+  .stats-grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .empleados-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .permisos-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .asistencia-resumen {
+    justify-content: center;
+  }
+
+  .section-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filtros-empleados,
+  .filtros-asistencia,
+  .filtros-permisos {
+    width: 100%;
+  }
+
+  .filtros-empleados input,
+  .filtros-empleados select {
+    flex: 1;
+    min-width: 0;
+    max-width: none;
+  }
+
+  .acciones-rapidas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .stats-grid-4 {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    padding: 0.75rem;
+  }
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .stat-value {
+    font-size: 1.25rem;
+  }
+
+  .acciones-rapidas {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Dark Theme Overrides */
+[data-theme='dark'] .stat-card,
+[data-theme='dark'] .empleado-card,
+[data-theme='dark'] .permiso-card {
+  background: var(--bg-secondary);
+  border-color: var(--border-dark);
+}
+
+[data-theme='dark'] .empleado-card-header,
+[data-theme='dark'] .empleado-card-footer,
+[data-theme='dark'] .permiso-card-header {
+  background: var(--bg-tertiary);
+}
+
+[data-theme='dark'] .asistencia-item,
+[data-theme='dark'] .permiso-item {
+  background: var(--bg-tertiary);
+}
+
+[data-theme='dark'] .accion-btn {
+  background: var(--bg-tertiary);
+  border-color: var(--border-dark);
+}
+
+[data-theme='dark'] .accion-btn:hover {
+  background: var(--primary-dark);
+}
+
+[data-theme='dark'] .resumen-item {
+  background: var(--bg-secondary);
+  border-color: var(--border-dark);
+}

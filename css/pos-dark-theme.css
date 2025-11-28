@@ -1,0 +1,257 @@
+/* ============================================
+   TEMA OSCURO POS - DISEÑO PROFESIONAL
+   ============================================ */
+
+/* Botón Hero para Agregar Servicio */
+.pos-quick-actions {
+  padding: 1rem;
+  background: var(--pos-bg-primary, #1a1d29);
+}
+
+.btn-add-service-hero {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 1.05rem;
+  background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.32);
+}
+
+.btn-add-service-hero:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 26px rgba(16, 185, 129, 0.42);
+}
+
+.btn-service-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.22);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.btn-service-icon i {
+  font-size: 2rem;
+  color: white;
+}
+
+.btn-service-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+  text-align: left;
+}
+
+.btn-service-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+  display: block;
+}
+
+.btn-service-subtitle {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
+  display: block;
+}
+
+@media (max-width: 1024px) {
+  .pos-quick-actions {
+    padding: 0.85rem;
+  }
+
+  .btn-add-service-hero {
+    gap: 1rem;
+    padding: 0.95rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .btn-add-service-hero {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .btn-service-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .btn-service-title {
+    font-size: 1rem;
+  }
+
+  .btn-service-subtitle {
+    font-size: 0.82rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .btn-add-service-hero {
+    border-radius: 14px;
+    padding: 0.85rem;
+  }
+
+  .btn-service-subtitle {
+    font-size: 0.78rem;
+  }
+}
+
+/* Productos Grid - Tema Oscuro */
+.pos-products-column #posProductsGrid {
+  background: var(--pos-bg-primary, #1a1d29);
+}
+
+.pos-products-column .producto-card {
+  background: var(--pos-bg-card, #2d3142);
+  border: 1px solid var(--pos-border-color, #3a3f52);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.pos-products-column .producto-card:hover {
+  background: var(--pos-bg-secondary, #242837);
+  border-color: var(--pos-accent-primary, #667eea);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+}
+
+.pos-products-column .producto-card .producto-nombre {
+  color: var(--pos-text-primary, #e8eaed);
+}
+
+.pos-products-column .producto-card .producto-precio {
+  color: var(--pos-accent-primary, #667eea);
+}
+
+.pos-products-column .producto-card .text-muted {
+  color: var(--pos-text-muted, #6b7280);
+}
+
+/* Columna del Carrito - Tema Oscuro */
+/* El ancho del carrito se define en pos-fullscreen.css */
+
+/* Tarjeta de Cliente - Tema Oscuro */
+.cliente-card-compact {
+  background: var(--pos-bg-card, #2d3142);
+  border: 2px solid var(--pos-border-color, #3a3f52);
+}
+
+.cliente-card-compact:hover {
+  border-color: var(--pos-accent-primary, #667eea);
+  box-shadow: 0 4px 16px rgba(102, 126, 234, 0.2);
+}
+
+.cliente-nombre {
+  color: var(--pos-text-primary, #e8eaed);
+}
+
+.cliente-label {
+  color: var(--pos-text-muted, #6b7280);
+}
+
+.btn-cambiar-cliente {
+  background: var(--pos-bg-input, #1e2130);
+  border-color: var(--pos-border-color, #3a3f52);
+  color: var(--pos-accent-primary, #667eea);
+}
+
+.btn-cambiar-cliente:hover {
+  background: var(--pos-accent-primary, #667eea);
+  color: white;
+  border-color: var(--pos-accent-primary, #667eea);
+}
+
+/* Empty State - Tema Oscuro */
+.empty-state-productos {
+  color: var(--pos-text-muted, #6b7280);
+}
+
+.empty-state-productos i {
+  opacity: 0.4;
+}
+
+/* TEMA CLARO - Overrides */
+body.ventas-fullscreen.pos-light-theme .pos-products-column .producto-card {
+  background: white;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+body.ventas-fullscreen.pos-light-theme .pos-products-column .producto-card:hover {
+  background: #f8f9ff;
+  border-color: #667eea;
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.15);
+}
+
+body.ventas-fullscreen.pos-light-theme .pos-products-column .producto-nombre {
+  color: #1a202c;
+}
+
+body.ventas-fullscreen.pos-light-theme .pos-products-column .producto-precio {
+  color: #667eea;
+}
+
+body.ventas-fullscreen.pos-light-theme .pos-products-column .text-muted {
+  color: #718096;
+}
+
+body.ventas-fullscreen.pos-light-theme .cliente-card-compact {
+  background: white;
+  border-color: #e2e8f0;
+}
+
+body.ventas-fullscreen.pos-light-theme .cliente-nombre {
+  color: #1a202c;
+}
+
+body.ventas-fullscreen.pos-light-theme .cliente-label {
+  color: #718096;
+}
+
+/* El ancho y layout del carrito se define en pos-fullscreen.css */
+
+body.ventas-fullscreen.pos-light-theme .pos-header-compact {
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+body.ventas-fullscreen.pos-light-theme .pos-header-left h2 {
+  color: #1a202c;
+}
+
+body.ventas-fullscreen.pos-light-theme .pos-search-field-compact input {
+  background: white;
+  border-color: #e2e8f0;
+  color: #1a202c;
+}
+
+body.ventas-fullscreen.pos-light-theme .pos-search-field-compact input::placeholder {
+  color: #a0aec0;
+}
+
+body.ventas-fullscreen.pos-light-theme .select-compact {
+  background: white;
+  border-color: #e2e8f0;
+  color: #1a202c;
+}
+
+body.ventas-fullscreen.pos-light-theme .btn-icon-compact {
+  background: white;
+  border-color: #e2e8f0;
+}
+
+body.ventas-fullscreen.pos-light-theme .empty-state-productos {
+  color: #a0aec0;
+}

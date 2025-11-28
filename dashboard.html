@@ -1,0 +1,617 @@
+﻿<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src 'self' http://localhost:3001 https://api.deepseek.com https://generativelanguage.googleapis.com https://api.openai.com https://api.telegram.org https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.googleapis.com https://www.gstatic.com; style-src-elem 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com https://r2cdn.perplexity.ai; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; script-src-elem 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.googleapis.com; script-src-attr 'unsafe-inline' 'unsafe-hashes'; base-uri 'self';"
+    />
+    <meta name="theme-color" content="#6366f1" />
+    <meta name="description" content="Sistema de Gestión Integral de Tienda" />
+    <script>
+      (function removeLegacyServiceWorker() {
+        if (!('serviceWorker' in navigator)) {
+          return;
+        }
+
+        const CLEANUP_FLAG = 'swCleanupDone';
+
+        const resolveScriptUrl = (registration) =>
+          registration?.active?.scriptURL ||
+          registration?.waiting?.scriptURL ||
+          registration?.installing?.scriptURL ||
+          '';
+
+        async function cleanup() {
+          try {
+            const registrations = await navigator.serviceWorker.getRegistrations();
+            const legacy = registrations.filter((registration) =>
+              /\/sw\.js(\?|#|$)/.test(resolveScriptUrl(registration))
+            );
+
+            if (!legacy.length) {
+              sessionStorage.removeItem(CLEANUP_FLAG);
+              return;
+            }
+
+            if (sessionStorage.getItem(CLEANUP_FLAG) === 'pending') {
+              sessionStorage.removeItem(CLEANUP_FLAG);
+              return;
+            }
+
+            sessionStorage.setItem(CLEANUP_FLAG, 'pending');
+
+            await Promise.all(legacy.map((registration) => registration.unregister()));
+
+            if ('caches' in window) {
+              const cacheKeys = await caches.keys();
+              await Promise.all(cacheKeys.map((key) => caches.delete(key)));
+            }
+
+            window.location.reload();
+          } catch (error) {
+            console.warn('No se pudo limpiar el service worker legacy:', error);
+          }
+        }
+
+        cleanup();
+      })();
+    </script>
+    <title>Dashboard - Gestor Tienda Pro</title>
+
+    <!-- Manifest para PWA -->
+    <link rel="manifest" href="manifest.json?v=1.2" />
+
+    <!-- Iconos -->
+    <link rel="icon" href="icons/icon.svg?v=1.2" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png?v=1.2" />
+
+    <!-- Font Awesome para iconos -->
+    <script src="js/theme-bootstrap.js?v=1.0"></script>
+    <!-- Sistema de manejo de errores - NO silenciar errores -->
+    <script src="js/error-handler.js?v=1.0"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+
+    <script src="js/tenant-storage.js?v=1.0"></script>
+    <script src="js/theme-manager.js?v=1.1"></script>
+    <script src="js/module-state-persistence.js?v=1.0"></script>
+    <script src="js/pricing-config.js?v=1.0"></script>
+
+    <!-- FullCalendar para la agenda -->
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/locales/es.js"></script>
+
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <!-- jsPDF para generar PDFs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="css/styles.css?v=1.2" />
+    <link rel="stylesheet" href="css/components.css?v=1.2" />
+    <link rel="stylesheet" href="css/connection-indicator.css?v=1.0" />
+    <link rel="stylesheet" href="css/dashboard.css?v=1.0" />
+    <link rel="stylesheet" href="css/modal-fixes.css?v=1.0" />
+    <link rel="stylesheet" href="css/ventas-mejorado.css?v=2.5" />
+    <link rel="stylesheet" href="css/mobile-optimization.css?v=1.0" />
+    <link rel="stylesheet" href="css/toast-notifications.css?v=1.2" />
+    <link rel="stylesheet" href="css/responsive.css?v=1.3" />
+    <link rel="stylesheet" href="css/animations.css?v=1.2" />
+    <link rel="stylesheet" href="css/proveedores.css?v=1.0" />
+    <link rel="stylesheet" href="css/chat-assistant.css?v=1.2" />
+    <link rel="stylesheet" href="css/global-search.css?v=1.2" />
+    <link rel="stylesheet" href="css/marketing.css?v=1.0" />
+    <link rel="stylesheet" href="css/vehiculo-selector.css?v=1.0" />
+    <link rel="stylesheet" href="css/marketing-ui-mejorado.css?v=1.0" />
+    <link rel="stylesheet" href="css/admin-hub.css?v=1.0" />
+    <link rel="stylesheet" href="css/compras-detalle.css?v=1.0" />
+    <link rel="stylesheet" href="css/compras-compact.css?v=1.0" />
+    <link rel="stylesheet" href="css/super-admin-tools.css?v=1.0" />
+    <link rel="stylesheet" href="css/productos-mejoras.css?v=1.1" />
+    <link rel="stylesheet" href="css/productos-compact.css?v=1.0" />
+    <link rel="stylesheet" href="css/notification-hub.css?v=1.0" />
+    <link rel="stylesheet" href="css/admin-tools.css?v=1.0" />
+    <link rel="stylesheet" href="css/finanzas.css?v=1.0" />
+    <link rel="stylesheet" href="css/nominas.css?v=1.0" />
+    <link rel="stylesheet" href="css/pos-fullscreen.css?v=1.4" />
+    <link rel="stylesheet" href="css/pos-cards.css?v=1.2" />
+    <link rel="stylesheet" href="css/pos-dark-theme.css?v=1.0" />
+    <link rel="stylesheet" href="css/pos-cart-items.css?v=1.1" />
+    <link rel="stylesheet" href="css/pos-minimalista.css?v=1.0" />
+    <link rel="stylesheet" href="css/factura.css?v=1.3" />
+    <link rel="stylesheet" href="css/mobile-menu-fix.css?v=1.0" />
+    <link rel="stylesheet" href="css/stock-control.css?v=1.0" />
+    <link rel="stylesheet" href="css/ordenes-trabajo-modal.css?v=1.0" />
+    <link rel="stylesheet" href="css/taller-mobile.css?v=1.0" />
+    <link rel="stylesheet" href="css/print.css?v=1.2" media="print" />
+    <link rel="stylesheet" href="css/logs-mejorado.css?v=1.0" />
+    <link rel="stylesheet" href="css/logs-excel.css?v=1.0" />
+    <link rel="stylesheet" href="css/productos-night-ui.css?v=1.0" />
+    <link rel="stylesheet" href="css/excel-tables-global.css?v=1.0" />
+    <link rel="stylesheet" href="css/historial-notificaciones.css?v=1.0" />
+  </head>
+  <body class="dashboard-page">
+    <!-- Overlay para cerrar menú en móvil -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Barra lateral de navegación -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="fas fa-store"></i>
+          <span class="sidebar-title" id="storeName">Gestor Tienda</span>
+        </div>
+        <button class="sidebar-toggle" id="sidebarClose" aria-label="Cerrar menú lateral">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-module="dashboard">
+          <i class="fas fa-home"></i>
+          <span>Dashboard</span>
+        </a>
+
+        <div class="nav-section">Ventas</div>
+        <a href="#" class="nav-item" data-module="ventas">
+          <i class="fas fa-cash-register"></i>
+          <span>Facturación y Ventas</span>
+        </a>
+        <a href="#" class="nav-item" data-module="historial-ventas">
+          <i class="fas fa-receipt"></i>
+          <span>Historial Ventas</span>
+        </a>
+        <div class="nav-section" data-business="taller">Taller</div>
+        <a href="#" class="nav-item" data-module="ordenes-trabajo" data-business="taller">
+          <i class="fas fa-tools"></i>
+          <span>Órdenes de Trabajo</span>
+        </a>
+        <a href="#" class="nav-item" data-module="vehiculos" data-business="taller">
+          <i class="fas fa-car"></i>
+          <span>Vehículos</span>
+        </a>
+        <a href="#" class="nav-item" data-module="mis-tareas" data-business="taller">
+          <i class="fas fa-tasks"></i>
+          <span>Mis Tareas</span>
+        </a>
+        <a href="#" class="nav-item" data-module="agenda" data-business="taller">
+          <i class="fas fa-calendar-alt"></i>
+          <span>Agenda</span>
+        </a>
+        <a href="#" class="nav-item" data-module="catalogo" data-business="taller">
+          <i class="fas fa-toolbox"></i>
+          <span>Catálogo Técnico</span>
+        </a>
+
+        <div class="nav-section">Inventario</div>
+        <a href="#" class="nav-item" data-module="productos">
+          <i class="fas fa-box"></i>
+          <span>Productos</span>
+        </a>
+        <a href="#" class="nav-item" data-module="compras">
+          <i class="fas fa-shopping-cart"></i>
+          <span>Compras</span>
+        </a>
+        <a href="#" class="nav-item" data-module="stock">
+          <i class="fas fa-warehouse"></i>
+          <span>Control Stock</span>
+        </a>
+
+        <div class="nav-section">Contactos</div>
+        <a href="#" class="nav-item" data-module="clientes">
+          <i class="fas fa-users"></i>
+          <span>Clientes</span>
+        </a>
+        <a href="#" class="nav-item" data-module="proveedores">
+          <i class="fas fa-truck"></i>
+          <span>Proveedores</span>
+        </a>
+
+        <div class="nav-section">Finanzas</div>
+        <a href="#" class="nav-item" data-module="finanzas">
+          <i class="fas fa-chart-line"></i>
+          <span>Finanzas</span>
+          <span class="badge badge-success">Mejorado</span>
+        </a>
+        <a href="#" class="nav-item" data-module="nominas">
+          <i class="fas fa-users-cog"></i>
+          <span>Nóminas y Personal</span>
+          <span class="badge badge-primary">Nuevo</span>
+        </a>
+
+        <div class="nav-section">Marketing</div>
+        <a href="#" class="nav-item" data-module="marketing">
+          <i class="fas fa-lightbulb"></i>
+          <span>Marketing IA</span>
+        </a>
+        <a href="#" class="nav-item" data-module="publicidad">
+          <i class="fas fa-bullhorn"></i>
+          <span>Publicidad</span>
+        </a>
+        <a href="#" class="nav-item" data-module="notificaciones_inteligentes">
+          <i class="fas fa-bell"></i>
+          <span>Notificaciones IA</span>
+        </a>
+
+        <div class="nav-section">Sistema</div>
+        <a href="#" class="nav-item super-admin-only" data-module="super-admin">
+          <i class="fas fa-crown"></i>
+          <span>Super Admin Tools</span>
+          <span class="badge badge-danger">Admin</span>
+        </a>
+        <a href="#" class="nav-item super-admin-only" data-module="admin-hub">
+          <i class="fas fa-layer-group"></i>
+          <span>Gestor Central</span>
+        </a>
+        <a href="#" class="nav-item admin-only" data-module="logs">
+          <i class="fas fa-history"></i>
+          <span>Logs del Sistema</span>
+        </a>
+        <a href="#" class="nav-item" data-module="historial-notificaciones">
+          <i class="fas fa-bell"></i>
+          <span>Historial de Notificaciones</span>
+        </a>
+        <a href="#" class="nav-item" data-module="importador">
+          <i class="fas fa-file-import"></i>
+          <span>Importar CSV</span>
+        </a>
+        <a href="#" class="nav-item" data-module="configuracion">
+          <i class="fas fa-cog"></i>
+          <span>Configuración</span>
+        </a>
+        <a href="#" class="nav-item" data-module="backup">
+          <i class="fas fa-database"></i>
+          <span>Backup & Datos</span>
+        </a>
+        <a href="#" class="nav-item" data-module="sri-panel">
+          <i class="fas fa-file-invoice-dollar"></i>
+          <span>Sistema SRI Ecuador</span>
+          <span class="badge badge-success">100%</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn btn-secondary btn-block" id="logoutBtn">
+          <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+        </button>
+      </div>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+      <!-- Header superior -->
+      <header class="main-header">
+        <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú lateral">
+          <i class="fas fa-bars"></i>
+        </button>
+
+        <div class="header-title">
+          <h1 id="pageTitle">Dashboard</h1>
+          <p class="store-name-header" id="storeNameHeader"></p>
+        </div>
+
+        <div class="header-actions">
+          <button class="header-btn" id="themeToggle" title="Cambiar tema">
+            <i class="fas fa-moon"></i>
+          </button>
+
+          <div class="user-menu">
+            <button class="user-btn" id="userMenuBtn">
+              <i class="fas fa-user-circle"></i>
+              <span id="currentUserName">Usuario</span>
+            </button>
+            <div class="user-dropdown" id="userDropdown">
+              <div class="user-info">
+                <p id="userName">Admin</p>
+                <p id="userRole" class="user-role">Administrador</p>
+              </div>
+              <hr />
+              <a href="#" data-action="open-profile"> <i class="fas fa-user"></i> Mi Perfil </a>
+              <a href="#" data-action="open-configuracion">
+                <i class="fas fa-cog"></i> Configuración
+              </a>
+              <hr />
+              <a href="#" id="logoutBtnHeader">
+                <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+              </a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Área de contenido dinámico -->
+      <div class="content-area" id="contentArea">
+        <!-- El contenido de cada módulo se cargará aquí dinámicamente -->
+      </div>
+    </main>
+
+    <!-- Toasts flotantes -->
+    <div id="toastContainer" class="toast-container"></div>
+
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+      <div class="spinner"></div>
+      <p>Cargando...</p>
+    </div>
+
+    <!-- Indicador persistente de conexión -->
+    <div class="connection-indicator" id="connectionIndicator" role="status" aria-live="polite">
+      <span class="connection-indicator__dot" aria-hidden="true"></span>
+      <div class="connection-indicator__text">
+        <span class="connection-indicator__label" id="connectionIndicatorLabel"
+          >Verificando conexión...</span
+        >
+        <span class="connection-indicator__meta" id="connectionIndicatorMeta"
+          >Preparando comprobación</span
+        >
+      </div>
+      <button
+        class="connection-indicator__refresh"
+        id="connectionIndicatorRefresh"
+        type="button"
+        title="Reintentar verificación"
+      >
+        <i class="fas fa-rotate-right"></i>
+      </button>
+    </div>
+
+    <!-- Scripts base -->
+    <!-- Forzar menú móvil visible -->
+    <script src="js/force-menu-mobile.js?v=1.0"></script>
+
+    <!-- Scripts de Seguridad y Autenticación (ORDEN CRÍTICO) -->
+    <script src="js/utils.js?v=1.2"></script>
+    <script src="js/connection-indicator.js?v=1.0"></script>
+    <script src="js/data-refresh-manager.js?v=1.0"></script>
+    <script src="js/auth.js?v=1.4"></script>
+    <script src="js/security-guard.js?v=1.2"></script>
+    <script src="js/validators.js?v=2.0"></script>
+    <script src="js/database.js?v=2.0"></script>
+    <script src="js/database-api.js?v=1.0"></script>
+    <script src="js/business-sync.js?v=2.0"></script>
+    <!-- <script src="js/database-safe-wrapper.js?v=1.0"></script> -->
+    <script src="js/cleanup-demo-data.js?v=1.0"></script>
+    <script src="js/initial-setup-wizard.js?v=4.0"></script>
+    <script src="js/system-migrator.js?v=2.0"></script>
+    <script src="js/notificaciones.js?v=1.2"></script>
+
+    <!-- Sistema de control de inventario mejorado -->
+    <script src="js/inventario-control.js?v=1.2"></script>
+    <script src="js/stock-level-manager.js?v=1.0"></script>
+
+    <!-- Sistema Unificado de IA (DEBE IR PRIMERO) -->
+    <script src="js/ia-unified-engine.js?v=1.2"></script>
+    <script src="js/ia-config-panel.js?v=1.0"></script>
+    <script src="js/ia-agent-selector.js?v=1.0"></script>
+
+    <!-- Módulos esenciales -->
+    <!-- config-tienda.js removido: obsoleto, reemplazado por initial-setup-wizard.js -->
+    <script src="js/sri-integration.js?v=1.0"></script>
+
+    <!-- SRI CONSOLIDADO - Solo 3 archivos necesarios -->
+    <script src="js/sri-core.js?v=2.0"></script>
+    <script src="js/sri-diagnostics.js?v=1.1"></script>
+    <script src="js/sri-panel-minimal.js?v=2.0"></script>
+    <script src="js/sri-asistente-ia.js?v=1.5"></script>
+
+    <script src="js/documentos.js?v=1.0"></script>
+    <script src="js/pdf-generator.js?v=1.0"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
+    <script src="js/vendor/qrcode.min.js"></script>
+    <script src="js/vendor/html5-qrcode.min.js"></script>
+    <script src="js/facturacion.js?v=1.1"></script>
+    <script src="js/configuracion-avanzada.js?v=2.2"></script>
+    <script src="js/tiempo-servidor.js?v=1.0"></script>
+    <script src="js/telegram-notificaciones.js?v=2.1"></script>
+    <script src="js/telegram-taller.js?v=1.0"></script>
+    <script src="js/ia-manager-agent.js?v=1.0"></script>
+    <script src="js/telegram-ia-assistant.js?v=1.1"></script>
+    <script src="js/productos.js?v=1.6"></script>
+    <script src="js/clientes.js?v=1.2"></script>
+    <script src="js/perfil.js?v=1.0"></script>
+
+    <script src="js/ventas-mejorado.js?v=2.5"></script>
+    <script src="js/facturacion-sri.js?v=1.0"></script>
+    <script src="js/catalogo-vehiculos-ecuador.js?v=1.0"></script>
+    <script src="js/vehiculo-selector-mejorado.js?v=1.0"></script>
+    <script src="js/vehiculos.js?v=1.0"></script>
+    <script src="js/ordenes-trabajo.js?v=1.0"></script>
+    <script src="js/ordenes-trabajo-ia-agent.js?v=1.0"></script>
+    <script src="js/ordenes-trabajo-ia-extensions.js?v=1.0"></script>
+    <script src="js/mis-tareas.js?v=1.0"></script>
+    <script src="js/logs.js?v=1.0"></script>
+
+    <!-- Módulos de IA (ia-unified-engine ya cargado arriba) -->
+    <script src="js/agenda.js?v=1.0"></script>
+    <script src="js/agenda-ia-agent.js?v=1.0"></script>
+    <script src="js/vehiculos-ia-agent.js?v=1.0"></script>
+    <script src="js/asistente-tareas-ia.js?v=1.0"></script>
+    <script src="js/historial-notificaciones.js?v=1.0"></script>
+
+    <!-- Módulos adicionales -->
+    <script src="js/compras.js?v=2.5"></script>
+    <script src="js/proveedores.js?v=1.3"></script>
+    <script src="js/finanzas.js?v=2.0"></script>
+    <script src="js/nominas.js?v=1.0"></script>
+    <script src="js/publicidad.js?v=1.2"></script>
+    <script src="js/marketing.js?v=1.0"></script>
+    <script src="js/recordatorios.js?v=1.2"></script>
+    <script src="js/notification-hub.js?v=1.0"></script>
+    <script src="js/recordatorios-automaticos.js?v=1.0"></script>
+    <script src="js/importador.js?v=1.2"></script>
+    <script src="js/backup.js?v=1.2"></script>
+    <script src="js/auto-backup.js?v=1.2"></script>
+    <script src="js/global-search.js?v=1.2"></script>
+    <script src="js/catalogo-buscador.js?v=1.0"></script>
+    <script src="js/ia-catalogo-panel.js?v=1.0"></script>
+    <script src="js/catalogo.js?v=1.0"></script>
+    <script src="js/admin-hub.js?v=1.1"></script>
+    <script src="js/super-admin-tools.js?v=1.0"></script>
+    <script src="js/dashboard.js?v=1.2"></script>
+    <script src="js/keyboard-shortcuts.js?v=1.2"></script>
+    <script src="js/touch-gestures.js?v=1.2"></script>
+    <script src="js/notifications.js?v=1.2"></script>
+    <script src="js/whatsapp-notifications.js?v=1.0"></script>
+
+    <!-- Chatbot Asistente IA -->
+    <script src="js/chat-assistant.js?v=1.2"></script>
+
+    <!-- Test scripts - DESHABILITADOS en producción -->
+    <script src="js/test-system-connectivity.js?v=1.0"></script>
+    <!-- <script src="js/test-whatsapp-button.js?v=1.0"></script> -->
+    <!-- <script src="js/test-roles.js?v=1.0"></script> -->
+
+    <!-- Aplicación principal (debe cargarse al final) -->
+    <script src="js/app.js?v=1.2"></script>
+
+    <script>
+      // Inicialización optimizada de la aplicación
+      function sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+      }
+
+      async function waitForModules(modules, timeoutMs) {
+        if (!Array.isArray(modules) || modules.length === 0) {
+          return [];
+        }
+
+        const pending = new Set(modules);
+        const timeout = typeof timeoutMs === 'number' ? Math.max(timeoutMs, 0) : 0;
+        const start = Date.now();
+
+        const check = () => {
+          pending.forEach((moduleName) => {
+            if (window[moduleName]) {
+              pending.delete(moduleName);
+            }
+          });
+        };
+
+        check();
+        while (pending.size && Date.now() - start < timeout) {
+          await sleep(100);
+          check();
+        }
+
+        return Array.from(pending);
+      }
+
+      async function initApp() {
+        const loadingOverlay = document.getElementById('loadingOverlay');
+        if (loadingOverlay) loadingOverlay.style.display = 'flex';
+
+        try {
+          const criticalModules = ['Utils', 'Database', 'Auth', 'App'];
+          const optionalModules = ['Clientes', 'Productos', 'VentasMejorado'];
+
+          console.log('⏳ Esperando módulos críticos:', criticalModules);
+          const missingCritical = await waitForModules(criticalModules, 5000);
+          if (missingCritical.length) {
+            throw new Error(
+              `No se pudo cargar el núcleo de la aplicación (${missingCritical.join(', ')}).`
+            );
+          }
+          console.log('✅ Módulos críticos cargados');
+
+          console.log('⏳ Esperando módulos opcionales:', optionalModules);
+          const missingOptional = await waitForModules(optionalModules, 5000);
+          if (missingOptional.length) {
+            console.warn(
+              `⚠️ Módulos secundarios no disponibles aún: ${missingOptional.join(', ')}`
+            );
+          } else {
+            console.log('✅ Módulos opcionales cargados');
+            if (window.VentasMejorado && typeof window.VentasMejorado.init === 'function') {
+              window.VentasMejorado.init();
+            }
+          }
+
+          // La nueva base de datos se inicializa automáticamente.
+          // Ya no es necesario el chequeo síncrono de `Database.load()`.
+
+          // Verificar autenticación (intentar restaurar sesión con refresh token)
+          if (!Auth.isAuthenticated()) {
+            const sessionOk = await Auth.verifySession();
+            if (!sessionOk || !Auth.isAuthenticated()) {
+              window.location.href = 'index.html';
+              return;
+            }
+          }
+
+          // Inicializar app
+          await App.init();
+        } catch (error) {
+          console.error('Error al inicializar la aplicación:', error);
+          const contentArea = document.getElementById('contentArea');
+          if (contentArea) {
+            contentArea.innerHTML = `
+                        <div class="alert alert-error">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <div>
+                                <strong>Error al inicializar la aplicación</strong>
+                                <p>${error.message}</p>
+                            </div>
+                        </div>
+                    `;
+          }
+        } finally {
+          if (loadingOverlay) loadingOverlay.style.display = 'none';
+        }
+      }
+
+      // Asegurarse de que todos los scripts estén cargados antes de iniciar
+      window.addEventListener('load', initApp);
+
+      // Configurar botones de logout inmediatamente (backup)
+      document.addEventListener('DOMContentLoaded', function () {
+        console.log('🔧 Configurando botones de logout...');
+
+        function setupLogoutButton(buttonId) {
+          const btn = document.getElementById(buttonId);
+          if (btn) {
+            console.log(`✅ Configurando botón: ${buttonId}`);
+
+            // Remover listeners anteriores clonando el elemento
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+
+            newBtn.addEventListener('click', function (e) {
+              e.preventDefault();
+              e.stopPropagation();
+
+              console.log('🚪 Botón de logout clickeado');
+
+              if (confirm('¿Estás seguro de que deseas cerrar sesión?')) {
+                console.log('✅ Usuario confirmó cerrar sesión');
+
+                // Cerrar sesión
+                if (typeof Auth !== 'undefined' && Auth.logout) {
+                  Auth.logout();
+                } else {
+                  localStorage.removeItem('gestorTiendaSession');
+                  sessionStorage.clear();
+                }
+
+                console.log('🔄 Redirigiendo a index.html...');
+                window.location.href = 'index.html';
+              }
+            });
+          } else {
+            console.warn(`⚠️ No se encontró el botón: ${buttonId}`);
+          }
+        }
+
+        // Configurar ambos botones
+        setupLogoutButton('logoutBtn');
+        setupLogoutButton('logoutBtnHeader');
+      });
+    </script>
+  </body>
+</html>

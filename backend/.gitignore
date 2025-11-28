@@ -1,0 +1,57 @@
+# Dependencias
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Base de datos
+data/*.db
+data/*.db-shm
+data/*.db-wal
+*.db
+*.db-shm
+*.db-wal
+
+# Backups
+backups/
+*.backup
+*.bak
+
+# Variables de entorno
+.env
+.env.local
+.env.*.local
+.env.production
+
+# Configuración de negocios (puede contener info sensible)
+data/config_negocios.json
+
+# Logs
+logs/
+*.log
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Uploads (si guardas imágenes en filesystem)
+uploads/
+public/uploads/
+
+# Build
+dist/
+build/
+

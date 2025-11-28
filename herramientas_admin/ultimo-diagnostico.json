@@ -1,0 +1,27 @@
+{
+  "fecha": "2025-11-11T16:06:00.576Z",
+  "estadisticas": {
+    "usuarios": {
+      "total": 6,
+      "super_admin": 0,
+      "admin": 5,
+      "vendedor": 0,
+      "activos": 5,
+      "huerfanos": 0
+    },
+    "negocios": {
+      "total": 4,
+      "activos": 4,
+      "conDB": 4,
+      "sinDB": 0,
+      "sinUsuarios": 0
+    },
+    "productos": {
+      "total": 1,
+      "conStock": 1,
+      "sinStock": 0
+    }
+  },
+  "errores": [],
+  "advertencias": []
+}

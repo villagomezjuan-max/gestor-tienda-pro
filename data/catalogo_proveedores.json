@@ -1,0 +1,551 @@
+﻿{
+  "version": "1.0.1",
+  "ultimaActualizacion": "2025-10-31",
+  "categorias": [
+    { "id": "repuestos_motor", "nombre": "Motor y Transmision" },
+    { "id": "frenos_suspension", "nombre": "Frenos y Suspension" },
+    { "id": "electrico_electronico", "nombre": "Sistema Electrico" },
+    { "id": "carroceria_pintura", "nombre": "Carroceria y Pintura" },
+    { "id": "llantas_rines", "nombre": "Llantas y Rines" },
+    { "id": "aceites_lubricantes", "nombre": "Aceites y Lubricantes" },
+    { "id": "aire_combustible", "nombre": "Sistema de Combustible" },
+    { "id": "herramientas_equipos", "nombre": "Herramientas y Equipos" }
+  ],
+  "proveedores": [
+    {
+      "id": "prov-importadora-ceron",
+      "nombre": "Importadora Ceron S.A.",
+      "ruc": "1791892224001",
+      "contacto": null,
+      "telefonos": ["02-247-0959"],
+      "whatsapp": [],
+      "emails": [],
+      "direccion": "Coop. Liberacion Popular, calle San Antonio #1 y La Rabida",
+      "ciudad": "Santo Domingo",
+      "provincia": "Santo Domingo de los Tsachilas",
+      "pais": "Ecuador",
+      "diasEntrega": null,
+      "formaPago": null,
+      "plazoCreditoDias": null,
+      "calificacion": null,
+      "productos": [
+        "Repuestos automotrices en general",
+        "Partes de motor y transmision"
+      ],
+      "notas": [
+        "Proveedor activo",
+        "Importadora con cobertura nacional"
+      ],
+      "categorias": ["repuestos_motor"],
+      "ultimaRevision": "2025-10-31"
+    },
+    {
+      "id": "prov-importadora-mr",
+      "nombre": "Importadora de Repuestos Automotrices (MR)",
+      "ruc": null,
+      "contacto": null,
+      "telefonos": ["593991152573", "593990886640", "593997307154"],
+      "whatsapp": [
+        "https://wa.me/593991152573",
+        "https://wa.me/593990886640",
+        "https://wa.me/593997307154"
+      ],
+      "emails": [],
+      "direccion": "Av. Esmeraldas y Tiputini, esquina",
+      "ciudad": "Santo Domingo",
+      "provincia": "Santo Domingo de los Tsachilas",
+      "pais": "Ecuador",
+      "diasEntrega": null,
+      "formaPago": null,
+      "plazoCreditoDias": null,
+      "calificacion": null,
+      "productos": [
+        "Repuestos para Chevrolet",
+        "Repuestos para D-MAX",
+        "Repuestos para Mazda",
+        "Repuestos para Isuzu",
+        "Repuestos para Mitsubishi",
+        "Repuestos para Hino",
+        "Repuestos para Nissan"
+      ],
+      "notas": [
+        "Proveedor activo",
+        "Informacion de RUC no encontrada en fuentes publicas"
+      ],
+      "categorias": ["repuestos_motor"],
+      "ultimaRevision": "2025-10-31"
+    },
+    {
+      "id": "prov-japan-auto",
+      "nombre": "Japan Auto",
+      "ruc": "2390003709001",
+      "contacto": null,
+      "telefonos": ["593983742196", "593999521131"],
+      "whatsapp": [
+        "https://wa.me/593983742196",
+        "https://wa.me/593999521131"
+      ],
+      "emails": ["info@japanauto.xyz"],
+      "direccion": "Av. Quevedo y Av. Jacinto Cortez",
+      "ciudad": "Santo Domingo",
+      "provincia": "Santo Domingo de los Tsachilas",
+      "pais": "Ecuador",
+      "diasEntrega": null,
+      "formaPago": null,
+      "plazoCreditoDias": null,
+      "calificacion": null,
+      "productos": [
+        "Repuestos originales",
+        "Repuestos japoneses",
+        "Repuestos coreanos",
+        "Repuestos americanos"
+      ],
+      "notas": [
+        "Proveedor activo",
+        "Razon social: IMPJAP CIA. LTDA."
+      ],
+      "categorias": ["repuestos_motor"],
+      "ultimaRevision": "2025-10-31"
+    },
+    {
+      "id": "prov-solo-frenos",
+      "nombre": "Solo Frenos",
+      "ruc": null,
+      "contacto": null,
+      "telefonos": ["593959150538"],
+      "whatsapp": ["https://wa.me/593959150538"],
+      "emails": [],
+      "direccion": null,
+      "ciudad": "Santo Domingo",
+      "provincia": "Santo Domingo de los Tsachilas",
+      "pais": "Ecuador",
+      "diasEntrega": null,
+      "formaPago": null,
+      "plazoCreditoDias": null,
+      "calificacion": null,
+      "productos": ["Especialistas en sistemas de frenos"],
+      "notas": [
+        "Proveedor activo",
+        "No se encontro informacion adicional en fuentes publicas"
+      ],
+      "categorias": ["frenos_suspension"],
+      "ultimaRevision": "2025-10-31"
+    },
+    {
+      "id": "prov-comisariato-llantas",
+      "nombre": "Comisariato de Llantas",
+      "ruc": null,
+      "contacto": null,
+      "telefonos": ["593983519747"],
+      "whatsapp": ["https://wa.me/593983519747"],
+      "emails": [],
+      "direccion": "Calle General (sin numero)",
+      "ciudad": "Santo Domingo",
+      "provincia": "Santo Domingo de los Tsachilas",
+      "pais": "Ecuador",
+      "diasEntrega": null,
+      "formaPago": null,
+      "plazoCreditoDias": null,
+      "calificacion": null,
+      "productos": [
+        "ABC de frenos",
+        "Servicio y venta de llantas"
+      ],
+      "notas": [
+        "Proveedor activo",
+        "No se encontro informacion adicional en fuentes publicas"
+      ],
+      "categorias": ["frenos_suspension", "llantas_rines"],
+      "ultimaRevision": "2025-10-31"
+    },
+    {
+      "id": "prov-mansuera",
+      "nombre": "Mansuera S.A.",
+      "ruc": "1792287014001",
+      "contacto": null,
+      "telefonos": ["02-370-6900"],
+      "whatsapp": [],
+      "emails": [],
+      "direccion": "Av. Quevedo #918 y Jacinto Cortez",
+      "ciudad": "Santo Domingo",
+      "provincia": "Santo Domingo de los Tsachilas",
+      "pais": "Ecuador",
+      "diasEntrega": null,
+      "formaPago": null,
+      "plazoCreditoDias": null,
+      "calificacion": null,
+      "productos": [
+        "Repuestos con garantia",
+        "Componentes de suspension"
+      ],
+      "notas": [
+        "Sucursal en Santo Domingo",
+        "Amplio surtido"
+      ],
+      "categorias": ["frenos_suspension", "repuestos_motor"],
+      "ultimaRevision": "2025-10-31"
+    },
+    {
+      "id": "prov-kennedy2",
+      "nombre": "Repuestos Electricos Kennedy 2",
+      "ruc": null,
+      "contacto": null,
+      "telefonos": ["593992072654"],
+      "whatsapp": ["https://wa.me/593992072654"],
+      "emails": [],
+      "direccion": "Av. Quevedo",
+      "ciudad": "Santo Domingo",
+      "provincia": "Santo Domingo de los Tsachilas",
+      "pais": "Ecuador",
+      "diasEntrega": null,
+      "formaPago": null,
+      "plazoCreditoDias": null,
+      "calificacion": null,
+      "productos": [
+        "Repuestos electricos originales",
+        "Repuestos electricos alternos"
+      ],
+      "notas": [
+        "Proveedor activo",
+        "No se encontro informacion adicional en fuentes publicas"
+      ],
+      "categorias": ["electrico_electronico"],
+      "ultimaRevision": "2025-10-31"
+    },
+    {
+      "id": "prov-tecnicentro-ramirez",
+      "nombre": "Tecnicentro Multillantas Ramirez",
+      "ruc": null,
+      "contacto": null,
+      "telefonos": ["593979042769"],
+      "whatsapp": ["https://wa.me/593979042769"],
+      "emails": [],
+      "direccion": "Av. Los Colonos, frente al Porton del Consejo Provincial",
+      "ciudad": "Santo Domingo",
+      "provincia": "Santo Domingo de los Tsachilas",
+      "pais": "Ecuador",
+      "diasEntrega": 1,
+      "formaPago": null,
+      "plazoCreditoDias": null,
+      "calificacion": null,
+      "productos": [
+        "Baterias",
+        "Llantas",
+        "Aros"
+      ],
+      "notas": [
+        "Proveedor activo",
+        "Entrega el mismo dia cuando hay disponibilidad",
+        "No se encontro RUC en fuentes publicas"
+      ],
+      "categorias": ["electrico_electronico", "llantas_rines"],
+      "ultimaRevision": "2025-10-31"
+    },
+    {
+      "id": "prov-pinturas-lider",
+      "nombre": "Pinturas Lider",
+      "ruc": null,
+      "contacto": null,
+      "telefonos": ["59322483630"],
+      "whatsapp": [],
+      "emails": ["ventas@pinturaslider.com.ec"],
+      "direccion": "Mariano Cardenal N73-75 y Jose Larrea, Carcelen Industrial",
+      "ciudad": "Quito",
+      "provincia": "Pichincha",
+      "pais": "Ecuador",
+      "diasEntrega": null,
+      "formaPago": null,
+      "plazoCreditoDias": null,
+      "calificacion": null,
+      "productos": ["Pinturas y acabados para vehiculos"],
+      "notas": [
+        "Fabricante o distribuidor nacional con sede en Quito",
+        "Confirmar punto de venta en Santo Domingo"
+      ],
+      "categorias": ["carroceria_pintura"],
+      "ultimaRevision": "2025-10-31"
+    },
+    {
+      "id": "prov-cobra-importaciones",
+      "nombre": "Cobra Importaciones",
+      "ruc": "1792489776001",
+      "contacto": "Andres C. / Tatiana A.",
+      "telefonos": ["593986539275", "593989575316"],
+      "whatsapp": [
+        "https://wa.me/593986539275",
+        "https://wa.me/593989575316"
+      ],
+      "emails": [],
+      "direccion": "Av. Quevedo y Juan Benigno Vela",
+      "ciudad": "Santo Domingo",
+      "provincia": "Santo Domingo de los Tsachilas",
+      "pais": "Ecuador",
+      "diasEntrega": null,
+      "formaPago": "Tarjetas de credito",
+      "plazoCreditoDias": null,
+      "calificacion": null,
+      "productos": [
+        "Llantas",
+        "Aros",
+        "Rines deportivos"
+      ],
+      "notas": ["Importadores directos"],
+      "categorias": ["llantas_rines"],
+      "ultimaRevision": "2025-10-31"
+    },
+    {
+      "id": "prov-edgarcar-importaciones",
+      "nombre": "Edgarcar Importaciones",
+      "ruc": null,
+      "contacto": null,
+      "telefonos": [],
+      "whatsapp": [],
+      "emails": [],
+      "direccion": null,
+      "ciudad": "Santo Domingo",
+      "provincia": "Santo Domingo de los Tsachilas",
+      "pais": "Ecuador",
+      "diasEntrega": null,
+      "formaPago": null,
+      "plazoCreditoDias": null,
+      "calificacion": null,
+      "productos": [
+        "Llantas",
+        "Rines",
+        "Servicios automotrices"
+      ],
+      "notas": [
+        "Parte de un grupo con multiservicios y vehiculos seminuevos",
+        "No se encontro informacion de contacto o RUC en fuentes publicas"
+      ],
+      "categorias": ["llantas_rines"],
+      "ultimaRevision": "2025-10-31"
+    },
+    {
+      "id": "prov-codepartes",
+      "nombre": "Comercio Auto Partes Codepartes S.A.",
+      "ruc": "1790895335001",
+      "contacto": null,
+      "telefonos": ["02-2498-651", "02-2498-652"],
+      "whatsapp": [],
+      "emails": ["rmoreno@codepartes.com.ec"],
+      "direccion": "Av. Occidental N70-297 y Peripa",
+      "ciudad": "Quito",
+      "provincia": "Pichincha",
+      "pais": "Ecuador",
+      "diasEntrega": null,
+      "formaPago": null,
+      "plazoCreditoDias": null,
+      "calificacion": null,
+      "productos": [
+        "Lubricantes Valvoline",
+        "Refrigerantes",
+        "Productos de mantenimiento preventivo"
+      ],
+      "notas": [
+        "Distribuidor a nivel nacional con sede en Quito",
+        "Tambien con oficinas en Guayaquil y Cuenca"
+      ],
+      "categorias": ["aceites_lubricantes"],
+      "ultimaRevision": "2025-10-31"
+    },
+    {
+      "id": "prov-la-bodega-autopartes",
+      "nombre": "La Bodega Autopartes",
+      "ruc": "1723237564001",
+      "contacto": "Galarza Guzman Johanna Catalina",
+      "telefonos": [],
+      "whatsapp": [],
+      "emails": [],
+      "direccion": null,
+      "ciudad": "Santo Domingo",
+      "provincia": "Santo Domingo de los Tsachilas",
+      "pais": "Ecuador",
+      "diasEntrega": null,
+      "formaPago": null,
+      "plazoCreditoDias": null,
+      "calificacion": null,
+      "productos": ["Lubricantes automotrices"],
+      "notas": [
+        "Presencia en catalogos especializados",
+        "Razon social: GALARZA GUZMAN JOHANNA CATALINA"
+      ],
+      "categorias": ["aceites_lubricantes"],
+      "ultimaRevision": "2025-10-31"
+    },
+    {
+      "id": "prov-disagrocombe",
+      "nombre": "Disagrocombe S.A.",
+      "ruc": "0992886404001",
+      "contacto": null,
+      "telefonos": ["59345107878", "59346006765"],
+      "whatsapp": ["https://wa.me/59345107878"],
+      "emails": ["info@disagrocombe.com"],
+      "direccion": "Cdla Los Vergeles Solar 1 Manz 236",
+      "ciudad": "Guayaquil",
+      "provincia": "Guayas",
+      "pais": "Ecuador",
+      "diasEntrega": null,
+      "formaPago": null,
+      "plazoCreditoDias": null,
+      "calificacion": null,
+      "productos": [
+        "Transporte de combustible",
+        "Comercializacion de combustible"
+      ],
+      "notas": ["Operador y comercializador nacional con sede en Guayaquil"],
+      "categorias": ["aire_combustible"],
+      "ultimaRevision": "2025-10-31"
+    },
+    {
+      "id": "prov-globaltech",
+      "nombre": "Globaltech Equipamiento Automotriz",
+      "ruc": "1793122264001",
+      "contacto": null,
+      "telefonos": [],
+      "whatsapp": [],
+      "emails": [],
+      "direccion": "Luis Napoleon Dillon 102",
+      "ciudad": "Quito",
+      "provincia": "Pichincha",
+      "pais": "Ecuador",
+      "diasEntrega": null,
+      "formaPago": null,
+      "plazoCreditoDias": null,
+      "calificacion": null,
+      "productos": [
+        "Equipamiento automotriz profesional",
+        "Escaners y osciloscopios",
+        "Elevadores y alineadoras",
+        "Herramientas especializadas"
+      ],
+      "notas": [
+        "Mas de 20 anos de experiencia",
+        "Envia equipos a todo el pais"
+      ],
+      "categorias": ["herramientas_equipos"],
+      "ultimaRevision": "2025-10-31"
+    },
+    {
+      "id": "prov-mil-herramientas",
+      "nombre": "Mil Herramientas",
+      "ruc": null,
+      "contacto": null,
+      "telefonos": ["593995288910", "593981979578"],
+      "whatsapp": [
+        "https://wa.me/593995288910",
+        "https://wa.me/593981979578"
+      ],
+      "emails": [],
+      "direccion": "Via Quevedo km 1, diagonal a la gasolinera del Sindicato de Choferes",
+      "ciudad": "Santo Domingo",
+      "provincia": "Santo Domingo de los Tsachilas",
+      "pais": "Ecuador",
+      "diasEntrega": null,
+      "formaPago": null,
+      "plazoCreditoDias": null,
+      "calificacion": null,
+      "productos": [
+        "Herramientas electricas",
+        "Herramientas manuales",
+        "Herramientas neumaticas",
+        "Herramientas inalambricas"
+      ],
+      "notas": [
+        "Proveedor con amplia variedad",
+        "Numero alterno podria corresponder a Mil Pernos en la misma direccion"
+      ],
+      "categorias": ["herramientas_equipos"],
+      "ultimaRevision": "2025-10-31"
+    }
+  ],
+  "provincias": [
+    {
+      "nombre": "Santo Domingo de los Tsachilas",
+      "ciudades": [
+        {
+          "nombre": "Santo Domingo",
+          "categorias": [
+            {
+              "id": "repuestos_motor",
+              "proveedores": [
+                "prov-importadora-ceron",
+                "prov-importadora-mr",
+                "prov-japan-auto",
+                "prov-mansuera"
+              ]
+            },
+            {
+              "id": "frenos_suspension",
+              "proveedores": [
+                "prov-solo-frenos",
+                "prov-comisariato-llantas",
+                "prov-mansuera"
+              ]
+            },
+            {
+              "id": "electrico_electronico",
+              "proveedores": [
+                "prov-kennedy2",
+                "prov-tecnicentro-ramirez"
+              ]
+            },
+            {
+              "id": "llantas_rines",
+              "proveedores": [
+                "prov-comisariato-llantas",
+                "prov-tecnicentro-ramirez",
+                "prov-cobra-importaciones",
+                "prov-edgarcar-importaciones"
+              ]
+            },
+            {
+              "id": "herramientas_equipos",
+              "proveedores": ["prov-mil-herramientas"]
+            },
+            {
+              "id": "aceites_lubricantes",
+              "proveedores": ["prov-la-bodega-autopartes"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "nombre": "Pichincha",
+      "ciudades": [
+        {
+          "nombre": "Quito",
+          "categorias": [
+            {
+              "id": "herramientas_equipos",
+              "proveedores": ["prov-globaltech"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "nombre": "Cobertura Nacional",
+      "ciudades": [
+        {
+          "nombre": "Cobertura Nacional",
+          "categorias": [
+            {
+              "id": "carroceria_pintura",
+              "proveedores": ["prov-pinturas-lider"]
+            },
+            {
+              "id": "aceites_lubricantes",
+              "proveedores": ["prov-codepartes"]
+            },
+            {
+              "id": "aire_combustible",
+              "proveedores": ["prov-disagrocombe"]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

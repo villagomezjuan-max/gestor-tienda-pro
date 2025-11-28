@@ -1,0 +1,15 @@
+node_modules/
+backend/node_modules/
+backend/data/
+backend/logs/
+backend/uploads/
+backend/scripts/backups/
+css/vendor/
+data/
+docs/
+herramientas_admin/
+icons/
+tests/reports/
+**/*.min.js
+**/dist/
+**/coverage/

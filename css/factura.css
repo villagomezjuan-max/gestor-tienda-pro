@@ -1,0 +1,649 @@
+/* ============================================
+   ESTILOS PARA SISTEMA DE PAGO Y FACTURACIÓN
+   ============================================ */
+
+/* Modal de Pago Mejorado */
+.modal-pago-profesional {
+  max-width: 500px;
+  width: 90%;
+}
+
+.modal-pago-profesional .modal-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem 2rem;
+  border-radius: 16px 16px 0 0;
+}
+
+.modal-pago-profesional .modal-body {
+  padding: 2rem;
+}
+
+.total-pagar-grande {
+  text-align: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+}
+
+.total-pagar-grande .label {
+  font-size: 0.9rem;
+  color: var(--pos-text-muted, #9ca3af);
+  font-weight: 600;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+}
+
+.total-pagar-grande .valor {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: #34d399;
+}
+
+.payment-methods-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.btn-payment-method {
+  padding: 1.2rem 0.8rem;
+  border: 3px solid var(--pos-border-color, #3a3f52);
+  border-radius: 12px;
+  background: var(--pos-bg-input, #1e2130);
+  color: var(--pos-text-primary, #e8eaed);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.btn-payment-method i {
+  font-size: 2rem;
+}
+
+.btn-payment-method:hover {
+  border-color: var(--pos-accent-primary, #667eea);
+  background: rgba(102, 126, 234, 0.1);
+  transform: translateY(-2px);
+}
+
+.btn-payment-method.selected {
+  border-color: var(--pos-accent-primary, #667eea);
+  background: linear-gradient(135deg, rgba(102, 126, 234, 0.2) 0%, rgba(118, 75, 162, 0.2) 100%);
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+.payment-details {
+  background: var(--pos-bg-card, #2d3142);
+  padding: 1.5rem;
+  border-radius: 12px;
+  margin-bottom: 1rem;
+}
+
+.payment-input-group {
+  margin-bottom: 1rem;
+}
+
+.payment-input-group label {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--pos-text-muted, #9ca3af);
+  margin-bottom: 0.5rem;
+  text-transform: uppercase;
+}
+
+.payment-input-group input {
+  width: 100%;
+  padding: 0.8rem 1rem;
+  border: 2px solid var(--pos-border-color, #3a3f52);
+  border-radius: 10px;
+  background: var(--pos-bg-input, #1e2130);
+  color: var(--pos-text-primary, #e8eaed);
+  font-size: 1.2rem;
+  font-weight: 700;
+  transition: all 0.2s ease;
+}
+
+.payment-input-group input:focus {
+  outline: none;
+  border-color: var(--pos-accent-primary, #667eea);
+  box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.2);
+}
+
+.cambio-display {
+  background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+  padding: 1.2rem;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.cambio-display .label {
+  font-size: 1rem;
+  color: white;
+  font-weight: 600;
+}
+
+.cambio-display .valor {
+  font-size: 1.8rem;
+  color: white;
+  font-weight: 800;
+}
+
+.btn-procesar-pago {
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #34d399 0%, #059669 100%);
+  color: white;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-procesar-pago:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(52, 211, 153, 0.4);
+}
+
+.btn-procesar-pago:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ============================================
+   FACTURA ELECTRÓNICA SRI ECUADOR
+   ============================================ */
+
+.modal-factura {
+  max-width: 900px;
+  width: 95%;
+  max-height: 90vh;
+}
+
+.factura-container {
+  background: #ffffff;
+  color: #111827;
+  padding: 2.5rem;
+  font-family: 'Inter', 'Segoe UI', sans-serif;
+  position: relative;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+}
+
+.factura-container,
+.factura-container *:not(.btn-factura):not(.btn-factura i) {
+  color: #111827 !important;
+}
+
+.factura-container a {
+  color: #111827;
+}
+
+.factura-container table,
+.factura-container thead,
+.factura-container tbody,
+.factura-container tr,
+.factura-container th,
+.factura-container td {
+  background: #ffffff !important;
+  color: #111827 !important;
+  border-color: #e5e7eb !important;
+}
+
+html[data-theme='dark'] .modal-factura,
+html[data-theme='dark'] #factura-imprimible {
+  background: #ffffff !important;
+  color: #111827 !important;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+}
+
+html[data-theme='dark'] #factura-imprimible .info-grupo .label,
+html[data-theme='dark'] #factura-imprimible .factura-autorizacion .info,
+html[data-theme='dark'] #factura-imprimible .factura-emisor .datos {
+  color: #6b7280 !important;
+}
+
+html[data-theme='dark'] #factura-imprimible .info-grupo .valor,
+html[data-theme='dark'] #factura-imprimible .factura-autorizacion .tipo,
+html[data-theme='dark'] #factura-imprimible .factura-autorizacion .numero {
+  color: #111827 !important;
+}
+
+.factura-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1.5px solid #e5e7eb;
+  margin-bottom: 2rem;
+}
+
+.factura-emisor {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.factura-emisor .logo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.factura-emisor .datos {
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #111827;
+}
+
+.factura-autorizacion {
+  border: 1px solid #e5e7eb;
+  padding: 1.25rem 1.5rem;
+  text-align: center;
+  min-width: 260px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-shadow: inset 0 0 0 1px rgba(99, 102, 241, 0.05);
+}
+
+.factura-autorizacion .tipo {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 0.35rem;
+  color: #111827;
+}
+
+.factura-autorizacion .numero {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0.6rem 0;
+  letter-spacing: 0.06em;
+}
+
+.factura-autorizacion .info {
+  font-size: 0.78rem;
+  margin-top: 0.5rem;
+  color: #111827;
+}
+
+.factura-info-cliente {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+}
+
+.info-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.info-grupo .label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #111827;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.info-grupo .valor {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.factura-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 2rem;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.factura-tabla thead {
+  background: #ffffff;
+  color: #111827;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.factura-tabla th {
+  padding: 0.85rem 1rem;
+  text-align: left;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-right: 1px solid #e5e7eb;
+}
+
+.factura-tabla th:last-child {
+  border-right: none;
+}
+
+.factura-tabla td {
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  border-right: 1px solid #e5e7eb;
+  font-size: 0.92rem;
+  color: #111827;
+}
+
+.factura-tabla td:last-child {
+  border-right: none;
+}
+
+.factura-tabla tbody tr {
+  background: #ffffff;
+  transition: background 0.15s ease;
+}
+
+.factura-tabla tbody tr:nth-child(even) {
+  background: #fbfcff;
+}
+
+.factura-tabla tbody tr:hover {
+  background: #f5f6fb;
+}
+
+.factura-totales {
+  margin-left: auto;
+  width: 340px;
+  background: #ffffff;
+  padding: 1.5rem;
+  border-radius: 14px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.05);
+}
+
+.factura-totales .row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.6rem 0;
+  font-size: 0.95rem;
+  color: #111827;
+}
+
+.factura-totales .row.subtotal,
+.factura-totales .row.descuento,
+.factura-totales .row.iva {
+  color: #111827;
+}
+
+.factura-totales .row.total {
+  border-top: 1.5px solid #e5e7eb;
+  margin-top: 0.75rem;
+  padding-top: 1rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.factura-footer {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1.5px solid #e5e7eb;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+}
+
+.factura-firma {
+  text-align: center;
+}
+
+.factura-firma .linea {
+  width: 220px;
+  border-top: 1.5px solid #d1d5db;
+  margin: 2rem auto 0.5rem;
+}
+
+.factura-firma .label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.factura-qr {
+  text-align: center;
+}
+
+.factura-qr .qr-code {
+  width: 120px;
+  height: 120px;
+  border: 1.5px dashed #d1d5db;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 0.5rem;
+  background: #ffffff;
+  border-radius: 12px;
+}
+
+.factura-leyenda {
+  margin-top: 1.5rem;
+  padding: 1rem 1.25rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: #111827;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.factura-leyenda strong {
+  color: #111827;
+}
+
+.factura-acciones {
+  display: flex;
+  gap: 1rem;
+  padding: 1.5rem 2rem;
+  background: #ffffff;
+  border-radius: 0 0 16px 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.btn-factura {
+  flex: 1;
+  padding: 0.95rem 1rem;
+  border-radius: 12px;
+  font-size: 0.98rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.55rem;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  color: #1f2937;
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.btn-factura i {
+  font-size: 1.15rem;
+}
+
+.btn-factura:hover {
+  transform: translateY(-1px);
+  background: #f3f4f6;
+  border-color: #c7d2fe;
+  color: #4338ca;
+}
+
+.btn-factura.descargar:hover {
+  border-color: #bbf7d0;
+  color: #047857;
+  background: #ecfdf5;
+}
+
+.btn-factura.whatsapp:hover {
+  border-color: #a7f3d0;
+  color: #047857;
+  background: #f0fdf4;
+}
+
+.btn-factura:active {
+  transform: translateY(0);
+  box-shadow: inset 0 2px 6px rgba(15, 23, 42, 0.08);
+}
+
+/* Estilos para impresión */
+@media print {
+  @page {
+    size: A4;
+    margin: 0;
+  }
+
+  body {
+    background: white;
+    margin: 0;
+    padding: 0;
+  }
+
+  .factura-acciones,
+  .modal-header,
+  .btn-close,
+  .modal-overlay {
+    display: none !important;
+  }
+
+  .modal-factura {
+    max-width: 100% !important;
+    width: 100% !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .factura-container {
+    padding: 20mm !important;
+    background: white !important;
+    border: none !important;
+    box-shadow: none !important;
+    width: 210mm;
+    min-height: 297mm;
+    box-sizing: border-box;
+  }
+
+  .modal {
+    box-shadow: none;
+  }
+}
+
+/* Estilos para modo A5 (Imagen) */
+.factura-a5-mode {
+  width: 148mm !important;
+  min-height: 210mm !important;
+  padding: 10mm !important;
+  background: white !important;
+  font-size: 0.85rem !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+.factura-a5-mode .factura-header {
+  gap: 1rem;
+  margin-bottom: 1rem;
+  padding-bottom: 1rem;
+}
+
+.factura-a5-mode .factura-emisor .logo {
+  font-size: 1.2rem;
+}
+
+.factura-a5-mode .factura-autorizacion .numero {
+  font-size: 1.1rem;
+}
+
+.factura-a5-mode .factura-info-cliente {
+  padding: 1rem;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.factura-a5-mode .factura-tabla th,
+.factura-a5-mode .factura-tabla td {
+  padding: 0.5rem;
+}
+
+/* Estilos para modo A4 (PDF Generado) */
+.factura-a4-mode {
+  width: 210mm !important;
+  padding: 15mm !important;
+  background: white !important;
+  font-size: 11pt !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.factura-a4-mode .factura-header {
+  margin-bottom: 2rem;
+}
+
+.factura-a4-mode .factura-tabla th,
+.factura-a4-mode .factura-tabla td {
+  padding: 0.6rem 0.8rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .factura-header {
+    grid-template-columns: 1fr;
+  }
+
+  .factura-info-cliente {
+    grid-template-columns: 1fr;
+  }
+
+  .payment-methods-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .factura-acciones {
+    flex-direction: column;
+  }
+
+  .factura-tabla {
+    font-size: 0.8rem;
+  }
+
+  .factura-tabla th,
+  .factura-tabla td {
+    padding: 0.5rem;
+  }
+}

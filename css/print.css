@@ -1,0 +1,621 @@
+/* ============================================
+   ESTILOS DE IMPRESIÓN
+   ============================================
+   Optimización para impresión de reportes, tickets y documentos
+*/
+
+@media print {
+  /* Reset general */
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    color-adjust: exact !important;
+  }
+
+  /* Ocultar elementos innecesarios */
+  .sidebar,
+  .main-header,
+  .main-footer,
+  .no-print,
+      max-width: 100mm;
+  button,
+  .modal-overlay,
+  .global-search-overlay,
+  .chat-assistant-button,
+  .chat-assistant-window,
+  .toast,
+  .loading-overlay,
+      padding: 8mm;
+  .filters-bar,
+  .page-header .header-actions,
+  .action-buttons,
+  .sidebar-overlay {
+    display: none !important;
+  }
+
+  /* Ajustar layout principal */
+  body {
+    margin: 0;
+    padding: 0;
+      border: 0.6pt solid #111;
+      border-radius: 4pt;
+      background: #fff !important;
+      margin-bottom: 4mm;
+      padding: 5mm;
+
+  .main-content {
+    margin: 0 !important;
+      display: grid;
+      gap: 4mm;
+  }
+
+  .content-area {
+    padding: 0 !important;
+      padding: 4mm;
+  }
+
+  /* Encabezado de página */
+      width: 16mm !important;
+      height: 16mm !important;
+      font-size: 9pt !important;
+      border-radius: 3mm !important;
+    background: none !important;
+  }
+
+      font-size: 10pt !important;
+    font-size: 18pt;
+    font-weight: bold;
+    color: #000 !important;
+  }
+
+  /* Cards y containers */
+  .card,
+  .alert-card,
+  .chart-card {
+    border: 1px solid #ddd !important;
+      font-size: 7pt !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+    margin-bottom: 20px !important;
+    background: white !important;
+      border: 0.6pt solid #000 !important;
+      border-radius: 4pt !important;
+      padding: 4mm !important;
+  .chart-header,
+  .alert-header {
+    background: #f5f5f5 !important;
+    border-bottom: 1px solid #ddd !important;
+    padding: 10px !important;
+      font-size: 8pt !important;
+
+  .card-title,
+  .chart-title,
+  .alert-title {
+      border: 0.6pt solid #000;
+      padding: 2px 4px;
+      font-size: 7pt;
+  }
+
+  .card-body,
+  .chart-body,
+      display: grid;
+      gap: 2mm;
+  }
+
+  /* Tablas */
+  table {
+    width: 100%;
+      font-size: 7pt;
+    page-break-inside: auto;
+    margin: 10px 0;
+  }
+      font-size: 8pt;
+  thead {
+    display: table-header-group;
+  }
+
+  tfoot {
+    display: table-footer-group;
+  }
+
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+
+  th {
+    background: #f0f0f0 !important;
+    color: #000 !important;
+    font-weight: bold;
+    padding: 8px !important;
+    border: 1px solid #ddd !important;
+    text-align: left;
+  }
+
+  td {
+    padding: 6px 8px !important;
+    border: 1px solid #ddd !important;
+    color: #000 !important;
+  }
+
+  /* Badges y estados */
+  .badge {
+    border: 1px solid #000 !important;
+    padding: 2px 6px !important;
+    border-radius: 3px !important;
+    font-weight: bold;
+  }
+
+  .badge-success {
+    background: white !important;
+    color: #000 !important;
+  }
+
+  .badge-danger {
+    background: #f0f0f0 !important;
+    color: #000 !important;
+  }
+
+  .badge-warning {
+    background: #f5f5f5 !important;
+    color: #000 !important;
+  }
+
+  /* KPIs para impresión */
+  .dashboard-kpis {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .kpi-card {
+    border: 1px solid #ddd !important;
+    padding: 10px !important;
+    background: white !important;
+  }
+
+  .kpi-value {
+    font-size: 16pt;
+    font-weight: bold;
+    color: #000 !important;
+  }
+
+  .kpi-label {
+    font-size: 10pt;
+    color: #666 !important;
+  }
+
+  /* Gráficos (ocultar en impresión, mostrar solo datos) */
+  .chart-body canvas {
+    display: none;
+  }
+
+  .chart-card::after {
+    content: "Gráfico no disponible en versión impresa";
+    display: block;
+    text-align: center;
+    padding: 20px;
+    color: #999;
+    font-style: italic;
+  }
+
+  /* Stats cards */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .stat-card {
+    border: 1px solid #ddd !important;
+    padding: 10px !important;
+    background: white !important;
+  }
+
+  /* Formularios (ocultar en impresión) */
+  form {
+    display: none !important;
+  }
+
+  /* Modal containers para impresión */
+  .modal-container {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 100% !important;
+    max-width: none !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  .modal-header {
+    border-bottom: 2px solid #000 !important;
+    padding-bottom: 10px !important;
+    margin-bottom: 15px !important;
+  }
+
+  .modal-footer {
+    display: none !important;
+  }
+
+  /* Elementos de venta/ticket */
+  .ticket-container {
+    width: 80mm;
+    margin: 0 auto;
+    padding: 5mm;
+    font-family: 'Courier New', monospace;
+    font-size: 10pt;
+  }
+
+  .ticket-header {
+    text-align: center;
+    border-bottom: 2px dashed #000;
+    padding-bottom: 5mm;
+    margin-bottom: 5mm;
+  }
+
+  .ticket-logo {
+    max-width: 50mm;
+    height: auto;
+    margin-bottom: 3mm;
+  }
+
+  .ticket-info {
+    font-size: 9pt;
+  }
+
+  .ticket-items {
+    margin: 5mm 0;
+  }
+
+  .ticket-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2mm;
+    font-size: 9pt;
+  }
+
+  .ticket-total {
+    border-top: 2px dashed #000;
+    padding-top: 3mm;
+    margin-top: 3mm;
+    font-weight: bold;
+    text-align: right;
+  }
+
+  .ticket-footer {
+    text-align: center;
+    border-top: 2px dashed #000;
+    padding-top: 5mm;
+    margin-top: 5mm;
+    font-size: 8pt;
+  }
+
+  /* Saltos de página */
+  .page-break {
+    page-break-after: always;
+  }
+
+  .page-break-before {
+    page-break-before: always;
+  }
+
+  .page-break-avoid {
+    page-break-inside: avoid;
+  }
+
+  /* Encabezado y pie de página */
+  @page {
+    margin: 11mm;
+    
+    @top-center {
+      content: "Gestor Tienda Pro";
+      font-size: 10pt;
+      color: #666;
+    }
+    
+    @bottom-right {
+      content: "Página " counter(page) " de " counter(pages);
+      font-size: 9pt;
+      color: #666;
+    }
+  }
+
+  /* Primera página sin numeración */
+  @page :first {
+    @bottom-right {
+      content: none;
+    }
+  }
+
+  /* Links */
+  a {
+    text-decoration: none;
+    color: #000 !important;
+  }
+
+  a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 8pt;
+    color: #666;
+  }
+
+  /* Ocultar URLs innecesarias */
+  a[href^="#"]:after,
+  a[href^="javascript:"]:after {
+    content: "";
+  }
+
+  /* Optimizaciones */
+  img {
+    max-width: 100% !important;
+    page-break-inside: avoid;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    page-break-after: avoid;
+    color: #000 !important;
+  }
+
+  p, ul, ol {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Alerta de impresión */
+  .print-only {
+    display: block !important;
+  }
+
+  /* Información adicional para impresión */
+  .print-info {
+    font-size: 9pt;
+    color: #666;
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+  }
+
+  .print-info::before {
+    content: "Impreso el: " attr(data-print-date) " | Usuario: " attr(data-print-user);
+  }
+
+  /* Watermark (opcional) */
+  .watermark {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-45deg);
+    font-size: 72pt;
+    color: rgba(0, 0, 0, 0.05);
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  /* Factura mejorada */
+  .factura-print-wrapper {
+    max-width: 110mm;
+    margin: 0 auto;
+    padding: 0;
+  }
+
+  .factura-box-mejorada {
+    border: 0.8pt solid #111;
+    border-radius: 5pt;
+    padding: 10mm;
+    background: #fff;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+  }
+
+  .factura-header-mejorada,
+  .factura-cliente-mejorada,
+  .factura-info-panel,
+  .factura-items-mejorada,
+  .factura-totales-mejorada,
+  .factura-pago-info,
+  .factura-barcode,
+  .factura-footer-mejorada {
+    page-break-inside: avoid;
+    border: 0.6pt solid #111;
+    border-radius: 4pt;
+    background: #fff !important;
+    margin-bottom: 6mm;
+    padding: 6mm;
+  }
+
+  .factura-header-mejorada {
+    display: grid;
+    gap: 6mm;
+    align-items: flex-start;
+  }
+
+  .factura-items-mejorada {
+    padding: 5mm;
+  }
+
+  .factura-empresa {
+    display: flex;
+    gap: 6mm;
+    align-items: flex-start;
+  }
+
+  .empresa-logo {
+    width: 18mm !important;
+    height: 18mm !important;
+    font-size: 10pt !important;
+    border-radius: 4mm !important;
+    background: #1d4ed8 !important;
+    color: #fff !important;
+  }
+
+  .empresa-info h2 {
+    font-size: 11pt !important;
+    margin-bottom: 2mm !important;
+  }
+
+  .empresa-info p,
+  .fecha-factura,
+  .factura-meta-label,
+  .factura-meta-value,
+  .dato-label,
+  .dato-value,
+  .factura-pago-info p,
+  .factura-totales-mejorada span,
+  .factura-footer-mejorada p,
+  .barcode-caption p {
+    font-size: 8pt !important;
+    color: #111 !important;
+  }
+
+  .factura-identidad-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6mm;
+  }
+
+  .empresa-datos-grid,
+  .datos-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4mm;
+  }
+
+  .datos-grid.datos-grid--1 {
+    grid-template-columns: 1fr;
+  }
+
+  .factura-meta-grid {
+    display: grid;
+    gap: 3mm;
+    margin-top: 3mm;
+  }
+
+  .factura-meta-row {
+    display: flex;
+    flex-direction: column;
+    gap: 1mm;
+    border: 0.4pt solid #bbb;
+    border-radius: 3pt;
+    padding: 2mm 3mm;
+    background: #f7f7f7;
+  }
+
+  .factura-meta-label {
+    text-transform: uppercase;
+    letter-spacing: 0.4pt;
+  }
+
+  .factura-meta-value {
+    font-weight: 600;
+  }
+
+  .factura-barcode {
+    text-align: center;
+  }
+
+  .factura-barcode svg {
+    width: 70mm;
+    height: 20mm;
+    margin: 0 auto 3mm auto;
+    display: block;
+  }
+
+  .barcode-fallback {
+    font-family: 'Fira Mono', 'Courier New', monospace;
+    font-size: 8pt;
+    letter-spacing: 2px;
+    margin-bottom: 2mm;
+  }
+
+  .barcode-number {
+    font-family: 'Fira Mono', 'Courier New', monospace;
+    font-weight: 600;
+  }
+
+  .factura-numero-box {
+    border: 0.6pt solid #000 !important;
+    border-radius: 4pt !important;
+    padding: 5mm !important;
+    background: #fff !important;
+    text-align: center !important;
+  }
+
+  .factura-numero-box h4 {
+    margin: 0 0 2mm 0 !important;
+    font-size: 9pt !important;
+  }
+
+  .numero-factura {
+    font-size: 9pt !important;
+  }
+
+  .factura-items-mejorada table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  .factura-items-mejorada th,
+  .factura-items-mejorada td {
+    border: 0.6pt solid #000;
+    padding: 3px 5px;
+    font-size: 8pt;
+    color: #000 !important;
+  }
+
+  .factura-items-mejorada th {
+    background: #f1f5f9 !important;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.25px;
+  }
+
+  .factura-items-mejorada tbody tr {
+    page-break-inside: avoid;
+  }
+
+  .totales-container {
+    display: grid;
+    gap: 3mm;
+  }
+
+  .total-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 8pt;
+  }
+
+  .total-row.total-final {
+    font-size: 9pt;
+    font-weight: 700;
+  }
+
+  .total-divider {
+    height: 0.6pt;
+    background: #000;
+    opacity: 0.4;
+  }
+
+  .factura-footer-mejorada {
+    border-top: 0.6pt dashed #000;
+    padding-top: 4mm;
+    text-align: center;
+    color: #000 !important;
+    background: transparent;
+    font-size: 8pt;
+    margin-bottom: 0;
+  }
+}
+
+/* Clases helper para impresión */
+.print-only {
+  display: none;
+}
+
+@media print {
+  .screen-only {
+    display: none !important;
+  }
+}
+

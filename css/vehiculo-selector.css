@@ -1,0 +1,426 @@
+/* ========================================
+   ESTILOS - SELECTOR DE VEHÍCULOS MEJORADO
+   ======================================== */
+
+.vehiculo-selector-mejorado {
+  width: 100%;
+}
+
+/* Contenedor de autocompletado */
+.autocomplete-container {
+  position: relative;
+  width: 100%;
+}
+
+.autocomplete-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  background: var(--input-background, #fff);
+  color: var(--text-primary, #333);
+}
+
+.autocomplete-input:focus {
+  outline: none;
+  border-color: var(--primary-color, #4a90e2);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+.autocomplete-input:disabled {
+  background: var(--background-disabled, #f5f5f5);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Dropdown de sugerencias */
+.autocomplete-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  max-height: 300px;
+  overflow-y: auto;
+  background: var(--card-background, #fff);
+  border: 1px solid var(--border-color, #ddd);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  display: none;
+  margin-top: -1px;
+}
+
+.autocomplete-item {
+  padding: 12px 14px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-light, #f0f0f0);
+  transition: background 0.15s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.autocomplete-item:hover {
+  background: var(--hover-background, #f8f9fa);
+}
+
+.autocomplete-item:last-child {
+  border-bottom: none;
+}
+
+.autocomplete-item strong {
+  color: var(--text-primary, #333);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.autocomplete-item small {
+  color: var(--text-secondary, #666);
+  font-size: 0.8rem;
+}
+
+/* Contenedor de opciones personalizadas */
+.custom-option-container {
+  margin-top: 8px;
+}
+
+.custom-option-container .alert {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.custom-option-container .alert i {
+  font-size: 1.1rem;
+}
+
+/* Secciones del formulario */
+.form-section {
+  margin-bottom: 24px;
+  padding: 20px;
+  background: var(--card-background, #fff);
+  border: 1px solid var(--border-light, #e8e8e8);
+  border-radius: 8px;
+}
+
+.form-section h4 {
+  margin: 0 0 16px 0;
+  color: var(--text-primary, #333);
+  font-size: 1.1rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-section h4 i {
+  color: var(--primary-color, #4a90e2);
+  font-size: 1.2rem;
+}
+
+/* Grupos de formulario */
+.form-group {
+  margin-bottom: 16px;
+}
+
+.form-group:last-child {
+  margin-bottom: 0;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-primary, #333);
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+.form-group .form-control {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color, #ddd);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  background: var(--input-background, #fff);
+  color: var(--text-primary, #333);
+}
+
+.form-group .form-control:focus {
+  outline: none;
+  border-color: var(--primary-color, #4a90e2);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
+}
+
+.form-group textarea.form-control {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-group select.form-control {
+  cursor: pointer;
+}
+
+/* Filas de formulario */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.form-row:last-child {
+  margin-bottom: 0;
+}
+
+/* Texto de ayuda */
+.form-text {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.8rem;
+  color: var(--text-muted, #999);
+}
+
+.form-text.text-muted {
+  color: var(--text-muted, #999);
+}
+
+/* Badges */
+.badge {
+  display: inline-block;
+  padding: 3px 8px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.badge-info {
+  background: #17a2b8;
+  color: white;
+}
+
+.badge-success {
+  background: #28a745;
+  color: white;
+}
+
+.badge-secondary {
+  background: #6c757d;
+  color: white;
+}
+
+.badge-warning {
+  background: #ffc107;
+  color: #333;
+}
+
+.badge-light {
+  background: #f8f9fa;
+  color: #333;
+  border: 1px solid #dee2e6;
+}
+
+/* Alertas */
+.alert {
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+}
+
+.alert-warning {
+  background: #fff3cd;
+  border: 1px solid #ffc107;
+  color: #856404;
+}
+
+.alert-info {
+  background: #d1ecf1;
+  border: 1px solid #17a2b8;
+  color: #0c5460;
+}
+
+/* Checkbox personalizado */
+.form-check {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.form-check-input {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  cursor: pointer;
+  accent-color: var(--primary-color, #4a90e2);
+}
+
+.form-check-label {
+  cursor: pointer;
+  flex: 1;
+  user-select: none;
+}
+
+.form-check-label strong {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--text-primary, #333);
+}
+
+/* Datalist styling - navegadores modernos */
+.input-with-suggestions {
+  position: relative;
+}
+
+/* Scrollbar personalizado para dropdown */
+.autocomplete-dropdown::-webkit-scrollbar {
+  width: 8px;
+}
+
+.autocomplete-dropdown::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 0 0 6px 0;
+}
+
+.autocomplete-dropdown::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+.autocomplete-dropdown::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .form-section {
+    padding: 16px;
+  }
+
+  .form-section h4 {
+    font-size: 1rem;
+  }
+
+  .autocomplete-dropdown {
+    max-height: 250px;
+  }
+
+  .autocomplete-item {
+    padding: 10px 12px;
+  }
+}
+
+/* Modo oscuro */
+@media (prefers-color-scheme: dark) {
+  .autocomplete-input,
+  .form-group .form-control {
+    background: var(--input-background-dark, #2a2a2a);
+    border-color: var(--border-dark, #444);
+    color: var(--text-primary-dark, #e0e0e0);
+  }
+
+  .autocomplete-dropdown {
+    background: var(--card-background-dark, #1e1e1e);
+    border-color: var(--border-dark, #444);
+  }
+
+  .autocomplete-item {
+    border-bottom-color: var(--border-light-dark, #333);
+  }
+
+  .autocomplete-item:hover {
+    background: var(--hover-background-dark, #2a2a2a);
+  }
+
+  .autocomplete-item strong {
+    color: var(--text-primary-dark, #e0e0e0);
+  }
+
+  .autocomplete-item small {
+    color: var(--text-secondary-dark, #999);
+  }
+
+  .form-section {
+    background: var(--card-background-dark, #1e1e1e);
+    border-color: var(--border-light-dark, #333);
+  }
+
+  .form-section h4 {
+    color: var(--text-primary-dark, #e0e0e0);
+  }
+
+  .form-group label {
+    color: var(--text-primary-dark, #e0e0e0);
+  }
+
+  .alert-warning {
+    background: #332701;
+    border-color: #664d03;
+    color: #ffecb5;
+  }
+
+  .alert-info {
+    background: #012e35;
+    border-color: #055160;
+    color: #b6effb;
+  }
+}
+
+/* Estados de validación */
+.form-control.is-invalid {
+  border-color: #dc3545;
+}
+
+.form-control.is-invalid:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+}
+
+.form-control.is-valid {
+  border-color: #28a745;
+}
+
+.form-control.is-valid:focus {
+  border-color: #28a745;
+  box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+}
+
+.invalid-feedback,
+.valid-feedback {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.8rem;
+}
+
+.invalid-feedback {
+  color: #dc3545;
+}
+
+.valid-feedback {
+  color: #28a745;
+}
+
+/* Animaciones */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.autocomplete-dropdown {
+  animation: slideDown 0.2s ease;
+}

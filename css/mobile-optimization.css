@@ -1,0 +1,1029 @@
+/* ========================================
+   OPTIMIZACIÓN MÓVIL GLOBAL - TODOS LOS MÓDULOS
+   Sistema minimalista y táctil para celulares
+   ======================================== */
+
+@media (max-width: 768px) {
+  /* ========================================
+     BASE GLOBAL MÓVIL
+     ======================================== */
+
+  * {
+    -webkit-tap-highlight-color: rgba(99, 102, 241, 0.1);
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
+  /* Ocultar scrollbars en móvil para UI más limpia */
+  .content-area::-webkit-scrollbar,
+  .modal-body::-webkit-scrollbar,
+  .table-container::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  /* ========================================
+     COMPONENTES COMUNES - MINIMALISTAS
+     ======================================== */
+
+  /* Tarjetas más compactas */
+  .card {
+    padding: 12px;
+    border-radius: var(--radius-md);
+    margin-bottom: 10px;
+  }
+
+  .card-header {
+    padding: 10px 12px;
+    margin: -12px -12px 12px;
+  }
+
+  .card-body {
+    padding: 0;
+  }
+
+  /* Botones táctiles optimizados */
+  .btn {
+    min-height: 44px;
+    padding: 12px 16px;
+    font-size: 0.95rem;
+    border-radius: var(--radius-md);
+  }
+
+  .btn-sm {
+    min-height: 36px;
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+
+  .btn-icon {
+    width: 40px;
+    height: 40px;
+    min-width: 40px;
+  }
+
+  /* Formularios táctiles */
+  input,
+  select,
+  textarea {
+    min-height: 44px;
+    padding: 12px;
+    font-size: 16px; /* Evita zoom en iOS */
+    border-radius: var(--radius-md);
+  }
+
+  textarea {
+    min-height: 100px;
+  }
+
+  .form-group {
+    margin-bottom: 12px;
+  }
+
+  label {
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+  }
+
+  /* Grids adaptables */
+  .stats-grid,
+  .config-grid,
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  /* Tablas responsivas */
+  .table-container {
+    overflow-x: auto;
+    margin: 0 -12px;
+    padding: 0 12px;
+  }
+
+  table {
+    font-size: 0.85rem;
+  }
+
+  th,
+  td {
+    padding: 10px 8px;
+    white-space: nowrap;
+  }
+
+  /* Modales móviles - pantalla completa */
+  .modal {
+    padding: 0;
+  }
+
+  .modal-container {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100vh;
+    max-height: 100vh;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .modal-header {
+    padding: 12px 16px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--bg-primary);
+    border-bottom: 2px solid var(--border-color);
+  }
+
+  .modal-body {
+    padding: 16px;
+    max-height: calc(100vh - 140px);
+    overflow-y: auto;
+  }
+
+  .modal-footer {
+    padding: 12px 16px;
+    position: sticky;
+    bottom: 0;
+    background: var(--bg-primary);
+    border-top: 2px solid var(--border-color);
+  }
+
+  /* ========================================
+     DASHBOARD MÓVIL
+     ======================================== */
+
+  .dashboard-kpis {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .kpi-card {
+    padding: 14px;
+    border-radius: var(--radius-md);
+  }
+
+  .kpi-value {
+    font-size: 1.8rem;
+  }
+
+  .kpi-label {
+    font-size: 0.85rem;
+  }
+
+  .dashboard-charts {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  .chart-container {
+    height: 280px;
+  }
+
+  /* ========================================
+     PRODUCTOS MÓVIL
+     ======================================== */
+
+  .productos-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .producto-card {
+    padding: 10px;
+    border-radius: var(--radius-md);
+  }
+
+  .producto-image {
+    height: 120px;
+    border-radius: var(--radius-sm);
+  }
+
+  .producto-info {
+    padding: 8px 0 0;
+  }
+
+  .producto-nombre {
+    font-size: 0.9rem;
+    line-height: 1.3;
+    max-height: 2.6em;
+    overflow: hidden;
+  }
+
+  .producto-precio {
+    font-size: 1.1rem;
+    margin: 6px 0;
+  }
+
+  /* Formulario de productos */
+  .producto-form-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+
+  /* ========================================
+     CLIENTES Y PROVEEDORES MÓVIL
+     ======================================== */
+
+  .clientes-list,
+  .proveedores-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .cliente-card,
+  .proveedor-card {
+    padding: 12px;
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+  }
+
+  .cliente-header,
+  .proveedor-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .cliente-info,
+  .proveedor-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .cliente-nombre,
+  .proveedor-nombre {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .cliente-detalles,
+  .proveedor-detalles {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .cliente-detalle,
+  .proveedor-detalle {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+  }
+
+  .cliente-actions,
+  .proveedor-actions {
+    display: flex;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  /* ========================================
+     COMPRAS Y ÓRDENES MÓVIL
+     ======================================== */
+
+  .compras-list,
+  .ordenes-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .compra-card,
+  .orden-card {
+    padding: 12px;
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+    border-left: 4px solid var(--primary-color);
+  }
+
+  .compra-header,
+  .orden-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .compra-numero,
+  .orden-numero {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary-color);
+  }
+
+  .compra-fecha,
+  .orden-fecha {
+    font-size: 0.8rem;
+    color: var(--text-tertiary);
+  }
+
+  .compra-proveedor,
+  .orden-cliente {
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+  }
+
+  .compra-total,
+  .orden-total {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--success-color);
+    margin: 8px 0;
+  }
+
+  .compra-items,
+  .orden-items {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 10px 0;
+    padding: 10px;
+    background: var(--bg-primary);
+    border-radius: var(--radius-sm);
+  }
+
+  .item-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+  }
+
+  /* ========================================
+     AGENDA MÓVIL
+     ======================================== */
+
+  .calendario-container {
+    margin: 0 -12px;
+  }
+
+  .fc {
+    font-size: 0.85rem;
+  }
+
+  .fc-toolbar {
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+  }
+
+  .fc-toolbar-chunk {
+    width: 100%;
+  }
+
+  .fc-toolbar-title {
+    font-size: 1.1rem;
+  }
+
+  .fc-button {
+    padding: 8px 12px;
+    font-size: 0.85rem;
+  }
+
+  .fc-daygrid-day-number {
+    font-size: 0.9rem;
+    padding: 6px;
+  }
+
+  .fc-event {
+    font-size: 0.75rem;
+    padding: 2px 4px;
+  }
+
+  /* Citas lista móvil */
+  .citas-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .cita-card {
+    padding: 12px;
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+    border-left: 4px solid var(--primary-color);
+  }
+
+  .cita-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .cita-hora {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--primary-color);
+  }
+
+  .cita-cliente {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .cita-servicio {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+  }
+
+  /* ========================================
+     VEHÍCULOS MÓVIL (TALLER)
+     ======================================== */
+
+  .vehiculos-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .vehiculo-card {
+    padding: 12px;
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+  }
+
+  .vehiculo-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 10px;
+  }
+
+  .vehiculo-marca-modelo {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .vehiculo-placa {
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    font-weight: 600;
+  }
+
+  .vehiculo-datos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin: 10px 0;
+  }
+
+  .vehiculo-dato {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .vehiculo-dato-label {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+  }
+
+  .vehiculo-dato-valor {
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  /* ========================================
+     FINANZAS MÓVIL
+     ======================================== */
+
+  .finanzas-summary {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .finanzas-card {
+    padding: 14px;
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    color: white;
+    text-align: center;
+  }
+
+  .finanzas-label {
+    font-size: 0.85rem;
+    opacity: 0.9;
+    margin-bottom: 6px;
+  }
+
+  .finanzas-valor {
+    font-size: 1.8rem;
+    font-weight: 700;
+  }
+
+  .transacciones-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .transaccion-card {
+    padding: 10px;
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .transaccion-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .transaccion-concepto {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .transaccion-fecha {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+  }
+
+  .transaccion-monto {
+    font-size: 1.1rem;
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-left: 12px;
+  }
+
+  .transaccion-monto.ingreso {
+    color: var(--success-color);
+  }
+
+  .transaccion-monto.egreso {
+    color: var(--error-color);
+  }
+
+  /* ========================================
+     ESTADÍSTICAS MÓVIL
+     ======================================== */
+
+  .estadisticas-periodo {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .periodo-selector {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .periodo-btn {
+    flex-shrink: 0;
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    border-radius: var(--radius-full);
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    color: var(--text-primary);
+  }
+
+  .periodo-btn.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+  }
+
+  .estadisticas-charts {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .chart-card {
+    padding: 12px;
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+  }
+
+  .chart-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+  }
+
+  /* ========================================
+     CONFIGURACIÓN MÓVIL
+     ======================================== */
+
+  .config-sections {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .config-section {
+    padding: 14px;
+    border-radius: var(--radius-md);
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+  }
+
+  .config-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .config-section-title i {
+    color: var(--primary-color);
+  }
+
+  .config-option {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+
+  .config-option:last-child {
+    border-bottom: none;
+  }
+
+  .config-option-info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .config-option-label {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 2px;
+  }
+
+  .config-option-desc {
+    font-size: 0.75rem;
+    color: var(--text-tertiary);
+  }
+
+  .config-option-control {
+    flex-shrink: 0;
+    margin-left: 12px;
+  }
+
+  /* ========================================
+     FILTROS Y BÚSQUEDA MÓVIL
+     ======================================== */
+
+  .filtros-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding: 12px;
+    background: var(--bg-secondary);
+    border-radius: var(--radius-md);
+  }
+
+  .search-bar-mobile {
+    position: relative;
+  }
+
+  .search-input-mobile {
+    width: 100%;
+    padding: 12px 40px 12px 40px;
+    font-size: 16px;
+    border-radius: var(--radius-full);
+    border: 2px solid var(--border-color);
+    background: var(--bg-primary);
+  }
+
+  .search-icon-mobile {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-tertiary);
+  }
+
+  .search-clear-mobile {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--text-tertiary);
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+  }
+
+  .filtros-chips {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+
+  .filtro-chip {
+    flex-shrink: 0;
+    padding: 6px 12px;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    border-radius: var(--radius-full);
+    background: var(--bg-primary);
+    border: 2px solid var(--border-color);
+    color: var(--text-primary);
+  }
+
+  .filtro-chip.active {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+  }
+
+  /* ========================================
+     BADGES Y ETIQUETAS MÓVIL
+     ======================================== */
+
+  .badge {
+    padding: 4px 8px;
+    font-size: 0.75rem;
+    border-radius: var(--radius-sm);
+  }
+
+  .status-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+  }
+
+  .status-badge i {
+    font-size: 0.7rem;
+  }
+
+  /* ========================================
+     ACCIONES FLOTANTES MÓVIL
+     ======================================== */
+
+  .fab-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    cursor: pointer;
+    z-index: 50;
+    transition: all 0.3s ease;
+  }
+
+  .fab-button:active {
+    transform: scale(0.95);
+  }
+
+  /* ========================================
+     ANIMACIONES MÓVILES
+     ======================================== */
+
+  @keyframes slideInUp {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .card,
+  .producto-card,
+  .cliente-card,
+  .compra-card,
+  .orden-card,
+  .cita-card,
+  .vehiculo-card {
+    animation: slideInUp 0.3s ease;
+  }
+
+  /* ========================================
+     UTILIDADES MÓVILES
+     ======================================== */
+
+  .mobile-only {
+    display: block !important;
+  }
+
+  .desktop-only {
+    display: none !important;
+  }
+
+  .mobile-text-center {
+    text-align: center;
+  }
+
+  .mobile-w-full {
+    width: 100% !important;
+  }
+
+  .mobile-mb-0 {
+    margin-bottom: 0 !important;
+  }
+
+  .mobile-p-0 {
+    padding: 0 !important;
+  }
+
+  /* ========================================
+     MEJORAS ESPECÍFICAS POR MÓDULO
+     ======================================== */
+
+  /* Page headers más compactos */
+  .page-header {
+    padding: 12px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .page-header h2 {
+    font-size: 1.3rem;
+  }
+
+  .page-header .header-actions {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+
+  .page-header .btn {
+    flex: 1;
+    min-width: calc(50% - 5px);
+  }
+
+  /* Stat cards optimizadas */
+  .stat-card {
+    padding: 12px;
+    border-radius: var(--radius-md);
+  }
+
+  .stat-icon {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .stat-value {
+    font-size: 1.5rem;
+  }
+
+  .stat-label {
+    font-size: 0.8rem;
+  }
+
+  /* Empty states */
+  .empty-state {
+    padding: 40px 20px;
+    text-align: center;
+  }
+
+  .empty-state-icon {
+    font-size: 3rem;
+    opacity: 0.3;
+    margin-bottom: 12px;
+  }
+
+  .empty-state-text {
+    font-size: 1rem;
+    color: var(--text-secondary);
+  }
+
+  /* Loading states */
+  .loading-spinner {
+    width: 40px;
+    height: 40px;
+    margin: 40px auto;
+  }
+
+  /* ========================================
+     CORRECCIONES DE ESPACIADO
+     ======================================== */
+
+  /* Eliminar márgenes excesivos */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin-top: 0;
+    margin-bottom: 12px;
+  }
+
+  p {
+    margin-top: 0;
+    margin-bottom: 10px;
+  }
+
+  /* Secciones más compactas */
+  section {
+    margin-bottom: 16px;
+  }
+
+  /* Dividers más sutiles */
+  hr {
+    margin: 16px 0;
+    border-color: var(--border-color);
+  }
+}
+
+/* ========================================
+   MÓVIL PEQUEÑO - EXTRA COMPACTO
+   ======================================== */
+
+@media (max-width: 480px) {
+  .productos-grid {
+    gap: 6px;
+  }
+
+  .producto-card {
+    padding: 8px;
+  }
+
+  .producto-image {
+    height: 100px;
+  }
+
+  .btn {
+    padding: 10px 12px;
+    font-size: 0.9rem;
+  }
+
+  .card {
+    padding: 10px;
+  }
+
+  .modal-body {
+    padding: 12px;
+  }
+
+  .kpi-value {
+    font-size: 1.5rem;
+  }
+
+  .chart-container {
+    height: 240px;
+  }
+
+  table {
+    font-size: 0.8rem;
+  }
+
+  th,
+  td {
+    padding: 8px 6px;
+  }
+}

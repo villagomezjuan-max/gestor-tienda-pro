@@ -1,0 +1,1204 @@
+/* ============================================
+   CONFIGURACIÓN AVANZADA MODERNA
+   Nuevo diseño con sidebar y mejor UX
+   ============================================ */
+
+/* Contenedor principal que ocupa todo el espacio disponible */
+.config-layout-container {
+  display: flex;
+  height: calc(100vh - 80px); /* Ajustar según el header del dashboard */
+  background-color: var(--bg-secondary);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  margin: -1rem; /* Compensar padding del dashboard si es necesario */
+}
+
+/* Sidebar de navegación */
+.config-sidebar {
+  width: 260px;
+  background-color: var(--bg-primary);
+  border-right: 1px solid var(--border-light);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow-y: auto;
+  transition: width 0.3s ease;
+}
+
+.config-sidebar-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.config-sidebar-header h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  margin: 0;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.config-sidebar-header i {
+  color: var(--primary-color);
+  font-size: 1.2rem;
+}
+
+.config-nav {
+  padding: 1rem 0.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.config-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.config-nav-item:hover {
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+}
+
+.config-nav-item.active {
+  background-color: rgba(99, 102, 241, 0.1); /* Usar variable primary con opacidad */
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.config-nav-item i {
+  width: 20px;
+  text-align: center;
+  font-size: 1.1rem;
+}
+
+/* Área de contenido principal */
+.config-main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 2rem;
+  background-color: var(--bg-secondary);
+  position: relative;
+}
+
+/* Header de la sección actual */
+.config-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.config-section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.config-section-title i {
+  color: var(--primary-color);
+}
+
+.config-actions-top {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Tarjetas y grupos de configuración */
+.config-card,
+.config-subsection {
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border-light);
+}
+
+.config-card h4,
+.config-subsection h4 {
+  margin-top: 0;
+  margin-bottom: 1.25rem;
+  font-size: 1.1rem;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-light);
+  padding-bottom: 0.75rem;
+}
+
+.config-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.config-group {
+  margin-bottom: 1rem;
+}
+
+.config-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.config-group label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.config-group .form-control {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  transition: border-color 0.2s;
+}
+
+.config-group .form-control:focus {
+  border-color: var(--primary-color);
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+/* Botones de acción flotantes o fijos */
+.config-save-bar {
+  position: sticky;
+  bottom: 0;
+  background-color: var(--bg-primary);
+  padding: 1rem;
+  border-top: 1px solid var(--border-light);
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin: 0 -1.5rem -1.5rem -1.5rem; /* Extender a los bordes de la tarjeta */
+  border-bottom-left-radius: var(--radius-lg);
+  border-bottom-right-radius: var(--radius-lg);
+}
+
+/* Icon Picker mejorado */
+.icon-selector-wrapper {
+  position: relative;
+}
+
+.icon-picker-toggle {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.5rem;
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  background-color: var(--bg-secondary);
+}
+
+.icon-preview {
+  font-size: 1.5rem;
+}
+
+.icon-picker-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 100;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  padding: 1rem;
+  width: 300px;
+  max-height: 300px;
+  overflow-y: auto;
+  margin-top: 0.5rem;
+}
+
+.icon-picker-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.icon-option {
+  font-size: 1.5rem;
+  padding: 0.5rem;
+  text-align: center;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+
+.icon-option:hover {
+  background-color: var(--bg-secondary);
+}
+
+/* Ocultar título redundante de las secciones antiguas */
+.config-section > h3 {
+  display: none;
+}
+
+/* Ajustar espaciado del contenido */
+.config-section {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ============================================
+   ESTILOS MEJORADOS PARA ALERTAS EN CONFIGURACIÓN
+   ============================================ */
+.config-section .alert,
+.config-subsection .alert {
+  display: block !important;
+  width: 100%;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  box-sizing: border-box;
+}
+
+.config-section .alert-info,
+.config-subsection .alert-info {
+  background: rgba(59, 130, 246, 0.08);
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-left: 4px solid var(--info-color, #3b82f6);
+  border-radius: var(--radius-lg, 12px);
+  padding: 1.25rem 1.5rem;
+  color: var(--text-secondary, #94a3b8);
+  line-height: 1.7;
+  font-size: 0.9rem;
+}
+
+.config-section .alert-info i:first-child,
+.config-subsection .alert-info i:first-child {
+  color: var(--info-color, #3b82f6);
+  margin-right: 0.5rem;
+}
+
+.config-section .alert-info strong,
+.config-subsection .alert-info strong {
+  color: var(--text-primary, #e2e8f0);
+  display: block;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.config-section .alert-info a,
+.config-subsection .alert-info a {
+  color: var(--primary-color, #6366f1);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.config-section .alert-info a:hover,
+.config-subsection .alert-info a:hover {
+  text-decoration: underline;
+}
+
+.config-section .alert-info code,
+.config-subsection .alert-info code {
+  background: rgba(99, 102, 241, 0.15);
+  color: var(--primary-color, #a5b4fc);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85em;
+}
+
+.config-section .alert-info br,
+.config-subsection .alert-info br {
+  display: block;
+  content: '';
+  margin-bottom: 0.25rem;
+}
+
+.config-section .alert-success,
+.config-subsection .alert-success {
+  background: rgba(16, 185, 129, 0.08);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-left: 4px solid var(--success-color, #10b981);
+  border-radius: var(--radius-lg, 12px);
+  padding: 1.25rem 1.5rem;
+  color: var(--text-secondary, #94a3b8);
+  line-height: 1.7;
+  font-size: 0.9rem;
+}
+
+.config-section .alert-success i:first-child,
+.config-subsection .alert-success i:first-child {
+  color: var(--success-color, #10b981);
+  margin-right: 0.5rem;
+}
+
+.config-section .alert-success strong,
+.config-subsection .alert-success strong {
+  color: var(--text-primary, #e2e8f0);
+}
+
+/* ============================================
+   CAJA DE AYUDA TELEGRAM - DISEÑO MEJORADO
+   ============================================ */
+.telegram-help-box {
+  display: flex !important;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.5rem !important;
+}
+
+.telegram-help-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.telegram-help-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--text-primary, #e2e8f0);
+  font-size: 1rem;
+}
+
+.telegram-help-title i {
+  font-size: 1.1rem;
+  color: var(--primary-color, #6366f1);
+  width: 24px;
+  text-align: center;
+}
+
+.telegram-help-title strong {
+  display: inline !important;
+  margin-bottom: 0 !important;
+}
+
+.telegram-help-steps {
+  margin: 0;
+  padding-left: 2.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.telegram-help-steps li {
+  color: var(--text-secondary, #94a3b8);
+  line-height: 1.6;
+  font-size: 0.9rem;
+}
+
+.telegram-help-steps li::marker {
+  color: var(--primary-color, #6366f1);
+  font-weight: 600;
+}
+
+.telegram-help-steps a {
+  color: var(--primary-color, #818cf8);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.telegram-help-steps a:hover {
+  color: var(--primary-dark, #6366f1);
+  text-decoration: underline;
+}
+
+.telegram-help-steps code {
+  background: rgba(99, 102, 241, 0.15);
+  color: var(--primary-color, #a5b4fc);
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85em;
+  font-weight: 600;
+}
+
+/* Variante success para la caja de ayuda */
+.alert-success.telegram-help-box .telegram-help-title i {
+  color: var(--success-color, #10b981);
+}
+
+.alert-success.telegram-help-box .telegram-help-steps li::marker {
+  color: var(--success-color, #10b981);
+}
+
+/* Diseño responsivo para cajas de ayuda en 2 columnas en pantallas grandes */
+@media (min-width: 900px) {
+  .telegram-help-box:not(.alert-success) {
+    flex-direction: row;
+    gap: 2rem;
+  }
+  
+  .telegram-help-box:not(.alert-success) .telegram-help-section {
+    flex: 1;
+  }
+}
+
+/* ============================================
+   TELEGRAM - PANEL DE ESTADO DEL BOT
+   ============================================ */
+.telegram-bot-status {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: rgba(100, 116, 139, 0.1);
+  border: 1px solid rgba(100, 116, 139, 0.2);
+  border-radius: var(--radius-lg, 12px);
+  margin-bottom: 1.5rem;
+  transition: all 0.3s ease;
+}
+
+.telegram-bot-status .bot-status-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: rgba(100, 116, 139, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: #64748b;
+  transition: all 0.3s ease;
+}
+
+.telegram-bot-status .bot-status-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.telegram-bot-status .bot-status-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-tertiary, #64748b);
+  font-weight: 600;
+}
+
+.telegram-bot-status .bot-status-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--text-primary, #e2e8f0);
+}
+
+/* Estados del bot */
+.telegram-bot-status.status-success {
+  background: rgba(16, 185, 129, 0.1);
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.telegram-bot-status.status-success .bot-status-icon {
+  background: rgba(16, 185, 129, 0.2);
+  color: #10b981;
+}
+
+.telegram-bot-status.status-success .bot-status-value {
+  color: #10b981;
+}
+
+.telegram-bot-status.status-error {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.telegram-bot-status.status-error .bot-status-icon {
+  background: rgba(239, 68, 68, 0.2);
+  color: #ef4444;
+}
+
+.telegram-bot-status.status-error .bot-status-value {
+  color: #ef4444;
+}
+
+.telegram-bot-status.status-checking {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.telegram-bot-status.status-checking .bot-status-icon {
+  background: rgba(59, 130, 246, 0.2);
+  color: #3b82f6;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+/* ============================================
+   TELEGRAM - INPUT DEL TOKEN
+   ============================================ */
+.telegram-token-input {
+  display: flex;
+  gap: 0.5rem;
+  align-items: stretch;
+}
+
+.telegram-token-input .form-control {
+  flex: 1;
+  min-width: 0;
+}
+
+.telegram-token-input .btn-icon {
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-secondary, #1e293b);
+  border: 1px solid var(--border-color, #334155);
+  color: var(--text-secondary, #94a3b8);
+}
+
+.telegram-token-input .btn-icon:hover {
+  background: var(--bg-tertiary, #334155);
+  color: var(--text-primary, #e2e8f0);
+}
+
+/* ============================================
+   TELEGRAM - PANEL DE ACCESO RÁPIDO
+   ============================================ */
+.telegram-quick-access {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: var(--radius-lg, 12px);
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.telegram-quick-access .quick-access-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+  color: #10b981;
+  font-size: 1.1rem;
+}
+
+.telegram-quick-access .quick-access-header i {
+  font-size: 1.25rem;
+}
+
+.telegram-quick-access .quick-access-body p {
+  color: var(--text-secondary, #94a3b8);
+  margin-bottom: 1.25rem;
+  font-size: 0.95rem;
+}
+
+.telegram-quick-access .quick-access-body strong {
+  color: var(--text-primary, #e2e8f0);
+}
+
+.telegram-quick-access .quick-access-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.telegram-quick-access .quick-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+
+.telegram-quick-access .step-number {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #10b981, #06b6d4);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.telegram-quick-access .step-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.telegram-quick-access .step-content strong {
+  color: var(--text-primary, #e2e8f0);
+  font-size: 0.95rem;
+}
+
+.telegram-quick-access .step-hint {
+  font-size: 0.85rem;
+  color: var(--text-tertiary, #64748b);
+}
+
+/* Botón de Telegram */
+.btn-telegram {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.25rem;
+  background: linear-gradient(135deg, #0088cc, #00a6e0);
+  color: white !important;
+  border: none;
+  border-radius: var(--radius-md, 8px);
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.btn-telegram:hover {
+  background: linear-gradient(135deg, #006699, #0088cc);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 136, 204, 0.4);
+}
+
+.btn-telegram i {
+  font-size: 1.1rem;
+}
+
+/* ============================================
+   TELEGRAM - PANEL DE USUARIOS
+   ============================================ */
+.telegram-users-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.telegram-users-panel .form-group {
+  margin-bottom: 0;
+}
+
+.telegram-users-panel label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: var(--text-primary, #e2e8f0);
+}
+
+.telegram-users-panel label i {
+  color: var(--primary-color, #6366f1);
+}
+
+.telegram-detect-row,
+.telegram-manual-row {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.telegram-detect-row .btn {
+  flex: 1;
+}
+
+.telegram-detect-row .btn:last-child {
+  flex: 0 0 auto;
+}
+
+.telegram-manual-row .form-control {
+  flex: 1;
+}
+
+.telegram-users-panel small {
+  display: block;
+  margin-top: 0.5rem;
+  color: var(--text-tertiary, #64748b);
+  font-size: 0.8rem;
+}
+
+/* ============================================
+   TELEGRAM - TABLA DE USUARIOS
+   ============================================ */
+.telegram-users-legend {
+  display: flex;
+  gap: 1.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(99, 102, 241, 0.1);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.telegram-users-legend .legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.telegram-users-legend .badge {
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-admin {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: white;
+}
+
+.badge-secretario {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: white;
+}
+
+.badge-cliente {
+  background: linear-gradient(135deg, #6b7280, #4b5563);
+  color: white;
+}
+
+.telegram-users-table {
+  width: 100%;
+}
+
+.telegram-users-table th {
+  white-space: nowrap;
+  font-size: 0.85rem;
+}
+
+.telegram-users-table th i {
+  margin-right: 0.5rem;
+  opacity: 0.7;
+}
+
+.telegram-users-table td {
+  vertical-align: middle;
+  padding: 0.75rem 0.5rem;
+}
+
+.telegram-users-table .form-control-sm {
+  padding: 0.4rem 0.6rem;
+  font-size: 0.85rem;
+  background: var(--bg-tertiary, #374151);
+  border: 1px solid var(--border-light, #4b5563);
+  color: var(--text-primary, #e2e8f0);
+  border-radius: 6px;
+}
+
+.telegram-users-table .form-control-sm:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+.telegram-users-table select.form-control-sm {
+  cursor: pointer;
+  min-width: 140px;
+}
+
+.telegram-user-nombre {
+  width: 100%;
+  min-width: 120px;
+}
+
+.chat-id-code {
+  background: rgba(99, 102, 241, 0.15);
+  color: var(--primary-color, #a5b4fc);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.85rem;
+  display: inline-block;
+}
+
+.user-name {
+  color: var(--text-primary, #e2e8f0);
+  font-weight: 500;
+}
+
+.actions-cell {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.actions-cell .btn {
+  padding: 0.4rem 0.6rem;
+}
+
+/* Configuración del asistente */
+.telegram-assistant-config {
+  background: rgba(99, 102, 241, 0.08);
+  border: 1px solid rgba(99, 102, 241, 0.2);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.telegram-assistant-config label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.telegram-assistant-config label i {
+  margin-right: 0.5rem;
+  color: var(--primary-color);
+}
+
+.assistant-name-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.assistant-name-row input {
+  max-width: 250px;
+}
+
+.assistant-name-row small {
+  color: var(--text-muted);
+  font-size: 0.8rem;
+}
+
+/* Dark Mode Overrides específicos */
+[data-theme='dark'] .config-sidebar {
+  background-color: #1f2937; /* Darker sidebar */
+  border-right-color: #374151;
+}
+
+[data-theme='dark'] .config-nav-item:hover {
+  background-color: #374151;
+}
+
+[data-theme='dark'] .config-nav-item.active {
+  background-color: rgba(99, 102, 241, 0.2);
+}
+
+[data-theme='dark'] .config-card {
+  background-color: #1f2937;
+  border-color: #374151;
+}
+
+[data-theme='dark'] .config-group .form-control {
+  background-color: #111827;
+  border-color: #374151;
+  color: #f3f4f6;
+}
+
+[data-theme='dark'] .config-save-bar {
+  background-color: #1f2937;
+  border-top-color: #374151;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .config-layout-container {
+    flex-direction: column;
+    height: auto;
+    margin: 0;
+  }
+
+  .config-sidebar {
+    width: 100%;
+    height: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--border-light);
+  }
+
+  .config-nav {
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 0.5rem;
+  }
+
+  .config-nav-item {
+    width: auto;
+    white-space: nowrap;
+    padding: 0.5rem 1rem;
+  }
+
+  .config-nav-item span {
+    display: none; /* Ocultar texto en móvil si hay muchos items, o dejar scroll */
+  }
+
+  .config-nav-item.active span {
+    display: inline;
+  }
+
+  .config-main-content {
+    padding: 1rem;
+  }
+}
+
+/* ============================================
+   TELEGRAM IA ASSISTANT - PANEL DE CHAT
+   ============================================ */
+.telegram-chat-section {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--border-light, rgba(99, 102, 241, 0.2));
+}
+
+.telegram-ia-status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--surface-elevated, rgba(30, 41, 59, 0.6));
+  border: 1px solid var(--border-light, rgba(99, 102, 241, 0.2));
+  border-radius: 12px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.ia-status-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ia-status-indicator {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.ia-status-indicator i {
+  font-size: 0.75rem;
+  transition: color 0.3s ease;
+}
+
+.ia-status-indicator.status-on i {
+  color: #10b981;
+  animation: pulse-glow 2s infinite;
+}
+
+.ia-status-indicator.status-off i {
+  color: #64748b;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.ia-status-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.telegram-chat-panel {
+  background: var(--surface-elevated, rgba(30, 41, 59, 0.8));
+  border: 1px solid var(--border-light, rgba(99, 102, 241, 0.2));
+  border-radius: 12px;
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: var(--surface-base, rgba(15, 23, 42, 0.8));
+  border-bottom: 1px solid var(--border-light, rgba(99, 102, 241, 0.2));
+}
+
+.chat-header span {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+  color: var(--text-primary, #e2e8f0);
+}
+
+.chat-header span i {
+  color: #0088cc;
+}
+
+.chat-messages {
+  height: 350px;
+  overflow-y: auto;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.empty-chat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--text-muted, #64748b);
+  text-align: center;
+}
+
+.empty-chat i {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.empty-chat p {
+  margin: 0;
+  font-weight: 500;
+}
+
+.empty-chat small {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.chat-message {
+  max-width: 85%;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  animation: fadeInUp 0.3s ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chat-message.incoming {
+  align-self: flex-start;
+  background: var(--surface-base, rgba(51, 65, 85, 0.8));
+  border-bottom-left-radius: 4px;
+}
+
+.chat-message.outgoing {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #0088cc 0%, #0066aa 100%);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.message-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.message-user {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+}
+
+.message-user i {
+  font-size: 0.7rem;
+}
+
+.message-user small {
+  opacity: 0.7;
+  font-weight: 400;
+}
+
+.message-time {
+  opacity: 0.7;
+  font-size: 0.7rem;
+}
+
+.chat-message.incoming .message-header {
+  color: var(--text-secondary, #94a3b8);
+}
+
+.chat-message.outgoing .message-header {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.message-content {
+  line-height: 1.5;
+  word-wrap: break-word;
+  white-space: pre-wrap;
+}
+
+.chat-message.incoming .message-content {
+  color: var(--text-primary, #e2e8f0);
+}
+
+.chat-footer {
+  padding: 0.75rem 1rem;
+  background: var(--surface-base, rgba(15, 23, 42, 0.6));
+  border-top: 1px solid var(--border-light, rgba(99, 102, 241, 0.15));
+  text-align: center;
+}
+
+.chat-footer small {
+  color: var(--text-muted, #64748b);
+  font-size: 0.75rem;
+}
+
+/* Scrollbar personalizado para el chat */
+.chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.3);
+  border-radius: 3px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+  background: rgba(99, 102, 241, 0.5);
+}
+

@@ -1,0 +1,257 @@
+﻿<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; connect-src 'self' http://localhost:3001 https://api.deepseek.com https://generativelanguage.googleapis.com https://api.openai.com https://api.telegram.org https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.googleapis.com https://www.gstatic.com; style-src-elem 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.googleapis.com; font-src 'self' data: https://cdnjs.cloudflare.com https://fonts.gstatic.com https://r2cdn.perplexity.ai; script-src 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net; script-src-elem 'self' 'unsafe-inline' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://fonts.googleapis.com; script-src-attr 'unsafe-inline' 'unsafe-hashes'; base-uri 'self';"
+    />
+    <link rel="icon" href="icons/icon.svg" type="image/svg+xml" />
+    <title>Iniciando Sistema...</title>
+    <meta name="theme-color" content="#6366f1" />
+    <script src="js/theme-bootstrap.js?v=1.0"></script>
+    <!-- Sistema de manejo de errores - NO silenciar errores -->
+    <script src="js/error-handler.js?v=1.0"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
+    <script src="js/tenant-storage.js?v=1.0"></script>
+    <script src="js/theme-manager.js?v=1.1"></script>
+    <style>
+      :root {
+        --primary-color: #6366f1;
+        --secondary-color: #818cf8;
+        --text-inverse: #ffffff;
+      }
+      [data-theme='dark'] {
+        --primary-color: #4f46e5;
+        --secondary-color: #3730a3;
+        --text-inverse: #e0e7ff;
+      }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+        color: var(--text-inverse);
+        transition: background-color 0.3s;
+      }
+      [data-theme='dark'] body {
+        background: linear-gradient(135deg, #0f172a 0%, #1f2937 100%);
+      }
+      .theme-toggle-floating {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.2);
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        font-size: 1.25rem;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        z-index: 1000;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      }
+
+      [data-theme='dark'] .theme-toggle-floating {
+        background-color: rgba(31, 41, 55, 0.8);
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .theme-toggle-floating:hover {
+        transform: scale(1.1);
+        background-color: rgba(255, 255, 255, 0.3);
+      }
+
+      [data-theme='dark'] .theme-toggle-floating:hover {
+        background-color: rgba(31, 41, 55, 0.9);
+      }
+      .container {
+        text-align: center;
+        background: rgba(255, 255, 255, 0.15);
+        padding: 3rem;
+        border-radius: 20px;
+        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        max-width: 500px;
+        border: 1px solid rgba(255, 255, 255, 0.25);
+        color: inherit;
+      }
+      [data-theme='dark'] .container {
+        background: rgba(17, 24, 39, 0.85);
+        box-shadow: 0 20px 60px rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+      }
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        animation: fadeIn 0.5s;
+      }
+      .spinner {
+        width: 60px;
+        height: 60px;
+        border: 6px solid rgba(255, 255, 255, 0.3);
+        border-top: 6px solid white;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 2rem auto;
+      }
+      [data-theme='dark'] .spinner {
+        border-top-color: var(--primary-light, white);
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .status {
+        font-size: 1rem;
+        margin: 1rem 0;
+        min-height: 24px;
+        opacity: 0.9;
+      }
+      .progress {
+        width: 100%;
+        height: 4px;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 2px;
+        overflow: hidden;
+        margin: 1.5rem 0;
+      }
+      .progress-bar {
+        height: 100%;
+        background: white;
+        width: 0%;
+        transition: width 0.3s ease;
+      }
+      [data-theme='dark'] .progress-bar {
+        background: var(--primary-light, white);
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Botón de modo oscuro flotante -->
+    <button class="theme-toggle-floating" id="themeToggle" title="Cambiar tema">
+      <i class="fas fa-moon"></i>
+    </button>
+
+    <div class="container">
+      <h1>🚀 Gestor Tienda Pro</h1>
+      <div class="spinner"></div>
+      <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <div class="status" id="status">Iniciando sistema...</div>
+    </div>
+
+    <script>
+      const statusDiv = document.getElementById('status');
+      const progressBar = document.getElementById('progressBar');
+
+      let yaLimpiado = sessionStorage.getItem('sistemalimpio');
+
+      async function iniciarSistema() {
+        try {
+          // Si ya se limpió en esta sesión, ir directo al login
+          if (yaLimpiado === 'true') {
+            statusDiv.textContent = 'Redirigiendo al login...';
+            progressBar.style.width = '100%';
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            window.location.href = 'login.html';
+            return;
+          }
+
+          // Paso 1: Verificar Service Workers
+          statusDiv.textContent = 'Verificando Service Workers...';
+          progressBar.style.width = '25%';
+          await new Promise((resolve) => setTimeout(resolve, 300));
+
+          if ('serviceWorker' in navigator) {
+            const registrations = await navigator.serviceWorker.getRegistrations();
+
+            if (registrations.length > 0) {
+              statusDiv.textContent = 'Eliminando Service Workers...';
+              progressBar.style.width = '40%';
+
+              for (let registration of registrations) {
+                await registration.unregister();
+              }
+              await new Promise((resolve) => setTimeout(resolve, 500));
+            }
+          }
+
+          // Paso 2: Limpiar caché
+          statusDiv.textContent = 'Limpiando caché...';
+          progressBar.style.width = '60%';
+          await new Promise((resolve) => setTimeout(resolve, 300));
+
+          if ('caches' in window) {
+            const cacheNames = await caches.keys();
+            await Promise.all(cacheNames.map((cacheName) => caches.delete(cacheName)));
+          }
+
+          // Paso 3: Verificar LocalStorage (no limpiar, solo verificar)
+          statusDiv.textContent = 'Verificando datos...';
+          progressBar.style.width = '80%';
+          await new Promise((resolve) => setTimeout(resolve, 300));
+
+          // Marcar como limpio
+          sessionStorage.setItem('sistemalimpio', 'true');
+
+          // Paso 4: Listo
+          statusDiv.textContent = '✅ Sistema listo';
+          progressBar.style.width = '100%';
+          await new Promise((resolve) => setTimeout(resolve, 500));
+
+          // Redirigir al login
+          statusDiv.textContent = 'Abriendo login...';
+          await new Promise((resolve) => setTimeout(resolve, 300));
+          window.location.href = 'login.html';
+        } catch (error) {
+          console.error('Error en inicialización:', error);
+          statusDiv.innerHTML = `❌ Error: ${error.message}<br><small>Presiona F5 para reintentar</small>`;
+          progressBar.style.width = '100%';
+          progressBar.style.background = '#f44336';
+        }
+      }
+
+      // Iniciar automáticamente
+      window.addEventListener('load', () => {
+        setTimeout(iniciarSistema, 500);
+      });
+
+      // El theme-manager.js gestiona automáticamente el botón de tema
+    </script>
+  </body>
+</html>

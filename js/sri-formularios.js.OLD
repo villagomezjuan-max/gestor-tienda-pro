@@ -1,0 +1,1008 @@
+/**
+ * GESTOR DE FORMULARIOS SRI ECUADOR
+ * 
+ * Sistema para descarga y llenado de formularios oficiales del SRI:
+ * - Formularios 101, 102, 103, 104
+ * - Anexo ATS
+ * - RDEP
+ * - Otros formularios tributarios
+ * 
+ * Funcionalidades:
+ * 1. Descarga de formularios en PDF/Excel
+ * 2. Pre-llenado con datos del sistema
+ * 3. Generación de borradores
+ * 4. Validación de datos
+ * 5. Enlaces directos al portal SRI
+ */
+
+window.SRIFormularios = {
+  servicio: null,
+  ultimoBorrador: null,
+  // Catálogo de formularios oficiales
+  formularios: {
+    '101': {
+      codigo: '101',
+      nombre: 'Impuesto a la Renta - Personas Naturales',
+      descripcion: 'Declaración anual de Impuesto a la Renta para personas naturales y sucesiones indivisas',
+      frecuencia: 'Anual',
+      plazo: 'Marzo - Abril según 9° dígito RUC',
+      formato: 'PDF',
+      url: 'https://www.sri.gob.ec/formularios-tributarios',
+      casillas: ['Ingresos', 'Gastos deducibles', 'Base imponible', 'Impuesto causado', 'Retenciones', 'Impuesto a pagar'],
+      ayuda: 'Para personas naturales obligadas a declarar: ingresos anuales > $11,722 (2025)'
+    },
+    '102': {
+      codigo: '102',
+      nombre: 'Impuesto a la Renta - Sociedades',
+      descripcion: 'Declaración anual de Impuesto a la Renta para sociedades y establecimientos permanentes',
+      frecuencia: 'Anual',
+      plazo: 'Abril según 9° dígito RUC',
+      formato: 'PDF',
+      url: 'https://www.sri.gob.ec/formularios-tributarios',
+      casillas: ['Ingresos', 'Costos y gastos', 'Utilidad contable', 'Conciliación tributaria', 'Base imponible', 'Impuesto causado'],
+      ayuda: 'Obligatorio para todas las sociedades. Incluye balance general y estado de resultados.'
+    },
+    '103': {
+      codigo: '103',
+      nombre: 'Retenciones en la Fuente del Impuesto a la Renta',
+      descripcion: 'Declaración mensual de retenciones efectuadas en la fuente del IR',
+      frecuencia: 'Mensual',
+      plazo: 'Del 10 al 28 del mes siguiente según 9° dígito RUC',
+      formato: 'PDF',
+      url: 'https://declaraciones.sri.gob.ec/tuportal-internet/',
+      casillas: ['Casilla 302: Total retenciones', 'Detalle por código', 'Identificación proveedores'],
+      ayuda: 'Declara TODAS las retenciones que hayas emitido en el mes, incluso si el total es $0.',
+      prellenable: true
+    },
+    '104': {
+      codigo: '104',
+      nombre: 'Impuesto al Valor Agregado (IVA)',
+      descripcion: 'Declaración mensual de IVA por ventas y servicios gravados',
+      frecuencia: 'Mensual',
+      plazo: 'Del 10 al 28 del mes siguiente según 9° dígito RUC',
+      formato: 'PDF',
+      url: 'https://declaraciones.sri.gob.ec/tuportal-internet/',
+      casillas: [
+        'Casilla 401-409: IVA cobrado en ventas',
+        'Casilla 501-509: IVA pagado en compras',
+        'Casilla 601: Crédito tributario',
+        'Casilla 799: IVA a pagar o saldo a favor'
+      ],
+      ayuda: 'Declara ventas, compras, exportaciones, retenciones. Adjunta ATS si estás obligado a llevar contabilidad.',
+      prellenable: true
+    },
+    'ATS': {
+      codigo: 'ATS',
+      nombre: 'Anexo Transaccional Simplificado',
+      descripcion: 'XML con detalle mensual de compras, ventas, retenciones y anulados',
+      frecuencia: 'Mensual',
+      plazo: 'Mismo plazo que Form 104',
+      formato: 'XML',
+      url: 'https://declaraciones.sri.gob.ec/tuportal-internet/',
+      casillas: ['Compras por proveedor', 'Ventas por establecimiento', 'Retenciones emitidas/recibidas', 'Comprobantes anulados'],
+      ayuda: 'Obligatorio si llevas contabilidad. El sistema genera el XML automáticamente.',
+      prellenable: true,
+      generaAutomatico: true
+    },
+    'RDEP': {
+      codigo: 'RDEP',
+      nombre: 'Reporte de Empleados y Pagos',
+      descripcion: 'Reporte mensual de empleados y remuneraciones para IESS',
+      frecuencia: 'Mensual',
+      plazo: '15 del mes siguiente',
+      formato: 'Excel',
+      url: 'https://declaraciones.sri.gob.ec/tuportal-internet/',
+      casillas: ['Identificación empleados', 'Sueldos', 'Horas extras', 'Décimos', 'Aporte IESS'],
+      ayuda: 'Obligatorio si tienes empleados en relación de dependencia.'
+    },
+    '107': {
+      codigo: '107',
+      nombre: 'Retenciones en la Fuente por Relación de Dependencia',
+      descripcion: 'Retenciones proyectadas de IR a empleados',
+      frecuencia: 'Anual (actualización mensual)',
+      plazo: 'Febrero',
+      formato: 'PDF',
+      url: 'https://www.sri.gob.ec/formularios-tributarios',
+      casillas: ['Ingresos gravados', 'Gastos personales', 'Retención mensual proyectada'],
+      ayuda: 'Calcula cuánto retener mensualmente a cada empleado basado en sus ingresos proyectados.'
+    }
+  },
+
+  // Plantillas de datos para pre-llenado
+  plantillas: {},
+
+  obtenerServicio() {
+    if (!this.servicio && typeof window.SRITributacionService !== 'undefined') {
+      this.servicio = window.SRITributacionService;
+    }
+    return this.servicio;
+  },
+
+  obtenerPeriodoActual() {
+    const ahora = new Date();
+    return {
+      year: ahora.getFullYear(),
+      month: ahora.getMonth() + 1
+    };
+  },
+
+  getNombreMes(numero) {
+    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    return meses[numero - 1] || 'Mes';
+  },
+
+  escaparHtml(texto) {
+    return String(texto || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  },
+
+  /**
+   * Inicializar el módulo
+   */
+  inicializar() {
+    console.log('✅ Gestor de Formularios SRI inicializado');
+    this.cargarPlantillas();
+  },
+
+  /**
+   * Cargar plantillas de datos
+   */
+  cargarPlantillas() {
+    const configTienda = Database.get('configTienda') || {};
+    const configSRI = Database.get('configuracionAvanzada')?.sri || {};
+
+    this.plantillas.datosEmpresa = {
+      ruc: configSRI.ruc || '',
+      razonSocial: configSRI.razonSocial || configTienda.razonSocial || '',
+      nombreComercial: configSRI.nombreComercial || configTienda.nombre || '',
+      direccion: configSRI.direccionMatriz || configTienda.direccion || '',
+      telefono: configSRI.telefono || configTienda.telefono || '',
+      email: configSRI.emailNotificaciones || configTienda.email || '',
+      obligadoContabilidad: configSRI.obligadoContabilidad || 'NO'
+    };
+  },
+
+  /**
+   * Descargar formulario
+   */
+  async descargarFormulario(codigoFormulario) {
+    const formulario = this.formularios[codigoFormulario];
+
+    if (!formulario) {
+      Utils.showToast('Formulario no encontrado', 'error');
+      return;
+    }
+
+    // Mostrar modal con información y opciones
+    const modal = Utils.createModal({
+      title: `📋 ${formulario.nombre}`,
+      size: 'medium',
+      content: this.renderModalDescarga(formulario)
+    });
+
+    modal.show();
+  },
+
+  /**
+   * Renderizar modal de descarga
+   */
+  renderModalDescarga(formulario) {
+    return `
+      <div class="formulario-descarga">
+        <div class="formulario-info">
+          <h4>${formulario.nombre}</h4>
+          <p class="formulario-descripcion">${formulario.descripcion}</p>
+          
+          <div class="formulario-detalles">
+            <div class="detalle-item">
+              <i class="fas fa-calendar"></i>
+              <div>
+                <strong>Frecuencia:</strong> ${formulario.frecuencia}<br>
+                <strong>Plazo:</strong> ${formulario.plazo}
+              </div>
+            </div>
+            <div class="detalle-item">
+              <i class="fas fa-file"></i>
+              <div>
+                <strong>Formato:</strong> ${formulario.formato}
+              </div>
+            </div>
+          </div>
+
+          ${formulario.ayuda ? `
+            <div class="alert alert-info">
+              <i class="fas fa-info-circle"></i> ${formulario.ayuda}
+            </div>
+          ` : ''}
+        </div>
+
+        <div class="formulario-casillas">
+          <h5>Casillas principales:</h5>
+          <ul>
+            ${formulario.casillas.map(c => `<li>${c}</li>`).join('')}
+          </ul>
+        </div>
+
+        <div class="formulario-acciones">
+          ${formulario.prellenable ? `
+            <button class="btn btn-success btn-lg" onclick="SRIFormularios.generarBorrador('${formulario.codigo}')">
+              <i class="fas fa-magic"></i> Generar borrador con mis datos
+            </button>
+          ` : ''}
+          
+          ${formulario.generaAutomatico ? `
+            <button class="btn btn-primary btn-lg" onclick="SRIFormularios.generarAutomatico('${formulario.codigo}')">
+              <i class="fas fa-robot"></i> Generar automáticamente
+            </button>
+          ` : ''}
+
+          <a href="${formulario.url}" target="_blank" class="btn btn-info btn-lg">
+            <i class="fas fa-external-link-alt"></i> Declarar en línea (SRI)
+          </a>
+
+          <button class="btn btn-secondary" onclick="SRIFormularios.descargarPlantillaVacia('${formulario.codigo}')">
+            <i class="fas fa-download"></i> Descargar plantilla vacía
+          </button>
+        </div>
+      </div>
+
+      <style>
+        .formulario-descarga {
+          padding: 20px;
+        }
+
+        .formulario-info {
+          margin-bottom: 25px;
+        }
+
+        .formulario-info h4 {
+          color: #2c3e50;
+          margin-bottom: 10px;
+        }
+
+        .formulario-descripcion {
+          font-size: 15px;
+          color: #555;
+          margin-bottom: 20px;
+        }
+
+        .formulario-detalles {
+          background: #f8f9fa;
+          padding: 15px;
+          border-radius: 8px;
+          margin: 15px 0;
+        }
+
+        .detalle-item {
+          display: flex;
+          gap: 15px;
+          margin: 10px 0;
+        }
+
+        .detalle-item i {
+          font-size: 24px;
+          color: #6366f1;
+          margin-top: 5px;
+        }
+
+        .formulario-casillas {
+          background: #fff3cd;
+          padding: 15px;
+          border-radius: 8px;
+          border-left: 4px solid #ffc107;
+          margin-bottom: 20px;
+        }
+
+        .formulario-casillas h5 {
+          margin-top: 0;
+          color: #856404;
+        }
+
+        .formulario-casillas ul {
+          margin: 10px 0 0 20px;
+          padding: 0;
+        }
+
+        .formulario-casillas li {
+          margin: 8px 0;
+          color: #856404;
+        }
+
+        .formulario-acciones {
+          display: flex;
+          flex-direction: column;
+          gap: 10px;
+          margin-top: 25px;
+        }
+
+        .formulario-acciones .btn {
+          justify-content: center;
+        }
+      </style>
+    `;
+  },
+
+  renderGeneradorFormulario(formulario) {
+    const periodoActual = this.obtenerPeriodoActual();
+    const meses = Array.from({ length: 12 }, (_, index) => {
+      const numeroMes = index + 1;
+      const selected = numeroMes === periodoActual.month ? 'selected' : '';
+      return `<option value="${numeroMes}" ${selected}>${this.getNombreMes(numeroMes)}</option>`;
+    }).join('');
+
+    const anios = Array.from({ length: 4 }, (_, index) => {
+      const year = periodoActual.year - index;
+      const selected = index === 0 ? 'selected' : '';
+      return `<option value="${year}" ${selected}>${year}</option>`;
+    }).join('');
+
+    return `
+      <div class="sri-form-wizard" data-form="${formulario.codigo}">
+        <section class="wizard-section">
+          <header>
+            <h4>1. Selecciona el período a analizar</h4>
+            <p>Los datos se precargarán automáticamente desde tus ventas, compras y retenciones.</p>
+          </header>
+          <form id="formPeriodo-${formulario.codigo}" class="wizard-periodo">
+            <div class="form-group">
+              <label>Mes</label>
+              <select name="mes" class="form-control">${meses}</select>
+            </div>
+            <div class="form-group">
+              <label>Año</label>
+              <select name="anio" class="form-control">${anios}</select>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-chart-pie"></i> Calcular datos
+            </button>
+          </form>
+        </section>
+
+        <section class="wizard-section">
+          <header>
+            <h4>2. Revisa los totales sugeridos</h4>
+            <p class="text-muted">Verifica que los movimientos estén completos antes de exportar al portal del SRI.</p>
+          </header>
+          <div class="sri-form-summary" id="formSummary-${formulario.codigo}">
+            <div class="summary-placeholder">
+              <i class="fas fa-magic"></i>
+              <p>Selecciona un período y presiona "Calcular datos".</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="wizard-section">
+          <header>
+            <h4>3. Exporta o consulta con IA</h4>
+          </header>
+          <div class="sri-form-actions" id="formActions-${formulario.codigo}" hidden>
+            <button type="button" class="btn btn-success" data-action="descargar-borrador">
+              <i class="fas fa-file-download"></i> Descargar borrador
+            </button>
+            <button type="button" class="btn btn-secondary" data-action="exportar-json">
+              <i class="fas fa-code"></i> Exportar JSON SRI
+            </button>
+            <button type="button" class="btn btn-info" data-action="preguntar-ia">
+              <i class="fas fa-robot"></i> Preguntar a la IA
+            </button>
+          </div>
+        </section>
+      </div>
+
+      <style>
+        .sri-form-wizard {
+          display: flex;
+          flex-direction: column;
+          gap: 25px;
+        }
+
+        .sri-form-wizard .wizard-section {
+          border: 1px solid #e5e7eb;
+          border-radius: 12px;
+          padding: 20px;
+          background: #fff;
+          box-shadow: inset 0 1px 0 rgba(255,255,255,0.6);
+        }
+
+        .sri-form-wizard header h4 {
+          margin: 0 0 6px;
+          color: #1f2937;
+        }
+
+        .sri-form-wizard header p {
+          margin: 0 0 15px;
+          color: #6b7280;
+          font-size: 14px;
+        }
+
+        .wizard-periodo {
+          display: flex;
+          gap: 20px;
+          flex-wrap: wrap;
+          align-items: flex-end;
+        }
+
+        .wizard-periodo .form-group {
+          flex: 1;
+          min-width: 150px;
+        }
+
+        .wizard-periodo .btn {
+          height: 46px;
+        }
+
+        .sri-form-summary {
+          min-height: 140px;
+          border: 1px dashed #d1d5db;
+          border-radius: 10px;
+          padding: 15px;
+          background: #f9fafb;
+        }
+
+        .summary-placeholder {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 10px;
+          color: #9ca3af;
+        }
+
+        .summary-placeholder i {
+          font-size: 32px;
+        }
+
+        .sri-form-actions {
+          display: flex;
+          gap: 10px;
+          flex-wrap: wrap;
+        }
+      </style>
+    `;
+  },
+
+  inicializarGeneradorEventos(formulario) {
+    const codigo = formulario.codigo;
+    const form = document.getElementById(`formPeriodo-${codigo}`);
+    const summary = document.getElementById(`formSummary-${codigo}`);
+    const actions = document.getElementById(`formActions-${codigo}`);
+
+    if (!form) return;
+
+    form.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const datos = new FormData(form);
+      const periodo = {
+        year: Number(datos.get('anio')),
+        month: Number(datos.get('mes'))
+      };
+      await this.actualizarResumenFormulario(formulario, periodo, summary, actions);
+    });
+
+    if (actions) {
+      actions.addEventListener('click', (event) => {
+        const btn = event.target.closest('[data-action]');
+        if (!btn) return;
+        if (!this.ultimoBorrador) {
+          Utils.showToast('Calcula primero un período.', 'warning');
+          return;
+        }
+
+        switch (btn.dataset.action) {
+          case 'descargar-borrador':
+            this.descargarBorradorActual();
+            break;
+          case 'exportar-json':
+            this.exportarBorradorActual();
+            break;
+          case 'preguntar-ia':
+            this.consultarBorradorIA();
+            break;
+        }
+      });
+    }
+  },
+
+  async actualizarResumenFormulario(formulario, periodo, summaryEl, actionsEl) {
+    if (summaryEl) {
+      summaryEl.innerHTML = `
+        <div class="summary-placeholder">
+          <i class="fas fa-spinner fa-spin"></i>
+          <p>Calculando datos ${periodo.month.toString().padStart(2, '0')}/${periodo.year}...</p>
+        </div>
+      `;
+    }
+
+    const datos = await this.calcularDatosFormulario(formulario.codigo, periodo);
+    this.ultimoBorrador = { codigo: formulario.codigo, datos, periodo };
+    if (summaryEl) {
+      summaryEl.innerHTML = this.renderResumenFormulario(formulario.codigo, datos);
+    }
+    if (actionsEl) {
+      actionsEl.hidden = false;
+    }
+  },
+
+  renderResumenFormulario(codigo, datos) {
+    if (!datos) return '<p class="text-muted">Sin datos disponibles.</p>';
+    if (codigo === '103') return this.renderResumen103(datos);
+    if (codigo === '104') return this.renderResumen104(datos);
+    if (codigo === 'ATS') return this.renderResumenATS(datos);
+    return '<p class="text-muted">Borrador generado.</p>';
+  },
+
+  renderResumen103(datos) {
+    const detalle = (datos.detallePorCodigo || []).slice(0, 5);
+    return `
+      <div class="resumen-grid">
+        <div class="resumen-card">
+          <small>Total retenciones</small>
+          <strong>${Utils.formatCurrency(datos.totalRetenido || 0)}</strong>
+          <span>${datos.totalRetenciones || 0} comprobantes</span>
+        </div>
+        <div class="resumen-card">
+          <small>Base imponible</small>
+          <strong>${Utils.formatCurrency(datos.totalBase || 0)}</strong>
+          <span>Casilla 302: ${Utils.formatCurrency(datos.resumen?.casilla302 || 0)}</span>
+        </div>
+        <div class="resumen-card">
+          <small>Códigos registrados</small>
+          <strong>${detalle.length}</strong>
+          <span>Top 5 más utilizados</span>
+        </div>
+      </div>
+      <table class="table table-sm resumen-table">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Base</th>
+            <th>Retenido</th>
+            <th>%</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${detalle.length ? detalle.map((item) => `
+            <tr>
+              <td><strong>${item.codigo}</strong><br><small>${item.descripcion || ''}</small></td>
+              <td>${Utils.formatCurrency(item.baseImponible)}</td>
+              <td>${Utils.formatCurrency(item.valorRetenido)}</td>
+              <td>${(item.porcentaje || 0).toFixed(2)}%</td>
+            </tr>
+          `).join('') : '<tr><td colspan="4" class="text-muted">Sin retenciones registradas en el período.</td></tr>'}
+        </tbody>
+      </table>
+    `;
+  },
+
+  renderResumen104(datos) {
+    return `
+      <div class="resumen-grid">
+        <div class="resumen-card">
+          <small>Ventas gravadas</small>
+          <strong>${Utils.formatCurrency((datos.ventas?.tarifa12 || 0) + (datos.ventas?.tarifa15 || 0))}</strong>
+          <span>IVA cobrado: ${Utils.formatCurrency((datos.ventas?.iva12 || 0) + (datos.ventas?.iva15 || 0))}</span>
+        </div>
+        <div class="resumen-card">
+          <small>Compras gravadas</small>
+          <strong>${Utils.formatCurrency((datos.compras?.tarifa12 || 0) + (datos.compras?.tarifa15 || 0))}</strong>
+          <span>Crédito tributario: ${Utils.formatCurrency((datos.compras?.iva12 || 0) + (datos.compras?.iva15 || 0))}</span>
+        </div>
+        <div class="resumen-card ${datos.resumen?.estado === 'saldo-favor' ? 'status-success' : ''}">
+          <small>${datos.resumen?.estado === 'saldo-favor' ? 'Saldo a favor' : 'IVA a pagar'}</small>
+          <strong>${Utils.formatCurrency(datos.resumen?.estado === 'saldo-favor' ? datos.resumen?.saldoAFavor : datos.resumen?.ivaAPagar)}</strong>
+          <span>Casilla 799</span>
+        </div>
+      </div>
+      <div class="resumen-columns">
+        <div>
+          <h5>Ventas</h5>
+          <ul>
+            <li>Tarifa 0%: ${Utils.formatCurrency(datos.ventas?.tarifa0 || 0)}</li>
+            <li>Tarifa 12%: ${Utils.formatCurrency(datos.ventas?.tarifa12 || 0)}</li>
+            <li>Tarifa 15%: ${Utils.formatCurrency(datos.ventas?.tarifa15 || 0)}</li>
+          </ul>
+        </div>
+        <div>
+          <h5>Compras</h5>
+          <ul>
+            <li>Tarifa 0%: ${Utils.formatCurrency(datos.compras?.tarifa0 || 0)}</li>
+            <li>Tarifa 12%: ${Utils.formatCurrency(datos.compras?.tarifa12 || 0)}</li>
+            <li>Tarifa 15%: ${Utils.formatCurrency(datos.compras?.tarifa15 || 0)}</li>
+          </ul>
+        </div>
+      </div>
+    `;
+  },
+
+  renderResumenATS(datos) {
+    return `
+      <div class="resumen-grid">
+        <div class="resumen-card">
+          <small>XML generado</small>
+          <strong>${datos.nombreArchivo || 'ATS.xml'}</strong>
+          <span>${datos.resumen?.totalVentas || 0} ventas</span>
+        </div>
+        <div class="resumen-card">
+          <small>Compras</small>
+          <strong>${datos.resumen?.totalCompras || 0}</strong>
+          <span>IVA compras: ${Utils.formatCurrency(datos.resumen?.ivaCompras || 0)}</span>
+        </div>
+        <div class="resumen-card">
+          <small>IVA ventas</small>
+          <strong>${Utils.formatCurrency(datos.resumen?.ivaVentas || 0)}</strong>
+          <span>Periodo ${datos.periodo}</span>
+        </div>
+      </div>
+      <p class="text-muted">Descarga el archivo XML y súbelo en el módulo ATS del portal del SRI.</p>
+    `;
+  },
+
+  async calcularDatosFormulario(codigo, periodo) {
+    const servicio = this.obtenerServicio();
+    if (!servicio) throw new Error('Servicio tributario no disponible');
+    if (codigo === '103') return servicio.generarDatosFormulario103(periodo);
+    if (codigo === '104') return servicio.generarDatosFormulario104(periodo);
+    if (codigo === 'ATS') return servicio.generarATS(periodo);
+    throw new Error(`Formulario ${codigo} no implementado todavía.`);
+  },
+
+  prepararArchivoDesdeBorrador() {
+    if (!this.ultimoBorrador) return null;
+    const { codigo, datos, periodo } = this.ultimoBorrador;
+    if (codigo === 'ATS') {
+      return {
+        nombre: datos.nombreArchivo || `ATS_${periodo.year}${periodo.month.toString().padStart(2, '0')}.xml`,
+        mime: 'application/xml',
+        contenido: datos.xml || datos.archivoXml || '<ATS></ATS>'
+      };
+    }
+
+    return {
+      nombre: `Formulario_${codigo}_${periodo.year}_${periodo.month.toString().padStart(2, '0')}.json`,
+      mime: 'application/json',
+      contenido: JSON.stringify(datos, null, 2)
+    };
+  },
+
+  exportarJSONParaSRI() {
+    const archivo = this.prepararArchivoDesdeBorrador();
+    if (!archivo) {
+      Utils.showToast('Genera un borrador antes de exportar.', 'warning');
+      return;
+    }
+    Utils.downloadFile(archivo.contenido, archivo.nombre, archivo.mime);
+    Utils.showToast('Archivo listo para portal SRI.');
+  },
+
+  descargarBorradorActual() {
+    const archivo = this.prepararArchivoDesdeBorrador();
+    if (!archivo) {
+      Utils.showToast('No hay borrador para descargar.', 'warning');
+      return;
+    }
+    Utils.downloadFile(archivo.contenido, archivo.nombre, archivo.mime);
+  },
+
+  exportarBorradorActual() {
+    this.exportarJSONParaSRI();
+  },
+
+  consultarBorradorIA() {
+    if (!this.ultimoBorrador) {
+      Utils.showToast('Primero genera un borrador.', 'warning');
+      return;
+    }
+    const promptIA = this.crearPromptIA(this.ultimoBorrador);
+    const promptId = `prompt-ia-${Date.now()}`;
+    const copyBtnId = `copy-ia-${Date.now()}`;
+
+    const modal = Utils.createModal({
+      title: 'Asistente IA Tributario',
+      size: 'medium',
+      content: this.renderModalIA(promptIA, promptId, copyBtnId)
+    });
+
+    if (modal?.show) modal.show();
+
+    setTimeout(() => {
+      const copyBtn = document.getElementById(copyBtnId);
+      const promptField = document.getElementById(promptId);
+      if (!copyBtn || !promptField) return;
+
+      copyBtn.addEventListener('click', async () => {
+        await navigator.clipboard.writeText(promptField.value);
+        Utils.showToast('Prompt copiado. Pégalo en tu asistente preferido.');
+      });
+    }, 150);
+  },
+
+  renderModalIA(prompt, promptId, copyBtnId) {
+    return `
+      <div class="ia-helper">
+        <p>Comparte este resumen con tu asistente de IA para recibir recomendaciones tributarias precisas.</p>
+        <textarea id="${promptId}" class="form-control" rows="8" readonly>${this.escaparHtml(prompt)}</textarea>
+        <div class="ia-actions">
+          <button id="${copyBtnId}" class="btn btn-primary">
+            <i class="fas fa-copy"></i> Copiar prompt
+          </button>
+          <button class="btn btn-secondary" onclick="Utils.openExternalChat ? Utils.openExternalChat() : window.open('https://chat.openai.com', '_blank')">
+            <i class="fas fa-external-link-alt"></i> Abrir asistente
+          </button>
+        </div>
+      </div>
+      <style>
+        .ia-helper {
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        .ia-helper textarea {
+          font-family: 'Courier New', monospace;
+        }
+        .ia-actions {
+          display: flex;
+          gap: 10px;
+          flex-wrap: wrap;
+        }
+      </style>
+    `;
+  },
+
+  crearPromptIA(borrador) {
+    const { codigo, periodo, datos } = borrador;
+    const claves = this.obtenerDatosClaveIA(codigo, datos);
+    return [
+      'Eres un asesor tributario ecuatoriano. Evalúa la siguiente información y responde con:',
+      '1. Riesgos detectados',
+      '2. Recomendaciones para cerrar el período',
+      '3. Documentos que debo revisar',
+      '',
+      `Formulario: ${codigo}`,
+      `Período: ${periodo.year}-${periodo.month.toString().padStart(2, '0')}`,
+      'Datos clave:',
+      claves,
+      '',
+      'Devuelve la respuesta en español y separa cada punto con viñetas.'
+    ].join('\n');
+  },
+
+  obtenerDatosClaveIA(codigo, datos) {
+    if (!datos) return 'Sin datos registrados.';
+
+    if (codigo === '103') {
+      const lista = (datos.detallePorCodigo || []).slice(0, 4).map((item) => `Código ${item.codigo}: ${Utils.formatCurrency(item.valorRetenido)} (${item.porcentaje || 0}%)`).join('\n');
+      return [
+        `Total retenido: ${Utils.formatCurrency(datos.totalRetenido || 0)}`,
+        `Base imponible: ${Utils.formatCurrency(datos.totalBase || 0)}`,
+        lista ? 'Top retenciones:\n' + lista : 'No hay detalle de retenciones.'
+      ].join('\n');
+    }
+
+    if (codigo === '104') {
+      return [
+        `Ventas gravadas: ${Utils.formatCurrency((datos.ventas?.tarifa12 || 0) + (datos.ventas?.tarifa15 || 0))}`,
+        `IVA cobrado: ${Utils.formatCurrency((datos.ventas?.iva12 || 0) + (datos.ventas?.iva15 || 0))}`,
+        `Compras gravadas: ${Utils.formatCurrency((datos.compras?.tarifa12 || 0) + (datos.compras?.tarifa15 || 0))}`,
+        `Crédito tributario disponible: ${Utils.formatCurrency(datos.resumen?.creditoTributario || 0)}`,
+        `Estado del mes: ${datos.resumen?.estado || 'sin datos'} (${Utils.formatCurrency(datos.resumen?.ivaAPagar || 0)})`
+      ].join('\n');
+    }
+
+    if (codigo === 'ATS') {
+      return [
+        `Comprobantes de ventas: ${datos.resumen?.totalVentas || 0}`,
+        `Comprobantes de compras: ${datos.resumen?.totalCompras || 0}`,
+        `IVA ventas: ${Utils.formatCurrency(datos.resumen?.ivaVentas || 0)}`,
+        `IVA compras: ${Utils.formatCurrency(datos.resumen?.ivaCompras || 0)}`,
+        `Archivo generado: ${datos.nombreArchivo}`
+      ].join('\n');
+    }
+
+    return 'Borrador generado, pendiente de resumen específico.';
+  },
+
+  /**
+   * Generar borrador con datos del sistema
+   */
+  async generarBorrador(codigoFormulario) {
+    const formulario = this.formularios[codigoFormulario];
+    if (!formulario) {
+      Utils.showToast('Formulario no encontrado', 'error');
+      return;
+    }
+
+    if (!this.obtenerServicio()) {
+      Utils.showToast('Servicio tributario no disponible. Recarga la página.', 'error');
+      return;
+    }
+
+    const modal = Utils.createModal({
+      title: `${formulario.codigo} · ${formulario.nombre}`,
+      size: 'large',
+      content: this.renderGeneradorFormulario(formulario)
+    });
+
+    this.inicializarGeneradorEventos(formulario);
+    if (typeof modal.show === 'function') {
+      modal.show();
+    }
+  },
+  /**
+   * Descargar plantilla vacía
+   */
+  descargarPlantillaVacia(codigoFormulario) {
+    const formulario = this.formularios[codigoFormulario];
+    
+    Utils.showToast(`Redirigiendo al sitio oficial del SRI para descargar el formulario ${codigoFormulario}...`, 'info');
+    
+    setTimeout(() => {
+      window.open(formulario.url, '_blank');
+    }, 1000);
+  },
+
+  /**
+   * Generar automáticamente (ATS)
+   */
+  async generarAutomatico(codigoFormulario) {
+    if (codigoFormulario !== 'ATS') {
+      Utils.showToast('Esta opción solo está disponible para el ATS de momento.', 'info');
+      return;
+    }
+
+    const servicio = this.obtenerServicio();
+    if (!servicio) {
+      Utils.showToast('Servicio tributario no disponible.', 'error');
+      return;
+    }
+
+    const periodo = this.obtenerPeriodoActual();
+    Utils.showToast('Generando ATS con la información del mes actual...');
+    const datos = await servicio.generarATS(periodo);
+    this.ultimoBorrador = { codigo: 'ATS', datos, periodo };
+    const archivo = this.prepararArchivoDesdeBorrador();
+    if (archivo) {
+      Utils.downloadFile(archivo.contenido, archivo.nombre, archivo.mime);
+      Utils.showToast('ATS generado correctamente.');
+    }
+  },
+
+  /**
+   * Mostrar calendario tributario
+   */
+  mostrarCalendarioTributario() {
+    const ruc = this.plantillas.datosEmpresa.ruc;
+    const novenoDigito = ruc ? ruc.charAt(8) : '?';
+
+    const fechasDeclaracion = {
+      '1': 10, '2': 12, '3': 14, '4': 16, '5': 18,
+      '6': 20, '7': 22, '8': 24, '9': 26, '0': 28
+    };
+
+    const diaDeclaracion = fechasDeclaracion[novenoDigito] || '??';
+
+    const modal = Utils.createModal({
+      title: '📅 Calendario Tributario',
+      size: 'large',
+      content: `
+        <div class="calendario-tributario">
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            Tu RUC termina en <strong>${novenoDigito}</strong>, por lo tanto declaras el día <strong>${diaDeclaracion}</strong> de cada mes.
+          </div>
+
+          <h4>Obligaciones Mensuales</h4>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Formulario</th>
+                <th>Concepto</th>
+                <th>Fecha límite</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>103</strong></td>
+                <td>Retenciones en la Fuente IR</td>
+                <td>${diaDeclaracion} del mes siguiente</td>
+              </tr>
+              <tr>
+                <td><strong>104</strong></td>
+                <td>Impuesto al Valor Agregado (IVA)</td>
+                <td>${diaDeclaracion} del mes siguiente</td>
+              </tr>
+              <tr>
+                <td><strong>ATS</strong></td>
+                <td>Anexo Transaccional Simplificado</td>
+                <td>${diaDeclaracion} del mes siguiente</td>
+              </tr>
+              <tr>
+                <td><strong>RDEP</strong></td>
+                <td>Reporte Empleados y Pagos</td>
+                <td>15 del mes siguiente</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h4>Obligaciones Anuales</h4>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Formulario</th>
+                <th>Concepto</th>
+                <th>Fecha límite</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>101</strong></td>
+                <td>Impuesto a la Renta - Personas Naturales</td>
+                <td>Marzo - Abril (según 9° dígito)</td>
+              </tr>
+              <tr>
+                <td><strong>102</strong></td>
+                <td>Impuesto a la Renta - Sociedades</td>
+                <td>Abril (según 9° dígito)</td>
+              </tr>
+              <tr>
+                <td><strong>107</strong></td>
+                <td>Retenciones Relación Dependencia</td>
+                <td>Febrero</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <strong>Importante:</strong> Estas fechas son referenciales. Consulta el calendario tributario oficial en <a href="https://www.sri.gob.ec" target="_blank">www.sri.gob.ec</a>
+          </div>
+        </div>
+
+        <style>
+          .calendario-tributario {
+            padding: 20px;
+          }
+
+          .calendario-tributario h4 {
+            margin-top: 25px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+          }
+
+          .calendario-tributario .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+          }
+
+          .calendario-tributario .table th {
+            background: #6366f1;
+            color: white;
+            padding: 12px;
+            text-align: left;
+          }
+
+          .calendario-tributario .table td {
+            padding: 10px;
+            border-bottom: 1px solid #dee2e6;
+          }
+
+          .calendario-tributario .table tbody tr:hover {
+            background: #f8f9fa;
+          }
+        </style>
+      `
+    });
+
+    modal.show();
+  }
+};
+
+// Inicializar al cargar
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => SRIFormularios.inicializar());
+} else {
+  SRIFormularios.inicializar();
+}
