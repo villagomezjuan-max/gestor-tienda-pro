@@ -6017,6 +6017,7 @@ const PUBLIC_ROUTES = new Set([
   '/api/auth/login',
   '/api/auth/refresh',
   '/api/auth/logout',
+  '/api/auth/me',
   '/api/setup-admin',
   '/api/db-status',
   '/health',
