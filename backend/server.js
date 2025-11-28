@@ -5065,6 +5065,64 @@ function ensureBusinessDatabases() {
   }
 }
 
+// Crear super admin por defecto si no existe ningún usuario (para producción)
+async function ensureDefaultAdminForProduction() {
+  try {
+    const master = getMasterDB();
+    
+    // Primero verificar que exista la tabla negocios y tenga datos
+    try {
+      const negocioCount = master.prepare('SELECT COUNT(*) as count FROM negocios').get();
+      if (negocioCount.count === 0) {
+        console.log('🏪 No hay negocios. Creando negocio por defecto...');
+        
+        const negocioId = 'tienda_demo';
+        master.prepare(`
+          INSERT INTO negocios (id, nombre, tipo, estado, plan, icono, created_at, updated_at)
+          VALUES (?, 'Tienda Demo', 'general', 'activo', 'basico', 'fas fa-store', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        `).run(negocioId);
+        
+        console.log('✅ Negocio demo creado: tienda_demo');
+      }
+    } catch (e) {
+      console.log('ℹ️ Tabla negocios no disponible o vacía');
+    }
+    
+    // Verificar si hay algún usuario en la BD
+    const userCount = master.prepare('SELECT COUNT(*) as count FROM usuarios').get();
+    
+    if (userCount.count === 0) {
+      console.log('🔐 No hay usuarios. Creando super admin por defecto...');
+      
+      // Crear hash de contraseña
+      const bcrypt = require('bcrypt');
+      const defaultPassword = 'admin123';
+      const passwordHash = await bcrypt.hash(defaultPassword, 10);
+      
+      const adminId = generateId('usr');
+      
+      // Insertar super admin
+      master.prepare(`
+        INSERT INTO usuarios (id, username, password, nombre, rol, activo, created_at, updated_at)
+        VALUES (?, 'admin', ?, 'Super Administrador', 'super_admin', 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+      `).run(adminId, passwordHash);
+      
+      console.log('');
+      console.log('╔════════════════════════════════════════════════╗');
+      console.log('║     🔐 CREDENCIALES DE ACCESO POR DEFECTO      ║');
+      console.log('╠════════════════════════════════════════════════╣');
+      console.log('║  Usuario:    admin                             ║');
+      console.log('║  Contraseña: admin123                          ║');
+      console.log('╠════════════════════════════════════════════════╣');
+      console.log('║  ⚠️  CAMBIA LA CONTRASEÑA DESPUÉS DE INGRESAR  ║');
+      console.log('╚════════════════════════════════════════════════╝');
+      console.log('');
+    }
+  } catch (error) {
+    console.error('❌ Error creando super admin:', error.message);
+  }
+}
+
 function ensureDeveloperAccess() {
   try {
     const master = getMasterDB();
@@ -18010,8 +18068,11 @@ app.use((req, res) => {
 // ============================================================================
 // INICIAR SERVIDOR
 // ============================================================================
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, async () => {
   console.log(`🚀 Servidor escuchando en http://localhost:${PORT}`);
+  
+  // Crear super admin por defecto si no hay usuarios (para producción)
+  await ensureDefaultAdminForProduction();
 });
 
 // Configurar timeout del servidor (30 segundos)
