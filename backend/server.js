@@ -7812,7 +7812,52 @@ app.get('/api/setup-admin', async (req, res) => {
     const master = getMasterDB();
     const results = { steps: [] };
     
-    // Paso 1: Verificar/crear tabla negocios
+    // Paso 0: Crear tablas si no existen
+    try {
+      // Crear tabla negocios
+      master.exec(`
+        CREATE TABLE IF NOT EXISTS negocios (
+          id TEXT PRIMARY KEY,
+          nombre TEXT NOT NULL,
+          tipo TEXT DEFAULT 'general',
+          estado TEXT DEFAULT 'activo',
+          plan TEXT DEFAULT 'basico',
+          icono TEXT,
+          config TEXT,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      results.steps.push({ step: 'create_table_negocios', success: true });
+      
+      // Crear tabla usuarios_negocios
+      master.exec(`
+        CREATE TABLE IF NOT EXISTS usuarios_negocios (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          usuario_id TEXT NOT NULL,
+          negocio_id TEXT NOT NULL,
+          rol_en_negocio TEXT DEFAULT 'empleado',
+          es_negocio_principal INTEGER DEFAULT 0,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+          UNIQUE(usuario_id, negocio_id),
+          FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
+          FOREIGN KEY (negocio_id) REFERENCES negocios(id)
+        )
+      `);
+      results.steps.push({ step: 'create_table_usuarios_negocios', success: true });
+      
+      // Verificar que exista columna negocio_principal en usuarios
+      try {
+        master.prepare('SELECT negocio_principal FROM usuarios LIMIT 1').get();
+      } catch (e) {
+        master.exec('ALTER TABLE usuarios ADD COLUMN negocio_principal TEXT');
+        results.steps.push({ step: 'add_column_negocio_principal', success: true });
+      }
+    } catch (e) {
+      results.steps.push({ step: 'create_tables_error', error: e.message });
+    }
+    
+    // Paso 1: Verificar/crear negocio por defecto
     try {
       const negocioCount = master.prepare('SELECT COUNT(*) as count FROM negocios').get();
       results.steps.push({ step: 'check_negocios', count: negocioCount.count });
@@ -7853,7 +7898,7 @@ app.get('/api/setup-admin', async (req, res) => {
       results.steps.push({ step: 'create_admin', id: adminId, success: true });
     }
     
-    // Paso 3: Asignar admin a negocio (verificar tabla usuarios_negocios)
+    // Paso 3: Asignar admin a negocio
     try {
       const asignacionExistente = master.prepare(`
         SELECT * FROM usuarios_negocios WHERE usuario_id = ? AND negocio_id = 'tienda_principal'
