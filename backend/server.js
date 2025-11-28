@@ -7893,6 +7893,46 @@ app.get('/api/setup-admin', async (req, res) => {
   }
 });
 
+// 🔧 ENDPOINT TEMPORAL: Diagnóstico de base de datos (ELIMINAR EN PRODUCCIÓN REAL)
+app.get('/api/db-status', (req, res) => {
+  try {
+    const master = getMasterDB();
+    const result = {};
+    
+    // Verificar tablas existentes
+    const tables = master.prepare(`SELECT name FROM sqlite_master WHERE type='table'`).all();
+    result.tables = tables.map(t => t.name);
+    
+    // Contar usuarios
+    try {
+      const usuarios = master.prepare('SELECT id, username, rol, activo, negocio_principal FROM usuarios').all();
+      result.usuarios = usuarios;
+    } catch (e) {
+      result.usuarios_error = e.message;
+    }
+    
+    // Contar negocios
+    try {
+      const negocios = master.prepare('SELECT id, nombre, estado FROM negocios').all();
+      result.negocios = negocios;
+    } catch (e) {
+      result.negocios_error = e.message;
+    }
+    
+    // Verificar usuarios_negocios
+    try {
+      const asignaciones = master.prepare('SELECT * FROM usuarios_negocios').all();
+      result.usuarios_negocios = asignaciones;
+    } catch (e) {
+      result.usuarios_negocios_error = e.message;
+    }
+    
+    res.json({ success: true, data: result });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // Health check - Información mínima para no exponer versión/entorno
 app.get('/health', (req, res) => {
   res.json({
