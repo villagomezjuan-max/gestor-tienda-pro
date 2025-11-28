@@ -15,9 +15,13 @@ const TiempoServidor = {
   _utcOffset: -5, // Ecuador UTC-5
   
   // Servidores de tiempo (múltiples para redundancia)
+  // PRIORIDAD: 1. Backend local (no requiere CSP), 2. APIs externas como fallback
   servidores: [
-    'https://worldtimeapi.org/api/timezone/America/Guayaquil',
-    'https://timeapi.io/api/Time/current/zone?timeZone=America/Guayaquil'
+    // Backend local - primera opción (evita problemas de CSP)
+    { url: '/api/tiempo', tipo: 'backend' },
+    // Fallback a APIs externas (pueden requerir CSP)
+    { url: 'https://worldtimeapi.org/api/timezone/America/Guayaquil', tipo: 'worldtimeapi' },
+    { url: 'https://timeapi.io/api/Time/current/zone?timeZone=America/Guayaquil', tipo: 'timeapi' }
   ],
 
   /**
@@ -30,17 +34,28 @@ const TiempoServidor = {
     for (const servidor of this.servidores) {
       try {
         const tiempoAntes = Date.now();
-        const response = await fetch(servidor, { 
+        
+        // Construir URL absoluta si es relativa (backend local)
+        let url = servidor.url;
+        if (url.startsWith('/')) {
+          // Usar el mismo origen que la página
+          const baseUrl = window.Auth?.API_URL?.replace('/auth', '') || 
+                         (window.location.origin + (window.location.port === '' ? ':3001' : ''));
+          url = baseUrl.replace(/\/+$/, '') + servidor.url;
+        }
+        
+        const response = await fetch(url, { 
           method: 'GET',
           cache: 'no-cache',
-          headers: { 'Cache-Control': 'no-cache' }
+          headers: { 'Cache-Control': 'no-cache' },
+          credentials: servidor.tipo === 'backend' ? 'include' : 'omit'
         });
         const tiempoDespues = Date.now();
         
         if (!response.ok) continue;
         
         const data = await response.json();
-        console.log('📡 Respuesta servidor:', data);
+        console.log(`📡 Respuesta de ${servidor.tipo}:`, data);
         
         // Calcular latencia de red (dividir por 2 para estimar tiempo de ida)
         const latencia = (tiempoDespues - tiempoAntes) / 2;
@@ -48,7 +63,11 @@ const TiempoServidor = {
         // Extraer timestamp del servidor según el formato de respuesta
         let timestampServidor = null;
         
-        if (data.unixtime) {
+        if (servidor.tipo === 'backend' && data.unixtime) {
+          // Backend local devuelve unixtime en segundos
+          timestampServidor = data.unixtime * 1000;
+          console.log('✅ Usando tiempo del backend local');
+        } else if (data.unixtime) {
           // worldtimeapi.org tiene unixtime en segundos
           timestampServidor = data.unixtime * 1000;
           console.log('✅ Usando unixtime de worldtimeapi');
@@ -74,7 +93,8 @@ const TiempoServidor = {
           this._intentosFallidos = 0;
           
           const diferenciaSeg = Math.abs(this._offsetMs / 1000);
-          console.log(`✅ Tiempo sincronizado desde: ${servidor}`);
+          const nombreServidor = servidor.tipo || servidor.url;
+          console.log(`✅ Tiempo sincronizado desde: ${nombreServidor}`);
           console.log(`   Hora Ecuador: ${this.obtenerHora()}`);
           console.log(`   Fecha Ecuador: ${this.obtenerFechaISO()}`);
           console.log(`   Diferencia con local: ${diferenciaSeg.toFixed(1)} segundos`);
@@ -88,7 +108,8 @@ const TiempoServidor = {
           return true;
         }
       } catch (e) {
-        console.warn(`❌ Error con ${servidor}:`, e.message);
+        const nombreServidor = servidor.tipo || servidor.url || servidor;
+        console.warn(`❌ Error con ${nombreServidor}:`, e.message);
         continue;
       }
     }

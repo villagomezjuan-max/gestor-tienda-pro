@@ -94,6 +94,7 @@ const allowedOrigins = [
   'http://localhost:3001',
   'http://127.0.0.1:3000',
   'http://127.0.0.1:3001',
+  'https://gestor-tienda-pro.onrender.com',
 ];
 
 app.use(
@@ -109,6 +110,11 @@ app.use(
     credentials: true,
   })
 );
+
+// Servir archivos estáticos del frontend (en producción)
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, '..')));
+}
 
 // Configurar CSRF
 const csrfProtection = csrf({
@@ -7717,6 +7723,25 @@ app.get('/health', (req, res) => {
     status: 'ok',
     timestamp: new Date().toISOString(),
     // NO exponer version ni environment por seguridad
+  });
+});
+
+// Endpoint de tiempo del servidor - Anti-fraude
+// Devuelve la hora del servidor en zona horaria Ecuador (UTC-5)
+app.get('/api/tiempo', (req, res) => {
+  const ahora = new Date();
+  // Obtener hora en zona horaria Ecuador
+  const opcionesEcuador = { timeZone: 'America/Guayaquil' };
+  
+  res.json({
+    success: true,
+    unixtime: Math.floor(ahora.getTime() / 1000),
+    datetime: ahora.toISOString(),
+    // Fecha en formato local Ecuador
+    fecha_ecuador: ahora.toLocaleDateString('es-EC', opcionesEcuador),
+    hora_ecuador: ahora.toLocaleTimeString('es-EC', { ...opcionesEcuador, hour12: false }),
+    timezone: 'America/Guayaquil',
+    utc_offset: -5
   });
 });
 
